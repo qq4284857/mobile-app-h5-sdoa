@@ -8,7 +8,7 @@ var baseConfig = {
 	alerttitle: "市场监管局移动办公",
 	mobileServerConfig: {
 		isUseAppCacheData: "1", //0否1是。是否使用mobileServer的App缓存变量配置
-		isUseMiniUpdateMode: "0", //0否1是。是否开启小应用更新模式。开发模式下请选择0否，打包时一定要改成1是。
+		isUseMiniUpdateMode: "1", //0否1是。是否开启小应用更新模式。开发模式下请选择0否，打包时一定要改成1是。
 		miniAppTypeId: "",//小应用分类id。如果为空，则查询默认应用分类；如果没有默认应用分类，则查询系统预置分类下的小应用列表。
 		accountBindDeviceMaxNum: "",//账户登录校验，数字类型字符串。如果为空则不校验；如果为N且N>0，则：给定一个帐户，最多允许N个设备同时在线；如需在第N+1个设备登录，需要先在之前登录过的设备上注销登录方可。
 		guidePageInfo: {
