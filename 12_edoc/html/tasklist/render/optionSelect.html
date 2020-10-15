@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mescroll.min.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet" />
+		<style>
+			.mui-search {
+				margin-top: 10px;
+				padding: 0 10px 0 10px;
+			}
+			.mui-search input {
+				height: 30px;
+				line-height: 30px;
+				margin-bottom: 0px;
+				padding-left: 38px;
+				border-radius: 12px;
+			}
+			.mui-search.mui-active input {
+				padding-left: 38px;
+			}
+			.mui-search .mui-placeholder {
+			    font-size: 16px;
+			    line-height: 30px;
+			}
+			.mui-input-row.mui-search .mui-icon-clear {
+			    top: 6px;
+			    right: 8px;
+			}
+			.mui-search .mui-icon.mui-icon-speech{
+				top: 3px;
+			    right: 8px;
+			}
+			.mui-icon-search:before {
+				content: '';
+			}
+			.mui-search:before{
+				content: '';
+			}
+			#logo_box {
+				width: 40px;
+				height: 30px;
+				padding-left: 20px;
+				text-align: center;
+				position: absolute;
+				top: 60px;
+				z-index: 999;
+			}
+			#logo_box img{
+			    width: 20px;
+			}
+			#mescrollWrapper {
+				position: fixed;
+				top: 120px;
+				bottom: 0;
+				width: 100%;
+				height: auto;
+			}
+			.nodate {
+			    width: 150px;
+			    height: 220px;
+			    margin: auto;
+			    text-align: center;
+			}
+			.nodate .nodate_img {
+			    display: block;
+			    width: 150px;
+			    height: 180px;
+			    background: url(../../../../01_common/images/nodata_img.png) no-repeat;
+			    margin: 10px 0;
+			}
+			.mediaObjectImg {
+			    max-width: 35px !important;
+			    width: 35px !important;
+			    height: 35px !important;
+			}
+			.data_num {
+				widht: 100%;
+				padding: 10px 15px 0 15px;
+				font-size: 0.8em;
+			}
+			.data_num font{
+				color: #ffa816;
+			}
+			.data_num_left{
+				float: left;
+			}
+			.data_num_right{
+				float: right;
+			}
+			.mui-bar-nav button{
+				background: transparent;
+				color: #fff;
+				border:0
+			}
+			.mui-table-view-cell > a:not(.mui-btn){
+				margin: 0 -15px;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+				<button class="mui-btn mui-btn-sm mui-pull-left" id="cancelBtn"><span class="mui-icon mui-icon-undo"></span></button>
+				<h1 class="mui-title">常用意见</h1>
+		</header>
+		<div class="mui-content">
+			<div id="mainContent" style="display: none;">
+				<div id="mescrollWrapper" class="mescroll" :style="searchResultArr.length==0?'top:90px;':'top:55px;'">
+					<ul id="searchList" class="mui-table-view">
+						<li class="mui-table-view-cell mui-media" v-for="(docInfo,index) in searchResultArr">
+							<a class="mui-navigate" herf="javascript:;" @tap="jump2DetailPage(index);"  >
+								<div class="mui-media-body" style="padding-top:8px;">
+									<span>
+									<input style="width: 20px;height: 20px;" type="radio" id="middle" />
+									</span>
+									<span style="font-size: 22px;" v-text="docInfo.OPTION_TEMPLATE"></span>
+								</div>								
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../../../00_mui/js/vue.min.js"></script>
+	<script src="../../../../00_mui/js/mui.min.js"></script>
+	<script src="../../../../00_mui/js/mescroll.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../../../01_common/js/common.js"></script>
+	<script src="../../../../01_common/js/serviceUrl.js"></script>
+	<script type="text/javascript">
+		var self;
+		var organId;
+		var procDefUniqueId;
+		mui.plusReady(function() {
+			mui.init();
+			self = plus.webview.currentWebview();
+			procDefUniqueId=self.procDefUniqueId;
+			organId =self.organId;
+			console.log(procDefUniqueId+"===="+organId);
+			createValueModel();
+		});
+
+		/**
+		 * 页面模型创建
+		 */
+		var searchListVm;
+
+		function createValueModel() {
+			searchListVm = new Vue({
+				el: "#mainContent",
+				data: {
+					mescroll: null,
+					queryParam: {},
+					totalSum: 0,
+					searchResultArr: []
+				},
+				mounted: function() {
+					document.getElementById("mainContent").style.display = "block";
+					var self = this;
+					self.mescroll = new MeScroll("mescrollWrapper", {
+						down: {
+							auto: true
+						},
+						up: {
+							callback: self.upCallback,
+							auto: false,
+							isBounce: false,
+							page: {
+								num: 0, //当前页码,默认0,回调之前加1,即callback(page)从1开始
+								size: 10,
+								time: null
+							},
+							toTop: {
+								src: "../../../../01_common/images/mescroll-totop.png",
+								html: null,
+								offset: 1000
+							},
+							empty: {
+								warpId: "searchList",
+								icon: "",
+								tip: "<div class='nodate'><span class='nodate_img'></span><span>没有查询到数据</span></div>",
+								btntext: null,
+								btnClick: null
+							},
+							noMoreSize: 1,
+							htmlNodata: "<p class='upwarp-nodata'>没有更多数据了</p>"
+						}
+					});
+				},
+				methods: {
+					upCallback: function(page) {
+						querySearchList(page);
+					},
+					jump2DetailPage: function(idx) {
+						var docInfo = searchListVm.searchResultArr[idx];
+
+						console.log(docInfo.OPTION_TEMPLATE);
+						var self = plus.webview.currentWebview();
+						var callbackPageId = self.callbackPageId;
+						var callbackPageEvent = self.callbackPageEvent;
+						if(callbackPageId==null || callbackPageEvent==null){
+							self.close();
+							return;
+						}
+						var callbackPageWebview = plus.webview.getWebviewById(callbackPageId);
+						if(callbackPageWebview==null){
+							self.close();
+							return;
+						}
+						mui.fire(callbackPageWebview,callbackPageEvent,{checker : docInfo.OPTION_TEMPLATE});
+						self.close();
+					}
+				}
+			});
+		}
+
+            //返回
+			document.getElementById("cancelBtn").addEventListener("tap",function(){
+				mui.back();
+			});
+	
+		/**
+		 * 查询列表数据
+		 */
+		function querySearchList(page) {
+			console.log("========&&&&======");
+			var start = (page.num - 1) * page.size;
+			var limit = page.size;
+					console.log(start+"==============="+limit);
+			if (start == 0) { //第一页使用全新条件查询
+				searchListVm.queryParam = {
+						serviceCode: "old.edoc.queryEdocOptionList",
+						start: start,
+						maxRows: limit,
+						organId: organId,
+						procDefUniqueId:procDefUniqueId
+				};
+				 
+
+				searchListVm.mescroll.scrollTo(0, 0); //返回顶部：px,ms
+			} else { //第二页起，使用上一次的查询条件查询，只传递分页参数（如果不分页，那么不会走此else分支）
+				searchListVm.queryParam.start = start;
+				searchListVm.queryParam.maxRows = limit;
+			}
+			document.activeElement.blur();
+			//console.log(JSON.stringify(searchListVm.queryParam));
+			mui.ajax(baseServiceUrl.url, {
+				data: searchListVm.queryParam,
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 30000, //超时时间设置为10秒；
+				success: function(datas) {
+					console.log(JSON.stringify(datas));
+					if (datas.status !== "true") {
+						mui.toast("查询出错");
+						searchListVm.mescroll.endErr();
+						return;
+					}
+					var dataResult = JSON.parse(datas.result);
+					//console.log(JSON.stringify(dataResult));
+					if (dataResult.status === true) {
+						if (dataResult.result === "未查询到意见数据") {
+							dataResult.result = [];
+							dataResult.totalCount = 0;
+						} else {
+							mui.toast("查询出错");
+							searchListVm.mescroll.endErr();
+							return;
+						}
+					}
+					if (start == 0) {
+						searchListVm.searchResultArr = []; //第一页重置vm数据
+					}
+					if(dataResult.result!="未查询到对应的常用意见数据！"){
+						searchListVm.totalSum = dataResult.result.length;
+					}else{
+						searchListVm.totalSum = 0;
+					}
+					var beanArray = dataResult.result;
+					if (beanArray.indexOf('未查询到对应的常用意见数据！') == -1) {
+						searchListVm.searchResultArr = searchListVm.searchResultArr.concat(beanArray);
+					}
+					
+					if(dataResult.result!="未查询到对应的常用意见数据！"){
+					searchListVm.mescroll.endSuccess(beanArray.length, searchListVm.searchResultArr.length < parseInt(searchListVm.totalSum));	
+					}else{
+						searchListVm.mescroll.endSuccess(0, 0);
+						searchListVm.searchResultArr.length=0;
+					}
+					
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+					searchListVm.mescroll.endErr();
+				}
+			});
+		}
+	</script>
+</html>

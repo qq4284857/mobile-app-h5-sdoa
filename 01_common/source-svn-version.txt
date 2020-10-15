@@ -1,0 +1,9 @@
+svn-url: svn://10.110.1.24/svn/scjg/GCloud/GCloud-Mobile/base/trunk/01_common
+svn-version: 82633
+
+
+特殊修改文件
+---------------------------------------
+01_common/js/common.js
+01_common/js/city.data.js
+01_common/js/serviceUrl.js

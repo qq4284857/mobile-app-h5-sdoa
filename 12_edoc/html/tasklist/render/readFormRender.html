@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../skins/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mescroll.min.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/load.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet" />
+
+		<script src="../../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../01_common/js/load.js"></script>
+		<script src="../../../../01_common/js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../skins/js/bootstrap.min.js"></script>
+		<script src="../../../../01_common/js/serviceUrl.js"></script>
+		<script src="../../../../01_common/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="../../cform/skin/css/edoc-cform.css" />
+		<link rel="stylesheet" type="text/css" href="css/banlijilu.css" />
+		<!---->
+		<script type="text/javascript" src="../../cform/skin/js/mcform-all.js"></script>
+		<!--
+		<script type="text/javascript" src="../cform/skin/js/zepto.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/frame.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/mobiscroll.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/mcform.js"></script>
+		
+		<script type="text/javascript" src="../cform/tasklist/render/js/mformrender.js"></script>
+		<script type="text/javascript" src="../cform/tasklist/action/mformaction.js"></script>-->
+		<style type="text/css">
+			#htmlContainer {
+				margin-top: 20px;
+				margin-left: -25px;
+			}
+
+			.clear {
+				clear: both;
+			}
+
+			.mui-bar-tab {
+				bottom: 0;
+				display: table;
+				width: 100%;
+				padding: 0;
+				table-layout: fixed;
+				border-top: 0;
+				border-bottom: 0;
+				-webkit-touch-callout: none;
+			}
+
+			.time {
+				border: 1px solid #1E90FF;
+				border-radius: 5px;
+				width: 32px;
+			}
+
+			a:hover {
+				text-decoration: none;
+			}
+
+			#tiyt {
+				border-bottom: 1.5px solid #eee;
+				height: 50px;
+			}
+
+			#infoName {
+				padding-left: 20px;
+				width: 160px;
+				color: #7E7E7E
+			}
+
+			#val {
+				padding-right: 20px;
+				width: 160px;
+			}
+
+			.selepeople {
+				margin: 2px 2px;
+				background-color: #dfdfdf;
+				padding: 0px 6px;
+				border-radius: 5px;
+				font-size: 0.8em;
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+				float: left;
+			}
+
+			#textList {
+				background-color: rgba(244, 244, 244, 112);
+				/*边角弧度*/
+				border-radius: 20px;
+			}
+
+			#attachmentList {
+				background-color: rgba(244, 244, 244, 112);
+				/*边角弧度*/
+				border-radius: 20px;
+				margin-top: 5px;
+			}
+
+			.tr1 th {
+				padding: 25px;
+			}
+
+			.tr1 td {
+				padding-top: 30px !important;
+				padding-right: 30px !important;
+				font-size: 20px !important;
+				border-top: 0px !important;
+			}
+
+			#downloadZwBtn {
+				float: right;
+				margin-right: 20px;
+				border-radius: 30px;
+			}
+
+			#zexx {
+				padding-top: 20px;
+				padding-left: 10px;
+			}
+
+			#fjxx {
+				padding-top: 20px;
+				padding-left: 10px;
+			}
+
+			#tips {
+				margin: 20px;
+				background-color: rgba(255, 247, 198, 255);
+				box-shadow: 0px 1px 3px rgba(34, 25, 25, 0.2);
+				border-radius: 10px;
+			}
+
+			#ckzw {
+				padding: 10px;
+			}
+			
+			.cfText{
+				display: inline-block!important;
+			}
+			#HuiQian{
+				display: block !important;
+			}
+			#BanGongShiFuZeRenShenHe{
+				display: block !important;
+			}
+			#ShenQian{
+				display: block !important;
+			}
+			
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">待阅明细</h1>
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="margin-top: 3%;">
+				<a class="mui-control-item mui-active" href="#item1">文件信息</a>
+				<a class="mui-control-item" href="#item2">正文附件</a>
+			</div>
+			<div id="" style="margin-top: 30px;">
+				<div id="item1" style="margin-top: -30px;" class="mui-control-content mui-active">
+					<div id="htmlContainer" align="center">
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content" style="width: 90%;margin-left: 5%;">
+					<div id="textList" style="margin-top: 6%; border-bottom: 1px solid #eee;padding-bottom: 50px; ">
+						<div id="zexx">
+							<span class="mui-icon mui-icon-compose" style="font-size: 30px;"></span><b style="font-size: 20;">正文信息</b>
+						</div>
+						<div>
+							<div v-if="textInfo.status=='false'">
+								<p style="padding-left: 10px;">无</p>
+							</div>
+							<div v-else>
+								<table id="tableZW" class="table" style="font-size: 14px;vertical-align: middle;">
+									<thead>
+										<tr style="display: none;" class="tr1">
+											<th>文件名</th>
+											<th>大小/类型</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="tr1">
+											<td style="display: none;">{{textInfo.fileName}}</td>
+											<td style="display: none;">
+												<span class="mui-badge mui-badge-purple">{{textInfo.fileSize}}</span>
+												<span class="mui-badge mui-badge-purple">{{textInfo.fileType}}</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div id="tips">
+									<div id="ckzw">
+										<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点击“查看正文”时，手机可能会提示选择不同软件来打开正文，目前内文是word格式，外文是PDF格式，俩种格式都可以选择WPS软件打开。</span>
+									</div>
+								</div>
+								<button id="downloadZwBtn" type="button" data-loading-text="下载中" data-loading-icon="mui-spinner mui-spinner-custom"
+								 class="mui-btn mui-btn-danger" @tap="downloadfile('downloadZwBtn',textInfo.result)" @longtap="reDownloadfile('downloadZwBtn',textInfo.result)">查看正文</button>
+							</div>
+						</div>
+
+					</div>
+					<div id="fjxx">
+						<span class="mui-icon mui-icon-download" style="font-size: 30px;"></span><b style="font-size: 20px;">附件信息</b>
+					</div>
+					<div id="attachmentList" style="border-bottom: 0px solid #eee;padding-bottom: 10px;padding-top: 5px;">
+						<div>
+							<div v-if="attachmentInfo.status=='false'">
+								<p style="padding-left: 10px;">无</p>
+							</div>
+							<div v-else>
+								<div>
+									<table class="table" style="font-size: 14px;vertical-align: middle;">
+										<thead>
+											<tr style="display: none;" class="tr1">
+												<th>文件名</th>
+												<th>类型</th>
+												<th>操作</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr class="tr1" v-for="(attachmentRecord,index) in  attachmentInfo.attachmentRec">
+												<td style="padding-left: 5px !important;word-break: break-all;word-wrap: break-word;width: 50%;">{{attachmentRecord.name.substring(0,attachmentRecord.name.indexOf("."))}}</td>
+												<td>
+													<!-- <span class="mui-badge mui-badge-purple">{{attachmentRecord.size}}</span> -->
+													<span class="mui-badge mui-badge-purple">{{attachmentRecord.mimeType.substring(1,attachmentRecord.mimeType.length)}}</span>
+												</td>
+												<td style="padding-left: 50px;">
+													<button :id="'downloadFjBtn'+index" type="button" data-loading-text="下载中" data-loading-icon="mui-spinner mui-spinner-custom"
+													 class="mui-btn mui-btn-primary" style="border-radius: 30px;" @tap="downloadfile('downloadFjBtn'+index,attachmentRecord.url)"
+													 @longtap="reDownloadfile('downloadFjBtn'+index,attachmentRecord.url)">查看</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--<div id="item3" class="mui-control-content">
+					<div id="opinionList"class="hovertree-trackrcol">
+						<div class="hovertree-tracklist">
+							<ul v-for="opinionRecord in opinionInfo.opinionRec">
+								<li class="first">
+									<i class="node-icon"></i>
+									<div id="item3-1">
+										<div class="dealOpinion">分阅环节：{{opinionRecord.shareReadActName}}</div>
+										<div class="dealAct">分阅人：{{opinionRecord.shareUserName}}</div>
+										<div class="dealPer">分阅说明：{{opinionRecord.shareReadDes}}</div>
+										<div class="dealTime">阅知人：{{opinionRecord.toShareOrganName}}</div>
+										<div class="dealTime">查阅状态：{{opinionRecord.readStates}}</div>
+										<div class="dealTime">回复意见：{{opinionRecord.replyOpinion}}</div>
+										<div class="dealTime">查阅时间：{{opinionRecord.readTime}}</div>
+										<div class="dealTime">撤回原因：{{opinionRecord.recallReason}}</div>
+										<div class="dealTime">撤回人：{{opinionRecord.recallPerson}}</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>-->
+
+				<!--<div id="item4" class="mui-control-content">
+					<div id="banliqu" style="margin-right: 20px;margin-left: -20px;">
+						<ul>
+							<li><span id="" style="float: left; color: #929292;margin-bottom: 20px;">
+								请输入已阅意见
+							</li>
+							<li><textarea id="yiyueyijian" placeholder="请输入已阅意见"  style="overflow-y:hidden;overflow-x:hidden;border: 1;border-color: red;">已阅。</textarea></li>
+						</ul>
+					</div>
+					<div id="banliqu2" style="margin-right: 20px;margin-left: -20px;">
+						<button type="button" style="left: 40px;right: 20px; width: 100%;margin-left: -20px;" class="mui-btn mui-btn-blue" onclick="submit()" id="sub">确定</button>
+					</div>
+				</div>-->
+			</div>
+			<div class="mui-bar mui-bar-tab" id="yiyue">
+				<button type="button" style="left: 40px;right: 20px; width: 60%;margin-left: 30px;" class="mui-btn mui-btn-blue"
+				 onclick="submit()" id="sub">已阅</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var mask = null;
+
+		var serialNo = "";
+		var id = "";
+		var formId = ""; // ZhongQingShiShiYaoJianFaWenGao
+		var actDefUniqueId = ""; //402889715621fc0c01562c54d03404d5
+		var formDataId = ""; //ff808081639181160163a962b591014a
+		var procDefUniqueId = ""; //
+		var formType = ""; //
+		var taskType = ""; //
+		var yzTaskType = "1"; //阅知状态
+		var actDefId = ""; //
+		var assignmentId = ""; //
+		var submitType = "send"; //提交类型
+		//请求表单内容(html)的url
+		var htmlUrl = "";
+		var processId = "";
+		var shareReadId = "";
+		var procTypeId = "";
+		var readStatus = "";
+		var readStatus = "";
+		var _areaselect_data = "";
+		var activityId = "";
+		/**
+		 * 页面数据模型构建
+		 */
+		var htmlListVm;
+		var resourceListVm;
+		var dealOpinionVm;
+		var dealAttachmentVm;
+		var dealTextVm;
+		var organVm;
+		var htmlDbVm;
+
+		function createValueModel() {
+			htmlDbVm = new Vue({
+				el: '#htmlContainer',
+				data: {
+					htmlDbInfo: {
+						htmlDbRec: []
+					}
+				}
+			});
+
+			resourceListVm = new Vue({
+				el: '#resourceList',
+				data: {
+					resourceInfo: {
+						resouceRec: []
+					}
+				}
+			});
+			dealTextVm = new Vue({
+				el: '#textList',
+				data: {
+					textInfo: {
+						status: '',
+						fileSize: '',
+						result: '',
+						fileType: '',
+						fileName: ''
+					}
+				}
+			});
+			dealAttachmentVm = new Vue({
+				el: '#attachmentList',
+				data: {
+					attachmentInfo: {
+						attachmentRec: []
+					}
+				}
+			});
+			dealOpinionVm = new Vue({
+				el: '#opinionList',
+				data: {
+					opinionInfo: {
+						isLoad: false,
+						opinionRec: []
+					}
+				}
+			});
+		}
+
+		//渲染表单（包括表单数据、数据绑定、表单域权限控制）
+		var formRenderUrl = "";
+		mui.plusReady(function() {
+			mui.init({
+				gestureConfig: {
+					tap: true, //默认为true
+					doubletap: true, //默认为false
+					longtap: true, //默认为false
+					swipe: true, //默认为true
+					drag: true, //默认为true
+					hold: false, //默认为false，不监听
+					release: false //默认为false，不监听
+				}
+			});
+			createValueModel();
+			var self = plus.webview.currentWebview();
+			taskType = self.taskType;
+			if (taskType == undefined || taskType == null || taskType == "") {
+				taskType = "2";
+			}
+			readStatus = self.readStatus;
+			if (readStatus != "0") {
+				$("#yiyue").hide();
+				$('h1').html("已阅明细");
+			}
+			processId = self.processId;
+			procTypeId = self.procTypeId;
+			shareReadId = self.shareReadId;
+
+
+			initFormData();
+			mask = mui.createMask();
+		});
+
+
+		function initFormData() { //调用接口获取 相关参数
+			//renderDetail();
+			renderFormIdAndDataId();
+			renderText();
+			renderAttachment();
+
+		}
+
+		function renderDetail() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "edoc.queryEdocDaiBanDetailBD",
+					processId: processId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				async: false,
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+					htmlDbVm.htmlDbInfo.start = htmlDbVm.htmlDbInfo.start + 1;
+					htmlDbVm.htmlDbInfo.entTotal = data.totalCount;
+					var htmlDbList = data.result;
+					actDefUniqueId = htmlDbList.procDefUniqueId;
+					formDataId = htmlDbList.formDataId;
+					formId = htmlDbList.formDefId;
+
+					htmlDbVm.htmlDbInfo.htmlDbRec.push({
+						subject: htmlDbList.subject,
+						procName: htmlDbList.procName, //流程名称
+						actName: htmlDbList.actName, //当前环节名称
+						actCurrentUsers: htmlDbList.actCurrentUsers, //处理人
+						wordNumber: htmlDbList.wordNumber, //公文字号
+						instantLevel: htmlDbList.instantLevel, //紧急程度
+						mainSendOrgan: htmlDbList.mainSendOrgan, //主送机关
+						copySendOrgan: htmlDbList.copySendOrgan, //抄送
+						drafterOrganName: htmlDbList.drafterOrganName, //拟稿部门
+						drafterName: htmlDbList.drafterName, //拟稿人
+						drafterDate: htmlDbList.drafterDate, //拟稿日期
+						approveName: htmlDbList.approveName, //签发人
+						allowMinorNum: htmlDbList.allowMinorNum, //印制份数
+						affair: htmlDbList.affair, //公开形式
+						publicProperty: htmlDbList.publicProperty, //公开属性
+						actDefUniqueId: htmlDbList.procDefUniqueId,
+						formDataId: htmlDbList.formDataId,
+						formId: htmlDbList.formDefId //
+
+					});
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+		function renderFormIdAndDataId() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryStartActFormIdByProcessId",
+					processId: processId,
+					deviceType: "MOBILE"
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				async: false,
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					console.log("获取首环节processId为" + processId + "   获取的结果为：" + JSON.stringify(datas));
+
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+					formDataId = data.dataId;
+					formId = data.formId;
+					//获取到表单信息加载表单
+					renderHtml();
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+		/**
+		 * 渲染表单内容(html)
+		 */
+		function renderHtml() {
+
+			//请求表单内容(html)的url
+			htmlUrl = baseServiceUrl.edocUrl + "/jsp/cform/output/" + formId + ".html?r=" + Math.random();
+			console.log(htmlUrl);
+			//渲染表单（包括表单数据、数据绑定、表单域权限控制）
+			formRenderUrl = baseServiceUrl.edocUrl + "/command/dispatcher/" +
+				"org.loushang.cform.tasklist.cmd.RenderDispatcherCmd/renderForm" +
+				"?actDefUniqueId=" + actDefUniqueId + "&formId=" + formId + "&formDataId=" + formDataId;
+			var htmlCfg = {
+				url: htmlUrl,
+				success: function(data, textStatus) {
+					// 添加云表单
+					$("#htmlContainer").html("");
+					$("#htmlContainer").append(data);
+					// 云表单加载完毕后需要执行的初始化操作
+					CForm.init();
+					//CForm.setFormReadOnly();
+					// 渲染表单
+					renderForm();
+					renderstatrs();
+					
+				},
+				async: true
+			};
+			mui.ajax(htmlCfg);
+		}
+		function renderstatrs(){
+			window.setInterval( queryjiazai, 1000 * 2 ); 
+						
+		}
+		function queryjiazai(){
+			var status1="无须公平竞争审查";
+			var status2="不违法18条标准任何一项";
+			var status3="违反标准但符合例外规定";
+			var name=document.getElementById("GongPingJingZhengShenChaXuanXi").value.replace("undefined");
+			if(name=="1"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status1;
+			}else if(name=="2"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status2;
+			}else if(name=="3"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status3;
+			}else if(name=="1,2"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status1+","+status2;
+			}else if(name=="2,3"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status2+","+status3;
+			}else if(name=="1,3"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status1+","+status3;
+			}else if(name=="1,2,3"){
+				document.getElementById("GongPingJingZhengShenChaXuanXi").value=status1+","+status2+","+status3;
+			}
+		}
+	
+
+		function readed() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "edoc.queryEdocDetailYZJL",
+					processId: processId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					//console.log("datas"+JSON.stringify(datas))
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+
+					dealOpinionVm.opinionInfo.start = dealOpinionVm.opinionInfo.start + 1;
+					dealOpinionVm.opinionInfo.entTotal = data.totalCount;
+					var entInfoList = data.result;
+					for (var i = 0; i < entInfoList.length; i++) {
+						dealOpinionVm.opinionInfo.opinionRec.push({
+							shareReadActName: entInfoList[i].shareReadActName, //分阅环节名称
+							readTime: entInfoList[i].readTime, //阅知时间
+							replyOpinion: entInfoList[i].replyOpinion, //回复意见
+							shareReadDes: entInfoList[i].shareReadDes, //分阅说明
+							toShareOrganName: entInfoList[i].toShareOrganName, //阅知人
+							toshareReadOrganId: entInfoList[i].toshareReadOrganId, //阅知人organId
+							shareUserName: entInfoList[i].shareUserName, //分阅人
+							recallPerson: entInfoList[i].recallPerson, //撤回人
+							recallTime: entInfoList[i].recallTime, //撤回时间
+							recallReason: entInfoList[i].recallReason, //撤回原因
+							readStates: entInfoList[i].readStates //查阅状态
+						});
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+		//正文
+		function renderText() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryEdocDaiyueZW",
+					id: shareReadId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+
+					if (datas.result.indexOf("\r\n\r\n<html>") == 0) {
+						return;
+					}
+
+					if (datas.result ==
+						"<script type=\"text/javascript\" languge=\"javascript\">window.location.href='/portal/jsp/public/login.jsp'\<\/script>"
+					) {
+						plus.nativeUI.toast("您已下线，请重新登录");
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+
+					dealTextVm.textInfo.status = data.status;
+					if (data.status != 'false') {
+						dealTextVm.textInfo.fileSize = data.fileSize;
+						dealTextVm.textInfo.result = data.result;
+						dealTextVm.textInfo.fileType = data.fileType;
+						dealTextVm.textInfo.fileName = data.fileName;
+					}
+
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+		//附件
+		function renderAttachment() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryEdocDaiyueFJ",
+					id: shareReadId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					console.log("获取附件" + JSON.stringify(datas));
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+
+					if (datas.result.indexOf("\r\n\r\n<html>") == 0) {
+						return;
+					}
+
+					if (datas.result ==
+						"<script type=\"text/javascript\" languge=\"javascript\">window.location.href='/portal/jsp/public/login.jsp'\<\/script>"
+					) {
+						plus.nativeUI.toast("您已下线，请重新登录");
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+					var fjData = data.result;
+
+					dealAttachmentVm.attachmentInfo.start = dealAttachmentVm.attachmentInfo.start + 1;
+					dealAttachmentVm.attachmentInfo.entTotal = fjData.totalCount;
+					dealAttachmentVm.attachmentInfo.status = data.status;
+					for (var i = 0; i < fjData.length; i++) {
+						dealAttachmentVm.attachmentInfo.attachmentRec.push({
+							mimeType: fjData[i].fileType,
+							name: fjData[i].fileName,
+							//size : fjData[i].size,
+							url: fjData[i].fileUrl,
+							//thumbnailUrl:fjData[i].thumbnail_url,
+							//upTime:fjData[i].up_time,
+							//upUser:fjData[i].up_user,
+							//uuid:fjData[i].uuid
+						});
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+
+		var isLoadReturnAct = false;
+
+
+
+
+
+		var dtask = null;
+
+		function downloadfile(eleId, filePath) {
+			mui("#" + eleId).button('loading');
+			if (localStorage.getItem("EDOCZW" + filePath) != null) {
+				filename = localStorage.getItem("EDOCZW" + filePath);
+				plus.runtime.openFile(filename, {}, function(e) {
+					//调用第三方应用打开文件
+					mui.toast("文件打开失败" + filename);
+					localStorage.removeItem("EDOCZW" + filePath);
+				});
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+				return;
+			}
+			var downPath = '';
+			if (filePath.indexOf("http") > -1) {
+				downPath = filePath;
+			} else {
+				downPath = baseServiceUrl.cfileUrl + "/" + filePath;
+			}
+			console.log("文件下载路径" + downPath);
+			dtask = plus.downloader.createDownload(downPath, {}, function(d, status) {
+				// 下载完成  
+				if (status == 200) {
+					localStorage.setItem("EDOCZW" + d.filename, d.filename);
+					plus.runtime.openFile(d.filename, {}, function(e) {
+						//调用第三方应用打开文件
+						mui.toast("文件打开失败" + d.filename);
+						localStorage.removeItem("EDOCZW" + d.filename);
+					});
+				} else {
+					localStorage.removeItem("EDOCZW" + d.filename);
+					mui.toast("文件下载失败，请检查网络");
+				}
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+			});
+			dtask.setRequestHeader('Cookie','JSESSIONID=0000'+ localStorage.getItem("sessionId"));// 设置POST请求提交的数据类型为JSON字符串
+			dtask.start();
+		}
+
+		function reDownloadfile(eleId, filePath) {
+			mui("#" + eleId).button('loading');
+			var downPath = '';
+			if (filePath.indexOf("http") > -1) {
+				downPath = filePath;
+			} else {
+				downPath = baseServiceUrl.cfileUrl + "/" + filePath;
+			}
+			dtask = plus.downloader.createDownload(downPath, {}, function(d, status) {
+				// 下载完成
+				if (status == 200) {
+					localStorage.setItem("EDOCZW" + d.filename, d.filename);
+					plus.runtime.openFile(d.filename, {}, function(e) {
+						//调用第三方应用打开文件
+						mui.toast("文件打开失败" + d.filename);
+						localStorage.removeItem("EDOCZW" + d.filename);
+					});
+				} else {
+					mui.toast("文件下载失败，请检查网络");
+				}
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+			});
+			/*		    dtask.addEventListener("statechanged",function(task,status){
+					            if(!dtask){return;}
+					            switch(task.state){
+					                case 1: mui.toast('开始下载...');break;//开始
+					                case 2: mui.toast('链接到服务器...');break;//链接到服务器
+					                case 3:
+					                    var progressVal = (task.downloadedSize/task.totalSize)*100;
+					                        mui('#bar').progressbar({progress:progressVal}).show();
+					                    break;
+					                case 4: mui.toast('下载完成');break;
+					            }
+					        });*/
+			dtask.setRequestHeader('Cookie','JSESSIONID=0000'+ localStorage.getItem("sessionId"));// 设置POST请求提交的数据类型为JSON字符串
+			dtask.start();
+		}
+
+
+		//已阅
+		function submit() {
+	 		mask.show();
+	 		var replyOpinion = prompt("请选输入阅文意见", "已阅。");
+			if(replyOpinion==null||replyOpinion=="null"){
+			replyOpinion="已阅。";
+			}
+			replyOpinion = replyOpinion.split("").join("");
+			if (replyOpinion.length == 0) {
+				mui.alert("阅文意见不能为空！", function() {}, baseConfig.alerttitle, "确定");
+				mask.close();
+				return;
+			}
+			plus.nativeUI.showWaiting("正在提交，请稍候");
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.readEdocDaiyue",
+					shareReadId: shareReadId,
+					readOpinion: replyOpinion
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						mask.close();
+						plus.nativeUI.closeWaiting();
+						return;
+					}
+					if (datas.result == "") {
+						mask.close();
+						plus.nativeUI.closeWaiting();
+						return;
+					}
+
+					if (datas.result.indexOf("\r\n\r\n<html>") == 0) {
+						mask.close();
+						plus.nativeUI.closeWaiting();
+						return;
+					}
+
+					if (datas.result ==
+						"<script type=\"text/javascript\" languge=\"javascript\">window.location.href='/portal/jsp/public/login.jsp'\<\/script>"
+					) {
+						plus.nativeUI.toast("您已下线，请重新登录");
+						mask.close();
+						plus.nativeUI.closeWaiting();
+						return;
+					}
+					try {
+						var data = JSON.parse(datas.result);
+						if (data.msg == "操作成功！") {
+							//获得列表界面的webview
+							var taskExecPage = plus.webview.getWebviewById('12_edoc/html/edoc/tasklist/daiyue/daiyue_list.html');
+							//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+							mui.fire(taskExecPage, 'initLoadParams', {});
+							mui.alert("提交成功！", function() {
+								mui.openWindow({
+									id: "12_edoc/html/edoc/tasklist/daiyue/daiyue_list.html",
+									url: "../daiyue/daiyue_list.html",
+									show: {
+										aniShow: 'pop-in',
+										duration: 250
+									},
+									waiting: {
+										autoShow: false, //自动显示等待框，默认为true
+									},
+									styles: {
+										cachemode: "noCache"
+									}
+								});
+								plus.webview.currentWebview().close();
+							});
+
+							mask.close();
+							plus.nativeUI.closeWaiting();
+
+						}
+
+						if (data.errMsg) {
+							plus.nativeUI.toast(data.errMsg);
+							mask.close();
+							plus.nativeUI.closeWaiting();
+							return;
+						}
+					} catch (err) {
+						plus.nativeUI.toast("系统错误，无法进行提交操作");
+						plus.nativeUI.closeWaiting();
+						mask.close();
+					}
+
+				},
+				error: function(xhr, type, errorThrown) {
+					plus.nativeUI.closeWaiting();
+					mask.close();
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+	</script>
+
+</html>

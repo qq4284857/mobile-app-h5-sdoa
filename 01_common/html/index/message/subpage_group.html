@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+			h4{
+			 	font-size: 14px;
+			 	line-height: 2rem;
+			 	font-weight: normal;
+			 }
+			  h5{
+			  	font-weight: normal;
+			  	font-size: 12px;
+			  }
+			 .news-time{
+			 	margin-right: 12px;
+			 	font-size: 12px;
+			 }
+			 .mui-table-view-chevron .mui-table-view-cell{
+			 	padding: 0.2rem 0.6rem;
+			 	height: 4.4rem;
+			 }
+			 .mui-table-cell{
+			 	display: inline-block;
+			 }
+		 	.mui-table-view-cell>img{
+		 		width: 3.2rem;
+		 		height: 3.2rem;
+		 		/*margin-top: 0.1rem;*/
+		 	}
+		 	 
+		 	.chatItem-title{
+		 		display: inline-block;
+		 		width: 60%;
+		 		padding-left: 8px;
+		 	}
+		 	.chatItem-time{
+		 		display: inline-block;
+		 		position: relative;
+		 	}
+		 	.chatItem-time-time{
+		 		font-size: 10px;
+		 		color: #8f8f94;
+		 	}
+		 	.chatItem-title-num{
+		 		margin-left: 8px;
+		 		font-size: 14px;
+		 		color: #8f8f94;
+		 	}
+		 	.chatItem-time{
+		 		width: 22%;
+		 		float: right;
+		 	}
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+							<img src="../images/icon1.png" />
+		            		<div class="chatItem-title">
+		            			<h4 class="mui-ellipsis">张磊</h4>
+		            			<h5 class="mui-ellipsis">好的，谢谢</h5>
+			                </div>
+			                <div class="chatItem-time mui-text-right">
+			                	<h4 class="chatItem-time-time">12-09 12:00</h4>
+			                	<div class="">
+			                		<span class="mui-badge mui-badge-danger">5</span>
+			                	</div>
+			                </div>
+					</li>
+					<li class="mui-table-view-cell">
+							<img src="../images/icon2.png" />
+		            		<div class="chatItem-title">
+		            			<h4 class="mui-ellipsis">韩梅梅</h4>
+		            			<h5 class="mui-ellipsis">请尽快提交5月份监管报告</h5>
+			                </div>
+			                <div class="chatItem-time mui-text-right">
+			                	<h4 class="chatItem-time-time">12-09 12:00</h4>
+			                	<div class="">
+			                		<!--<span class="mui-badge mui-badge-danger">5</span>-->
+			                	</div>
+			                </div>
+					</li>
+					<li class="mui-table-view-cell">
+							<img src="../images/icon1.png" />
+		            		<div class="chatItem-title">
+		            			<h4 class="mui-ellipsis">李雷</h4>
+		            			<h5 class="mui-ellipsis">可以，从官网上申请即可</h5>
+			                </div>
+			                <div class="chatItem-time mui-text-right">
+			                	<h4 class="chatItem-time-time">12-09 12:00</h4>
+			                	<div class="">
+			                		<!--<span class="mui-badge mui-badge-danger">5</span>-->
+			                	</div>
+			                </div>
+					</li>
+					<li class="mui-table-view-cell">
+							<img src="../images/icon2.png" />
+		            		<div class="chatItem-title">
+		            			<h4 class="mui-ellipsis">王媛媛</h4>
+		            			<h5 class="mui-ellipsis">可以，从官网上申请即可</h5>
+			                </div>
+			                <div class="chatItem-time mui-text-right">
+			                	<h4 class="chatItem-time-time">12-09 12:00</h4>
+			                	<div class="">
+			                		<!--<span class="mui-badge mui-badge-danger">5</span>-->
+			                	</div>
+			                </div>
+					</li>
+					<li class="mui-table-view-cell">
+							<img src="../images/icon1.png" />
+		            		<div class="chatItem-title">
+		            			<h4 class="mui-ellipsis">黄晓明</h4>
+		            			<h5 class="mui-ellipsis">可以，从官网上申请即可</h5>
+			                </div>
+			                <div class="chatItem-time mui-text-right">
+			                	<h4 class="chatItem-time-time">12-09 12:00</h4>
+			                	<div class="">
+			                		<!--<span class="mui-badge mui-badge-danger">5</span>-->
+			                	</div>
+			                </div>
+					</li>
+					 
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+				keyEventBind: {
+					backbutton: false //关闭back按键监听
+				}
+			});
+		</script>
+	</body>
+
+</html>

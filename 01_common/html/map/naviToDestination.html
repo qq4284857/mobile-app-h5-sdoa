@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+    <title>HTML5页面调用百度地图API,获取当前位置并导航到目的地</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZBdEDIYqXuHU2VoHwYTHvAzYEmrWvuUl"></script>  
+    <script src="../../../00_mui/js/jquery.js"></script><!--调用jQuery-->
+	<link href="../../../00_mui/css/mui.min.css" rel="stylesheet"/>
+    <link href="../../../00_mui/css/mescroll.min.css" rel="stylesheet"/>
+    <link href="../../../01_common/css/load.css" rel="stylesheet"/>
+    <link href="../../../01_common/css/common.css" rel="stylesheet"/>
+    <script src="../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../00_mui/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../01_common/js/load.js"></script>
+    <script src="../../../01_common/js/city.data.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../01_common/js/serviceUrl.js"></script>
+  <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+    </style> 
+
+</head>
+
+<body>  
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">导航</h1>
+	</header>
+    <div id="allmap"></div>
+</body>  
+</html>  
+<script type="text/javascript"> 
+	var destination="";
+	mui.plusReady(function(){
+		var self = plus.webview.currentWebview();
+    	destination=self.destination;
+	});
+	
+    var map = new BMap.Map("allmap");  
+    /*var point = new BMap.Point(117.1332564414,36.6682525243);
+    map.centerAndZoom(point, 16);  
+    map.enableScrollWheelZoom(); 
+
+    var myIcon = new BMap.Icon("myicon.png",new BMap.Size(30,30),{
+        anchor: new BMap.Size(10,10)    
+    });*/
+
+
+    var geolocation = new BMap.Geolocation();
+    geolocation.getCurrentPosition(function(r){
+        if(this.getStatus() == BMAP_STATUS_SUCCESS){
+            var latCurrent = r.point.lat;
+            var lngCurrent = r.point.lng;
+            // 百度地图API功能
+			// 创建地址解析器实例
+			var myGeo = new BMap.Geocoder();
+			// 将地址解析结果显示在地图上,并调整地图视野
+			myGeo.getPoint(destination, function(point){
+				if (point) {
+					map.centerAndZoom(point, 16);
+					//map.addOverlay(new BMap.Marker(point));
+					
+					var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});
+					driving.search(r.point, point);
+				}else{
+					mui.toast("没有解析到您要达到的地址")
+				}
+			}, "济南市");
+
+        }
+        else {
+        	mui.toast("获取您当前的位置失败");
+        }        
+    },{enableHighAccuracy: true})
+</script>

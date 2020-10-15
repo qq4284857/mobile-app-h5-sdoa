@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../00_mui/css/mui.min.css" />
+		<link href="../../../01_common/css/common.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<script src="../../../00_mui/js/mui.min.js"></script>
+		<script type="text/javascript" src="../../../00_mui/js/jquery.js" ></script>
+		<script type="text/javascript">
+//			mui.init()
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				var web_title = self.web_title;
+				var web_url = self.web_url;
+				//console.log("2222="+web_url);
+				
+				$("#vw_title").html(web_title);
+				
+				mui.init({
+					subpages: [{
+						id: 'webapp_vw',
+						url: web_url,
+						styles: {
+							top: '44px',
+							bottom: '0px',
+						}
+					}]
+				});
+			
+			
+//				var oldBack = mui.back;
+//				mui.back = function(){
+//					console.log("222");
+//					var webapp_vw = plus.webview.getWebviewById("webapp_vw");
+//					webapp_vw.canBack(function(e){
+//						console.log(e.canBack);
+//						if(e.canBack){
+//							console.log(webapp_vw.url);
+//							webapp_vw.back();
+//						}else{
+//							oldBack();
+//						}
+//					});
+//					
+//				}
+			})
+		</script>
+		
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left mui_a"></a>
+			<h1 class="mui-title" id="vw_title"></h1>
+		</header>
+		
+		 
+	</body>
+
+</html>

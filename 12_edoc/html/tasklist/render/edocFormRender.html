@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../skins/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mescroll.min.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/load.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet" />
+
+		<script src="../../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../01_common/js/load.js"></script>
+		<script src="../../../../01_common/js/city.data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../skins/js/bootstrap.min.js"></script>
+		<script src="../../../../01_common/js/serviceUrl.js"></script>
+		<script src="../../../../01_common/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="../../cform/skin/css/edoc-cform.css" />
+		<!-- <link rel="stylesheet" type="text/css" href="css/banlijilu.css"/> -->
+		<!---->
+		<script type="text/javascript" src="../../cform/skin/js/mcform-all.js"></script>
+		<!--
+		<script type="text/javascript" src="../cform/skin/js/zepto.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/frame.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/mobiscroll.js"></script>
+		<script type="text/javascript" src="../cform/skin/js/mcform.js"></script>
+		
+		<script type="text/javascript" src="../cform/tasklist/render/js/mformrender.js"></script>
+		<script type="text/javascript" src="../cform/tasklist/action/mformaction.js"></script>-->
+		<style type="text/css">
+			#htmlContainer {
+				margin-top: 20px;
+				margin-left: -25px;
+			}
+
+			.file_photo {
+				/*width: 107px;*/
+				float: left;
+			}
+
+			.file_photo img {
+				width: 64px;
+				height: 64px;
+				margin-left: 5px;
+				border-radius: 10px;
+				border: 0px;
+			}
+
+			.file_info {
+				width: calc(100% - 100px);
+				float: left;
+			}
+
+			.file_info p {
+				color: #333;
+				margin-bottom: 3px;
+			}
+
+			.file_name_n {
+				font-size: 19px;
+				overflow: none;
+				word-wrap: break-word;
+			}
+
+			.file_name_t {
+				font-size: 15px;
+				float: right;
+				color: grey;
+			}
+
+			.file_length {
+				color: grey;
+			}
+
+			.file_detail {
+				margin-bottom: 5px;
+				margin-left: 10px;
+				color: grey;
+			}
+
+			.file_fileType_folder {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -85px;
+				background-position-y: -3px;
+			}
+
+			.file_fileType_pdf {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: 0px;
+				background-position-y: -3px;
+			}
+
+			.file_fileType_doc {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -170px;
+				background-position-y: 0px;
+			}
+
+			.file_fileType_music {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -293px;
+				background-position-y: -538px;
+			}
+
+			.file_fileType_xls {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -256px;
+				background-position-y: 0px;
+			}
+
+			.file_fileType_pic {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -342px;
+				background-position-y: 0px;
+			}
+
+			.file_fileType_movie {
+				background-image: url(../../skins/images/fileType.png);
+				background-repeat: no-repeat;
+				text-indent: -999em;
+				background-position-x: -428px;
+				background-position-y: 0px;
+			}
+
+			#fileList {
+				padding-left: 5px;
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			#fileList li {
+				list-style: none;
+			}
+
+			.clear {
+				clear: both;
+			}
+
+			.cfDynTable {
+				border: 0px;
+			}
+
+			.time {
+				border: 1px solid #1E90FF;
+				border-radius: 5px;
+			}
+
+			a:hover {
+				text-decoration: none;
+			}
+
+			#tiyt {
+				border-bottom: 1.5px solid #eee;
+				height: 50px;
+			}
+
+			#infoName {
+				padding-left: 20px;
+				width: 160px;
+				color: #7E7E7E
+			}
+
+			#val {
+				padding-right: 20px;
+				width: 160px;
+			}
+
+			#renderBackActors {
+				float: left;
+				width: 50%;
+				color: #929292;
+				margin-bottom: 20px;
+			}
+
+			.selepeople {
+				margin: 2px 2px;
+				background-color: #dfdfdf;
+				padding: 0px 6px;
+				border-radius: 5px;
+				font-size: 0.8em;
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+				float: left;
+			}
+
+			.backSelepeople {
+				margin: 2px 2px;
+				background-color: #dfdfdf;
+				padding: 0px 6px;
+				border-radius: 5px;
+				font-size: 0.8em;
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+				float: left;
+			}
+
+			.checkerSignCls {
+				width: 100px;
+				height: 100px;
+				border: 1px, dashed;
+			}
+
+			.entSignCls {
+				width: 100px;
+				height: 100px;
+				border: 1px, dashed;
+			}
+
+			.checkerSignClsDiv {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				text-align: center;
+				opacity: 0.7;
+				height: 100%;
+			}
+
+			.beSigned,
+			#beChecksignbeSigned {
+				width: 30px;
+				position: absolute;
+				height: 30px;
+				right: -5px;
+				top: -12px;
+				-webkit-transform: rotate(-5deg);
+				transform: rotate(-5deg);
+				border-radius: 50%;
+			}
+
+			.beSignedEnt {
+				width: 30px;
+				position: absolute;
+				height: 30px;
+				right: 1px;
+				-webkit-transform: rotate(-5deg);
+				transform: rotate(-5deg);
+				border-radius: 50%;
+			}
+
+			.checkerSignParenCls,
+			#beChecksignParentDiv {
+				width: 100px;
+				height: 100px;
+				border: 1px dashed #ddd;
+				background-color: #f2f2f2;
+				overflow: hidden;
+			}
+
+			.checkerSignParenCls {
+				margin: 0 0 5px 0;
+			}
+
+			#isLoadInvalidDiv.addInvalid label {
+				color: #007aff;
+			}
+
+			#isLoadInvalidDiv.addInvalid input[type=checkbox]:before {
+				background: url(../../../../images/checked1.png) no-repeat;
+				background-size: 100% 100%;
+			}
+
+			#textList {
+				background-color: rgba(244, 244, 244, 112);
+				/*边角弧度*/
+				border-radius: 20px;
+			}
+
+			#attachmentList {
+				background-color: rgba(244, 244, 244, 112);
+				/*边角弧度*/
+				border-radius: 20px;
+				margin-top: 5px;
+			}
+
+			.tr1 th {
+				padding: 25px;
+			}
+
+			.tr1 td {
+				padding-top: 30px !important;
+				padding-right: 30px !important;
+				font-size: 20px !important;
+				border-top: 0px !important;
+			}
+
+			#downloadZwBtn {
+				float: right;
+				margin-right: 20px;
+				border-radius: 30px;
+			}
+
+			#zexx {
+				padding-top: 20px;
+				padding-left: 10px;
+			}
+
+			#fjxx {
+				padding-top: 20px;
+				padding-left: 10px;
+			}
+
+			#tips {
+				margin: 20px;
+				background-color: rgba(255, 247, 198, 255);
+				box-shadow: 0px 1px 3px rgba(34, 25, 25, 0.2);
+				border-radius: 10px;
+			}
+
+			#ckzw {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">公文明细</h1>
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="margin-top: 5px;">
+				<a class="mui-control-item mui-active" href="#item1">文件信息</a>
+				<a class="mui-control-item" href="#item2">正文附件</a>
+				<a class="mui-control-item" href="#item3">办理记录</a>
+			</div>
+			<div id="">
+				<div id="item1" style="margin-top: -30px;" class="mui-control-content mui-active">
+					<div id="htmlContainer" align="center">
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content" style="width: 90%;margin-left: 5%;">
+					<div id="textList" style="margin-top: 6%; border-bottom: 1px solid #eee;padding-bottom: 50px; ">
+						<div id="zexx">
+							<span class="mui-icon mui-icon-compose" style="font-size: 30px;"></span><b style="font-size: 20;">正文信息</b>
+						</div>
+						<div>
+							<div v-if="textInfo.status=='false'">
+								<p style="padding-left: 10px;">无</p>
+							</div>
+							<div v-else>
+								<table id="tableZW" class="table" style="font-size: 14px;vertical-align: middle;">
+									<thead>
+										<tr style="display: none;" class="tr1">
+											<th>文件名</th>
+											<th>大小/类型</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="tr1">
+											<td style="display: none;">{{textInfo.fileName}}</td>
+											<td style="display: none;">
+												<span class="mui-badge mui-badge-purple">{{textInfo.fileSize}}</span>
+												<span class="mui-badge mui-badge-purple">{{textInfo.fileType}}</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div id="tips">
+									<div id="ckzw">
+										<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点击“查看正文”时，手机可能会提示选择不同软件来打开正文，目前内文是word格式，外文是PDF格式，俩种格式都可以选择WPS软件打开。</span>
+									</div>
+								</div>
+								<button id="downloadZwBtn" type="button" data-loading-text="文件下载中" data-loading-icon="mui-spinner mui-spinner-custom"
+								 class="mui-btn mui-btn-danger" @tap="downloadfile('downloadZwBtn',textInfo.result)" @longtap="reDownloadfile('downloadZwBtn',textInfo.result)">查看正文</button>
+							</div>
+						</div>
+
+					</div>
+					<div id="fjxx">
+						<span class="mui-icon mui-icon-download" style="font-size: 30px;"></span><b style="font-size: 20px;">附件信息</b>
+					</div>
+					<div id="attachmentList" style="border-bottom: 0px solid #eee;padding-bottom: 10px;padding-top: 5px;">
+						<div>
+							<div v-if="attachmentInfo.status=='false'">
+								<p style="padding-left: 10px;">无</p>
+							</div>
+							<div v-else>
+								<div>
+									<table class="table" style="font-size: 14px;">
+										<thead>
+											<tr style="display: none;" class="tr1">
+												<th>文件名</th>
+												<th>类型</th>
+												<th>操作</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr class="tr1" v-for="(attachmentRecord,index) in  attachmentInfo.attachmentRec">
+												<td style="padding-left: 5px !important;">{{attachmentRecord.name.substring(0,attachmentRecord.name.indexOf("."))}}</td>
+												<td>
+													<!-- <span class="mui-badge mui-badge-purple">{{attachmentRecord.size}}</span> -->
+													<span class="mui-badge mui-badge-purple">{{attachmentRecord.mimeType.substring(1,attachmentRecord.mimeType.length)}}</span>
+												</td>
+												<td style="padding-left: 50px;">
+													<button :id="'downloadFjBtn'+index" type="button" data-loading-text="文件下载中" data-loading-icon="mui-spinner mui-spinner-custom"
+													 class="mui-btn mui-btn-primary" style="border-radius: 30px;" @tap="downloadfile('downloadFjBtn'+index,attachmentRecord.url)"
+													 @longtap="reDownloadfile('downloadFjBtn'+index,attachmentRecord.url)">查看</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="item3" class="mui-control-content">
+
+					<div style="border-left:thick double #D9D9D9;height: 100%;width: 3px; float: left;background-color: red;"></div>
+					<div id="opinionList" class="hovertree-trackrcol" style="margin-top: 6%;width: 80%;margin: 0 12%;height: 100%;border-left:thick double #D9D9D9;">
+
+						<div class="hovertree-tracklist" v-for="(opinionRecord,index) in opinionInfo.opinionRec" :key="index">
+
+							<div style="margin-left: -6.3%;" v-if="index==0">
+								<p style="background-color: red;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 7px"
+									 src="../../../images/jin.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==1">
+								<p style="background-color: #00cccc;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 5px"
+									 src="../../../images/ju.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==2">
+								<p style="background-color: #FFD39B;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 6px"
+									 src="../../../images/zhu.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==3">
+								<p style="background-color: #D8BFD8;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 6px"
+									 src="../../../images/ping.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==4">
+								<p style="background-color: #BCD2EE;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 5px"
+									 src="../../../images/hui.png">
+									<p>
+										<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==5">
+								<p style="background-color: #9BCD9B;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 5px"
+									 src="../../../images/wan.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==6">
+								<p style="background-color: #9BCD9B;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 6px"
+									 src="../../../images/bian.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==7">
+								<p style="background-color: #9BCD9B;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 6px"
+									 src="../../../images/chuang.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<div style="margin-left: -6.3%;" v-if="index==8">
+								<p style="background-color: #9BCD9B;width: 30px;height: 30px;border-radius: 50px;margin-left: 5px;"><img style="width: 20px;margin:0px 0px -6px 5px"
+									 src="../../../images/ti.png"></p>
+								<h4 style="margin-left: 45px;margin-top: -35px;">{{opinionRecord.actDefName}}</h4>
+							</div>
+							<p style="width: 10px;height: 10px;border-radius: 50%;background-color: #D9D9D9;margin-left: -5.5px;margin-top: 45px;"></p>
+							<ul style="background-color: #F7F7F7;border-radius: 10px;margin-left:20px;width: 95%;margin-top: -45px;">
+								<p class="first">
+
+									<div id="item3-1" style="margin-left: -30px;width: 100%;word-wrap: break-word;">
+										<!-- <div style="margin-top: 3px;color: #B6B6B6;" class="dealAct">办理环节：<span style="color: #2AC845;">{{opinionRecord.actDefName}}</span></div> -->
+										<div style="margin-top: 3px;color: #B6B6B6;" class="dealPer">办理人：{{opinionRecord.opinionPerName}}</div>
+										<div style="color: #B6B6B6;" class="dealOpinion">办理意见：<span style="color: #2AC845;">{{opinionRecord.opinion}}</span></div>
+										<div style="margin-top: 3px;color: #B6B6B6;" class="dealTime">办理时间：{{opinionRecord.opinionTime}}</div>
+									</div>
+								</p>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var mask = null;
+		var checkerVm;
+		var serialNo = "";
+		var internalId = "";
+		var formId = ""; //
+		var actDefUniqueId = ""; //
+		var formDataId = ""; //8a34a4396203280b01620339cb6a0395
+		var procDefUniqueId = ""; //
+		var formType = ""; //
+		var taskType = ""; //
+		var actDefId = ""; //
+		var assignmentId = ""; //
+		//请求表单内容(html)的url
+		var htmlUrl = "";
+		var processId = "";
+		var edocBaseId = ""; //ff808081639181160163aa748f2c01ed
+		var _areaselect_data = "";
+		var selectedName = "";
+		var selectedId = "";
+		var activityId = "";
+		/**
+		 * 页面数据模型构建
+		 */
+		var htmlListVm;
+		var resourceListVm;
+		var dealOpinionVm;
+		var dealAttachmentVm;
+		var dealTextVm;
+		var nextActsVm;
+		var htmlDbVm;
+		var backActsVm;
+
+		//流程扩展属性相关参数
+		//扩展属性
+		var extProp = {};
+
+		function createValueModel() {
+			htmlDbVm = new Vue({
+				el: '#htmlContainer',
+				data: {
+					htmlDbInfo: {
+						htmlDbRec: []
+					}
+				}
+			});
+
+			resourceListVm = new Vue({
+				el: '#resourceList',
+				data: {
+					resourceInfo: {
+						resouceRec: []
+					}
+				}
+			});
+			dealTextVm = new Vue({
+				el: '#textList',
+				data: {
+					textInfo: {
+						status: 'false',
+						fileSize: '0',
+						result: '',
+						fileType: 'doc',
+						fileName: '流程正文'
+					}
+				}
+			});
+
+			dealAttachmentVm = new Vue({
+				el: '#attachmentList',
+				data: {
+					attachmentInfo: {
+						attachmentRec: []
+					}
+				}
+			});
+			dealOpinionVm = new Vue({
+				el: '#opinionList',
+				data: {
+					opinionInfo: {
+						isLoad: false,
+						opinionRec: []
+					}
+				}
+			});
+		}
+
+		//渲染表单（包括表单数据、数据绑定、表单域权限控制）
+		var formRenderUrl = "";
+		mui.plusReady(function() {
+			mui.init({
+				gestureConfig: {
+					tap: true, //默认为true
+					doubletap: true, //默认为false
+					longtap: true, //默认为false
+					swipe: true, //默认为true
+					drag: true, //默认为true
+					hold: false, //默认为false，不监听
+					release: false //默认为false，不监听
+				}
+			});
+			createValueModel();
+			regEvents();
+			var self = plus.webview.currentWebview();
+			internalId = self.id;
+			procDefUniqueId = self.procDefUniqueId;
+			formType = self.formType;
+			formId = self.formId;
+			taskType = self.taskType;
+
+			actDefUniqueId = self.actDefUniqueId;
+			actDefId = self.actDefId;
+			formDataId = self.formDataId;
+			assignmentId = self.assignmentId;
+			processId = self.processId;
+			selectedName = self.selectedName;
+			selectedId = self.selectedId;
+			initFormData();
+			mask = mui.createMask();
+		});
+
+
+		/**
+		 * 页面事件注册
+		 */
+		function regEvents() {
+
+		};
+
+		function initFormData() { //调用接口获取 相关参数
+			renderHtml();
+			renderText();
+			renderAttachment();
+			renderOpinion();
+		}
+
+
+
+		/**
+		 * 渲染表单内容(html)
+		 */
+		function renderHtml() {
+			//请求表单内容(html)的url
+			htmlUrl = baseServiceUrl.edocUrl + "/jsp/cform/output/" + formId + ".html?r=" + Math.random();
+			//渲染表单（包括表单数据、数据绑定、表单域权限控制）
+			formRenderUrl = baseServiceUrl.edocUrl + "/command/dispatcher/" +
+				"org.loushang.cform.tasklist.cmd.RenderDispatcherCmd/renderForm" +
+				"?actDefUniqueId=" + actDefUniqueId + "&formId=" + formId + "&formDataId=" + formDataId;
+			var htmlCfg = {
+				url: htmlUrl,
+				success: function(data, textStatus) {
+					// 添加云表单
+					$("#htmlContainer").html("");
+					$("#htmlContainer").append(data);
+					console.log("表单内容htmlContainer//:" + htmlContainer);
+					// 云表单加载完毕后需要执行的初始化操作
+					CForm.init();
+					// 渲染表单
+					renderForm();
+				},
+				async: true
+			};
+
+			mui.ajax(htmlCfg);
+		}
+
+
+		function renderOpinion() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryEndTaskDetailBLJL",
+					assignmentId: assignmentId,
+					start: '0',
+					limit: '100'
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					//console.log("datas"+JSON.stringify(datas))
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+
+					dealOpinionVm.opinionInfo.start = dealOpinionVm.opinionInfo.start + 1;
+					dealOpinionVm.opinionInfo.entTotal = data.totalCount;
+					var opinionInfoList = data.result;
+					for (var i = 0; i < opinionInfoList.length; i++) {
+						dealOpinionVm.opinionInfo.opinionRec.push({
+							opinionPerName: opinionInfoList[i].OPINIONPERSON,
+							createTime: opinionInfoList[i].CREATE_TIME,
+							opinion: opinionInfoList[i].OPINION,
+							actDefName: opinionInfoList[i].ACT_DEF_NAME,
+							opinionTime: opinionInfoList[i].OPINIONTIME
+						});
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+		//正文
+		function renderText() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryEndTaskDetailZW",
+					assignmentId: assignmentId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+
+					if (datas.result.indexOf("\r\n\r\n<html>") == 0) {
+						return;
+					}
+
+					if (datas.result ==
+						"<script type=\"text/javascript\" languge=\"javascript\">window.location.href='/portal/jsp/public/login.jsp'\<\/script>"
+					) {
+						plus.nativeUI.toast("您已下线，请重新登录");
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+
+					dealTextVm.textInfo.status = data.status;
+
+					if (data.status != 'false') {
+						dealTextVm.textInfo.fileSize = data.fileSize;
+						dealTextVm.textInfo.result = data.result;
+						dealTextVm.textInfo.fileType = data.fileType;
+						dealTextVm.textInfo.fileName = data.fileName;
+					}
+
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+		//附件
+		function renderAttachment() {
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "old.edoc.queryEndTaskDetailFJ",
+					assignmentId: assignmentId
+				},
+				dataType: 'json',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 300000, //超时时间设置为10秒；
+				success: function(datas) {
+					console.log("获取附件" + JSON.stringify(datas));
+					if (datas.errMsg) {
+						plus.nativeUI.toast(datas.errMsg);
+						return;
+					}
+					if (datas.result == "") {
+						return;
+					}
+
+					if (datas.result.indexOf("\r\n\r\n<html>") == 0) {
+						return;
+					}
+
+					if (datas.result ==
+						"<script type=\"text/javascript\" languge=\"javascript\">window.location.href='/portal/jsp/public/login.jsp'\<\/script>"
+					) {
+						plus.nativeUI.toast("您已下线，请重新登录");
+						return;
+					}
+					var data = JSON.parse(datas.result);
+					if (data.errMsg) {
+						plus.nativeUI.toast(data.errMsg);
+						return;
+					}
+					var fjData = data.result;
+
+					dealAttachmentVm.attachmentInfo.start = dealAttachmentVm.attachmentInfo.start + 1;
+					dealAttachmentVm.attachmentInfo.entTotal = fjData.totalCount;
+					dealAttachmentVm.attachmentInfo.status = data.status;
+					for (var i = 0; i < fjData.length; i++) {
+						dealAttachmentVm.attachmentInfo.attachmentRec.push({
+							mimeType: fjData[i].fileType,
+							name: fjData[i].fileName,
+							//size : fjData[i].size,
+							url: fjData[i].fileUrl,
+							//thumbnailUrl:fjData[i].thumbnail_url,
+							//upTime:fjData[i].up_time,
+							//upUser:fjData[i].up_user,
+							//uuid:fjData[i].uuid
+						});
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("获取数据失败,请检查网络是否畅通");
+				}
+			});
+		}
+
+		var dtask = null;
+
+		function downloadfile(eleId, filePath) {
+			mui("#" + eleId).button('loading');
+			if (localStorage.getItem("EDOCZW" + filePath) != null) {
+				filename = localStorage.getItem("EDOCZW" + filePath);
+				plus.runtime.openFile(filename, {}, function(e) {
+					//调用第三方应用打开文件
+					mui.toast("文件打开失败" + filename);
+					localStorage.removeItem("EDOCZW" + filePath);
+				});
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+				return;
+			}
+			var downPath = '';
+			if (filePath.indexOf("http") > -1) {
+				downPath = filePath;
+			} else {
+				downPath = baseServiceUrl.cfileUrl + "/" + filePath;
+			}
+			console.log("文件下载路径" + downPath)
+			dtask = plus.downloader.createDownload(downPath, {}, function(d, status) {
+				// 下载完成  
+				if (status == 200) {
+					localStorage.setItem("EDOCZW" + d.filename, d.filename);
+					plus.runtime.openFile(d.filename, {}, function(e) {
+						//调用第三方应用打开文件
+						mui.toast("文件打开失败" + d.filename);
+						localStorage.removeItem("EDOCZW" + d.filename);
+					});
+				} else {
+					localStorage.removeItem("EDOCZW" + d.filename);
+					mui.toast("文件下载失败，请检查网络");
+				}
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+			});
+			dtask.setRequestHeader('Cookie','JSESSIONID=0000'+ localStorage.getItem("sessionId"));// 设置POST请求提交的数据类型为JSON字符串
+			dtask.start();
+		}
+
+		function reDownloadfile(eleId, filePath) {
+			mui("#" + eleId).button('loading');
+			var downPath = '';
+			if (filePath.indexOf("http") > -1) {
+				downPath = filePath;
+			} else {
+				downPath = baseServiceUrl.cfileUrl + "/" + filePath;
+			}
+			dtask = plus.downloader.createDownload(downPath, {}, function(d, status) {
+				// 下载完成
+				if (status == 200) {
+					localStorage.setItem("EDOCZW" + d.filename, d.filename);
+					plus.runtime.openFile(d.filename, {}, function(e) {
+						//调用第三方应用打开文件
+						mui.toast("文件打开失败" + d.filename);
+						localStorage.removeItem("EDOCZW" + d.filename);
+					});
+				} else {
+					mui.toast("文件下载失败，请检查网络");
+				}
+				mui("#" + eleId).button('reset'); //切换为reset状态(即重置为原始的button)
+			});
+			dtask.setRequestHeader('Cookie','JSESSIONID=0000'+ localStorage.getItem("sessionId"));// 设置POST请求提交的数据类型为JSON字符串
+			dtask.start();
+		}
+		//textarea添加原生方法
+		mui.ready(function() {
+			mui('.mui-input-row textarea').input();
+		});
+	</script>
+
+</html>

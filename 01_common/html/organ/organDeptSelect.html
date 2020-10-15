@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选择组织机构</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" href="../../../00_mui/css/mui.css"/>
+    <link rel="stylesheet" href="../../css/fontawesome-all.min.css"/>
+    <link href="../../css/common.css" rel="stylesheet"/>
+    <style>
+        .mui-bar-nav button {
+            background: transparent;
+            color: #fff;
+            border: 0
+        }
+
+        .mui-bar-nav .mui-btn {
+            top: 2px;
+        }
+
+        .mui-content > .mui-card:first-child {
+            margin-top: 0;
+        }
+
+        .mui-bar-nav #confirmBtn.mui-btn {
+            top: -4px;
+        }
+
+        #confirmBtn span {
+            font-size: 36px;
+        }
+
+        .mui-input.search-person-input {
+            display: inline-block;
+            width: 35%;
+            padding: 0px 6px;
+            margin: 0px 2px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 0.8em;
+        }
+
+        #organTree .mui-table-view-cell {
+            padding: 0px 15px;
+            height: 3em;
+            line-height: 3em;
+            border-radius: 0;
+            border-bottom: 0;
+        }
+
+        .mui-table-view-cell > a:not(.mui-btn) {
+            margin: 0 -15px;
+        }
+
+        #selectedBtn {
+            background-color: #f3f3f3;
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        #selectedBtn:after {
+            content: " ";
+            display: block;
+            height: 0;
+            clear: both;
+        }
+
+        .selepeople {
+            margin: 2px 2px;
+            background-color: #dfdfdf;
+            padding: 0px 6px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            text-align: center;
+            height: 24px;
+            line-height: 24px;
+            float: left;
+        }
+
+        .organLabel {
+            background-color: #DCF0FD;
+            color: #108ee9;
+            height: 3em;
+            line-height: 3em;
+            font-size: 1em;
+            padding: 0 5px 0 15px;
+        }
+
+        #organTabLink a {
+            margin-left: 5px;
+            color: #108ee9;
+        }
+
+        .mui-icon-closeempty:before {
+            content: ""
+        }
+
+        .mui-icon-closeempty:after {
+            content: '\e460';
+        }
+
+        /****
+         * 系统外人员
+         * */
+        .outPerson {
+            background-color: #EF9827;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mui-search {
+            border-radius: 5px;
+        }
+
+        #selectedBtn {
+            background-color: #f3f3f3;
+            width: 100%;
+            /*margin:5px 0 ;*/
+            padding: 5px;
+            min-height: 36px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .outPerson.mui-icon-closeempty:before {
+            content: "外";
+            color: #ef9827;
+            font-size: 0.2em;
+            position: absolute;
+            right: -1px;
+            top: -6px;
+            transform: rotate(-36deg);
+            background: #ddd;
+            width: auto;
+        }
+
+        ul li {
+            border-bottom: 1px solid #B5B5B5;
+        }
+
+        a.active {
+            background-color: #7cb8ff;
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        header.mui-bar-nav {
+            background: #2c83ea;
+        }
+
+        .mui-pull-left {
+            color: #fff;
+        }
+
+        #header1 {
+            z-index: 2;
+            position: fixed;
+            top: 44px;
+            right: 5px;
+            left: 5px;
+            max-height: 150px;
+        }
+
+        #organTabLink {
+            z-index: 2;
+            position: fixed;
+            top: 80px;
+            right: 5px;
+            left: 5px;
+            overflow: hidden;
+        }
+
+        #placeholder {
+            height: 80px;
+        }
+    </style>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <button class="mui-btn mui-btn-sm mui-pull-left" id="cancelBtn"><span class="mui-icon mui-icon-undo"></span>
+    </button>
+    <h1 class="mui-title">组织机构</h1>
+    <button class="mui-btn mui-btn-sm mui-pull-right" id="confirmBtn"><span
+            class="mui-icon mui-icon-checkmarkempty"></span></button>
+</header>
+<div class="mui-content">
+    <div class="mui-card">
+        <div class="mui-input-row" style="border-radius: 5px;" id="header1">
+            <div id="selectedBtn">
+                <input id="organSearchInput" type="search" class="mui-input search-person-input" placeholder="搜索检查部门">
+            </div>
+        </div>
+        <div class="mui-tab-label organLabel" id="organTabLink">
+            <span id="rootLink">全部</span>
+        </div>
+        <div id="placeholder">
+
+        </div>
+        <ul class="mui-table-view" id="organTree" style="display: none;">
+            <li class="mui-table-view-cell" v-for="organ in organViewInfo.organRecs">
+                <div class="mui-slider-left mui-disabled">
+                    <a class="mui-btn mui-btn-blue" @tap="addOrRemoveSelectedDept(organ);">确认</a>
+                </div>
+                <div class="mui-slider-right mui-disabled">
+                    <a class="mui-btn mui-btn-blue" @tap="addOrRemoveSelectedDept(organ);">确认</a>
+                </div>
+                <div class="mui-slider-handle ">
+                    <span :class='organ.classList' :id="organ.organId" :value="organ.organId"
+                          :struId="organ.struId" :organType="organ.organType" :parentId="organ.parentId"
+                          :isLeaf="organ.isLeaf" :organName="organ.organName" href="#">
+                        <span :class="organ.icon"></span>
+                        {{organ.organName}}
+                    </span>
+                </div>
+            <li>
+        </ul>
+    </div>
+</div>
+</body>
+<script src="../../../00_mui/js/mui.min.js"></script>
+<script src="../../../00_mui/js/vue.min.js"></script>
+<script src="../../../00_mui/js/jquery.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/serviceUrl.js"></script>
+<script>
+    var checkerArr = [];
+    var isUseDataPermit = "";
+    mui.plusReady(function () {
+        mui.init();
+        createValueModel();
+        var self = plus.webview.currentWebview();
+        //已经选中的人员
+        selectedInfo = self.selectedInfo;
+        if (selectedInfo == null || selectedInfo == undefined || selectedInfo == "") {
+            selectedInfo = "[]";
+        } else {
+            checkerArr = JSON.parse(selectedInfo);
+        }
+        //是否启用组织权限 1:启用，0：不启用，默认启用
+        isUseDataPermit = self.isUseDataPermit;
+        //console.log(selectedInfo);
+        for (var i = 0; i < checkerArr.length; i++) {
+            var thisDeptInfo = checkerArr[i];
+            addOrRemoveSelectedDept(thisDeptInfo);
+        }
+        //返回
+        document.getElementById("cancelBtn").addEventListener("tap", function () {
+            mui.back();
+        });
+        //确定
+        document.getElementById("confirmBtn").addEventListener("tap", function () {
+            var self = plus.webview.currentWebview();
+            var callbackPageId = self.callbackPageId;
+            var callbackPageEvent = self.callbackPageEvent;
+            if (callbackPageId == null || callbackPageEvent == null) {
+                self.close();
+                return;
+            }
+            var callbackPageWebview = plus.webview.getWebviewById(callbackPageId);
+            if (callbackPageWebview == null) {
+                self.close();
+                return;
+            }
+            mui.fire(callbackPageWebview, callbackPageEvent, {checker: JSON.stringify(getChecker())});
+            self.close();
+        });
+        /****
+         * 删除已选中人员
+         * */
+        mui("#selectedBtn").on("tap", ".mui-icon-closeempty", function (event) {
+            document.activeElement.blur();
+            this.remove();
+            var organId = $(this).val();
+            var obj = $("#" + organId);
+            obj.removeClass('active');
+            resizeHeader();
+            reRenderSwipeOut();
+        });
+        //组织机构根节点
+        getRoot();
+        var flag = true;
+        mui("#organTree").on("tap", ".mui-slider-handle", function (event) {
+            //阻止冒泡
+            event.stopPropagation();
+            var $span = $(this).children("span")[0];
+            var liElement = $(this).parents("li");
+            mui.swipeoutClose(liElement[0]);
+            document.activeElement.blur();
+
+            var organId = $span.getAttribute("value");
+            var organName = $span.getAttribute("organName");
+            var organType = $span.getAttribute("organType");
+            var isLeaf = $span.getAttribute("isLeaf");
+            if(organName.indexOf("监督管理所")>-1){
+					return;
+				}
+            //console.log(organId);
+            //获取下级长度
+            //getOrganListLeaf(organId);
+            if (isLeaf && "0" == isLeaf) {
+                getOrganList(organId);
+                addTabLink(organId, organName);
+            } else {
+                if (organType && "8" == organType) {
+                    if (!$span.classList.contains("active")) {
+                        $($span).addClass("active");
+                        addSelectedPerson('', organId, organName);
+                        $("#organSearchInput").val("");
+                        var organInfo = {
+                            "organId": organId
+                        };
+                        checkerArr.push(organInfo);
+                    } else {
+                        var selectedEle = $("#selected_" + organId);
+                        if (selectedEle.hasClass("mui-icon-closeempty")) {
+                            $($span).removeClass("active");
+                            selectedEle.remove();
+                            var checkertemp = [];
+                            for (var k = 0; k < checkerArr.length; k++) {
+                                if (checkerArr[k].organId != organId) {
+                                    checkertemp.push(checkerArr[k]);
+                                }
+                            }
+                            checkerArr = checkertemp;
+                        } else {
+                            mui.toast("该部门不能取消选择");
+                        }
+                    }
+                }
+            }
+        });
+        mui("#organTabLink").on("tap", "a", function (event) {
+            //阻止冒泡
+            event.stopPropagation();
+            var organId = $(this).attr("id");
+            $(this).nextAll().remove();
+            //将查询的信息清空
+            $("#organSearchInput").val("");
+            //console.log(organId);
+            getOrganList(organId);
+        });
+        mui("body").on("tap", "#rootLink", function (event) {
+            //阻止冒泡
+            event.stopPropagation();
+            getRoot();
+            //将查询的信息清空
+            $("#organSearchInput").val("");
+            $(this).nextAll().remove();
+        });
+        //监听查询框change事件
+        document.getElementById("organSearchInput").addEventListener('input', function () {
+            var userName = $(this).val();
+            //console.log("输入框值变为：：：：" + userName);
+
+            if (userName) {
+                //查询员工信息
+                queryUsers(userName);
+            } else {
+                getRoot();
+            }
+            $("#rootLink").nextAll().remove();
+        });
+        mui.toast("在列表上滑动选中",{
+            duration:"long"
+        })
+    });
+    var organRootModel;
+
+    /***
+     * 创建模型
+     * */
+    function createValueModel() {
+        organRootModel = new Vue({
+            el: "#organTree",
+            data: {
+                organViewInfo: {
+                    total: 0,
+                    organRecs: [],
+                    organLeafRecs: []
+                }
+            },
+            updated: function () {
+                reRenderSwipeOut();
+            }
+
+        });
+    }
+
+
+    /***
+     * 获取组织机构根节点
+     * ***/
+    function getRoot() {
+        var serviceCode = "bsp.getUserDefDataPermitOrganId";
+        isUseDataPermit = "1";
+        if ("0" == isUseDataPermit) {
+            serviceCode = "bsp.getAllTop";
+        }
+        //console.log(serviceCode);
+        mui.ajax(baseServiceUrl.url, {
+            data: {
+                serviceCode: serviceCode,
+                struType: '00',
+                userId: localStorage.getItem("userId")
+            },
+            dataType: 'json', //服务器返回json格式数据
+            type: 'post', //HTTP请求类型
+            async: true,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            success: function (data) {
+                //console.log(JSON.stringify(data));
+                if (data.status && "true" == data.status) {
+                    organRootModel.organViewInfo.organRecs = [];
+                    //组织机构顶级节点数据
+                    var topOrganArr = JSON.parse(data.result);
+
+                    if ("0" != isUseDataPermit) {
+                        var organInfo = getOrganInfo(topOrganArr.organId);
+                        organInfo.isLeaf = "0";
+                        organInfo.classList = "mui-navigate-right";
+                        organInfo.icon = "mui-icon mui-icon-home";
+                        organInfo.parentId = organInfo.parentOrganId;
+                        organRootModel.organViewInfo.organRecs.push(organInfo);
+                    } else {
+                        //根节点数量
+                        organRootModel.organViewInfo.total = topOrganArr.length;
+                        //console.log(organRootModel.organViewInfo.total);
+                        for (var i = 0; i < topOrganArr.length; i++) {
+                            var classList = topOrganArr[i].isLeaf == "1" ? "" : "mui-navigate-right";
+                            topOrganArr[i].classList = classList;
+                            topOrganArr[i].icon = "mui-icon mui-icon-home";
+                            //默认只取根节点为1的
+                            //if("1" == topOrganArr[i].organId){
+                            organRootModel.organViewInfo.organRecs.push(topOrganArr[i]);
+                            //}
+                        }
+                    }
+                } else {
+                    mui.toast("获取组织机构失败，请重试。");
+                }
+                document.getElementById("organTree").style.display = "block";
+            },
+            error: function (xhr, type, errorThrown) {
+                mask.close();
+                plus.nativeUI.alert("获取组织机构失败,请检查网络是否畅通", function (e) {
+                }, baseConfig.alerttitle, "确定");
+            }
+        });
+    }
+
+    /***
+     * 获取组织机构列表
+     * ***/
+    function getOrganList(organId) {
+        mui.ajax(baseServiceUrl.url, {
+            data: {
+                serviceCode: "bsp.getDirectUnderlingByOrganId",
+                organId: organId
+            },
+            dataType: 'json', //服务器返回json格式数据
+            type: 'post', //HTTP请求类型
+            success: function (data) {
+                //console.log(JSON.stringify(data));
+                organRootModel.organViewInfo.organRecs = [];
+                if (data.status && "true" == data.status) {
+                    var organArr = JSON.parse(data.result);
+                    var organHtml = '<ul class="mui-table-view mui-table-view-chevron">';
+                    for (var i = 0; i < organArr.length; i++) {
+                        var organInfo = organArr[i];
+
+                        if (organInfo.organType == "1") {
+                            organInfo.icon = "far fa-building";
+                        } else if (organInfo.organType == "2") {
+                            organInfo.icon = "fas fa-home";
+                        } else if (organInfo.organType == "6") {
+                            organInfo.icon = "fas fa-id-badge";
+                        } else {
+                            organInfo.icon = "fas fa-male";
+                        }
+
+                        var classList = organInfo.isLeaf == "1" ? "" : "mui-navigate-right";
+                        for (var k = 0; k < checkerArr.length; k++) {
+                            if (checkerArr[k].organId == organInfo.organId) {
+                                classList = classList + "active";
+                            }
+                        }
+                        organInfo.classList = classList;
+                        organRootModel.organViewInfo.organRecs.push(organInfo);
+                    }
+                } else {
+                    mui.toast("获取组织机构失败，请重试。");
+                }
+            },
+            async: false,
+            error: function (xhr, type, errorThrown) {
+                mask.close();
+                plus.nativeUI.alert("获取组织机构失败,请检查网络是否畅通", function (e) {
+                }, baseConfig.alerttitle, "确定");
+            }
+        });
+    }
+
+    /***
+     * 根据输入的值，查询部门信息
+     * ***/
+    function queryUsers(userName) {
+        mui.ajax(baseServiceUrl.url, {
+            data: {
+                serviceCode: "bsp.queryUserInfos",
+                userName: userName
+            },
+            dataType: 'json', //服务器返回json格式数据
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            type: 'post', //HTTP请求类型
+            success: function (data) {
+                //console.log(JSON.stringify(data));
+                organRootModel.organViewInfo.organRecs = [];
+                if (data.status && "true" == data.status) {
+                    var organArr = JSON.parse(data.result);
+                    var organHtml = '<ul class="mui-table-view mui-table-view-chevron">';
+                    for (var i = 0; i < organArr.length; i++) {
+                        var organInfo = organArr[i].data;
+                        organInfo.icon = "fas fa-home";
+
+                        organInfo.organId = organInfo.ORGAN_ID;
+                        organInfo.struId = organInfo.STRU_ID;
+                        organInfo.organName = organInfo.ORGAN_NAME;
+                        organInfo.parentId = organInfo.PARENT_ID;
+                        organInfo.isLeaf = "1";
+                        organInfo.struType = organInfo.STRU_TYPE;
+                        organInfo.organType = organInfo.ORGAN_TYPE;
+                        var classList = "";
+                        for (var k = 0; k < checkerArr.length; k++) {
+                            if (checkerArr[k].organId == organInfo.organId) {
+                                classList = classList + "active";
+                            }
+                        }
+                        organInfo.classList = classList;
+                        organRootModel.organViewInfo.organRecs.push(organInfo);
+                    }
+                } else {
+                    mui.toast("获取组织机构失败，请重试。");
+                }
+            },
+            async: false,
+            error: function (xhr, type, errorThrown) {
+                mask.close();
+                plus.nativeUI.alert("获取组织机构失败,请检查网络是否畅通", function (e) {
+                }, baseConfig.alerttitle, "确定");
+            }
+        });
+    }
+
+    /***
+     *
+     * ***/
+    function addTabLink(organId, organName) {
+        var html = "<a id='" + organId + "'>" + ">" + organName + "</a>";
+        $("#organTabLink").append(html);
+    }
+
+    /***
+     * 获取检查人员
+     * */
+    function getChecker() {
+        var selectedPerson = [];
+        $("#selectedBtn").find(".selepeople").each(function (i, obj) {
+            selectedPerson.push({
+                organId: obj.organId,
+                organName: obj.organName,
+                type: obj.type,
+                text: $(obj).text()
+            });
+        });
+        return selectedPerson;
+    }
+
+    /***
+     * 获取组织机构列表
+     * ***/
+    function getOrganListLeaf(organId) {
+        mui.ajax(baseServiceUrl.url, {
+            data: {
+                serviceCode: "bsp.getDirectUnderlingByOrganId",
+                organId: organId
+            },
+            dataType: 'json', //服务器返回json格式数据
+            type: 'post', //HTTP请求类型
+            success: function (data) {
+                //console.log(JSON.stringify(data));
+                organRootModel.organViewInfo.organLeafRecs = [];
+                if (data.status && "true" == data.status) {
+                    var organArr = JSON.parse(data.result);
+                    for (var i = 0; i < organArr.length; i++) {
+                        var organInfo = organArr[i];
+                        //if(organInfo.organType == "1" || organInfo.organType == "2"){
+                        organRootModel.organViewInfo.organLeafRecs.push(organInfo);
+                        //}
+                    }
+                } else {
+                    mui.toast("获取组织机构失败，请重试。");
+                }
+            },
+            async: false,
+            error: function (xhr, type, errorThrown) {
+                mask.close();
+                plus.nativeUI.alert("获取组织机构失败,请检查网络是否畅通", function (e) {
+                }, baseConfig.alerttitle, "确定");
+            }
+        });
+    }
+
+    function addOrRemoveSelectedDept(organInfo) {
+        var liElement = $("#" + organInfo.organId).parents("li");
+        if (liElement) {
+            if (liElement.find("a").hasClass("mui-btn-blue")) {
+                var newEle = document.createElement("span");
+                newEle.value = organInfo.organId;
+                newEle.organId = organInfo.organId;
+                newEle.organName = organInfo.organName;
+                newEle.className = "mui-icon mui-icon-closeempty selepeople";
+                newEle.setAttribute("organId", organInfo.organId);
+                newEle.innerText = organInfo.organName;
+                var searchPersonInput = document.getElementById("selectedBtn");
+                searchPersonInput.insertBefore(newEle, searchPersonInput.lastElementChild);
+                mui.swipeoutClose(liElement[0]);
+                liElement.find("a").text("取消");
+                liElement.find("a").removeClass("mui-btn-blue").addClass("mui-btn-red");
+            } else {
+                $("[organId=" + organInfo.organId + "]").remove();
+                mui.swipeoutClose(liElement[0]);
+                liElement.find("a").text("确认");
+                liElement.find("a").removeClass("mui-btn-red").addClass("mui-btn-blue");
+            }
+        }
+        resizeHeader();
+
+    }
+
+    function reRenderSwipeOut() {
+        var selected = [];
+        $("#selectedBtn").find(".selepeople").each(function (i, obj) {
+            selected.push(obj.organId);
+        });
+        $("#organTree").find("li").each(function () {
+            var $this = $(this);
+            var $span = $this.find("span").eq(0);
+            if (~selected.indexOf($span.attr("id"))) {
+                $this.find("a").text("取消").removeClass("mui-btn-blue").addClass("mui-btn-red");
+            } else {
+                $this.find("a").text("确认").removeClass("mui-btn-red").addClass("mui-btn-blue");
+            }
+        });
+    }
+
+    function resizeHeader() {
+        var header1Height = $("#header1").height();
+        $("#organTabLink").css("top", 44 + header1Height + "px");
+        $("#placeholder").height(header1Height + $("#organTabLink").height())
+    }
+</script>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+		 .con-cell-title{
+		 	width: 90%;
+		 	font-size: 16px;
+		 	font-weight: normal;
+		 	color: #666;
+		 	line-height: 1.3rem;
+		 }
+		 .mui-navigate-right:after, .mui-push-right:after{
+		 	right: 5px;
+		 }
+		 .mui-h6{
+		 	color: #999;
+		 }
+		 .con-cell-time{
+		 	margin-left: 8px;
+		 }
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">枣庄市祥隆食品有限公司关于主动召回不合格食品的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">庆云县滴滴香芝麻制品有限公司关于主动召回“陈志连”小磨香油的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">齐河文礼食用油脂有限公司关于主动召回文礼芝麻香油的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">枣庄市亚彬食品有限公司关于主动召回香辣肌肉汉堡(面包)的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			         <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">枣庄市祥隆食品有限公司关于主动召回不合格食品的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">庆云县滴滴香芝麻制品有限公司关于主动召回“陈志连”小磨香油的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			        <li class="mui-table-view-cell">
+			                <div class="mui-table-cell  mui-navigate-right">
+			                    <h5 class="con-cell-title mui-ellipsis-2">齐河文礼食用油脂有限公司关于主动召回文礼芝麻香油的公告</h5>
+			                    <span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span>
+			                </div>
+			        </li>
+			         	
+		       	</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+				pullRefresh: {
+					container: '#pullrefresh',
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					for(var i = cells.length, len = i + 10; i < len; i++) {
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell';
+//						li.innerHTML = '<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化' + (i + 1) + '</h4><h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>'
+						li.innerHTML = '<div class="mui-table-cell  mui-navigate-right"><h5 class="con-cell-title mui-ellipsis-2">庆云县滴滴香芝麻制品有限公司关于主动召回“陈志连”小磨香油的公告</h5><span class="mui-h6">省食药监局</span><span class="mui-h6 con-cell-time">发布时间：2016-09-12</span></div>';
+						table.appendChild(li);
+					}
+				}, 1000);
+			}
+		</script>
+	</body>
+
+</html>

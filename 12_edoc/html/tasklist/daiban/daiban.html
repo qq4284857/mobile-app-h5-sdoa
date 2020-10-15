@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="../../../../00_mui/css/mescroll.min.css"/>
+		<script src="../../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../../01_common/js/serviceUrl.js"></script>
+	    <style type="text/css">
+	    	.clear {
+	    		clear: both;
+	    	}
+	    	.data_num font {
+				color: #ffa816;
+			}
+			.data_num {
+				widht: 100%;
+				padding: 0px 0px 0 0px;
+				font-size: 0.8em;
+			}
+			.data_num_left {
+				float: left;
+			}
+			
+			.data_num_right {
+				float: right;
+			}
+			.entbiao .b_type3{
+				color: #02c99c;
+				border:1px solid #02c99c;
+			}
+			.entbiao .b_type2{
+				color: #ffa63c;
+				border:1px solid #ffa63c;
+			}
+			.entbiao .b_type1{
+				color: #ffa63c;
+				border:1px solid #ffa63c;
+			}
+			#entNameCondition{
+				 background-color: #fff;
+			}
+			
+			#taskListScrollWrapper{
+				position: fixed;
+				top: 120px;
+				bottom: 0;
+				width: 100%;
+				height: auto;
+			}
+	    </style> 
+		<style>
+			.mui-search {
+				margin-top: 10px;
+				padding: 0 10px 0 10px;
+			}
+			.mui-search input {
+				height: 30px;
+				line-height: 30px;
+				margin-bottom: 0px;
+				padding-left: 38px;
+				border-radius: 12px;
+			}
+			.mui-search.mui-active input {
+				padding-left: 38px;
+			}
+			.mui-search .mui-placeholder {
+			    font-size: 16px;
+			    line-height: 30px;
+			}
+			.mui-input-row.mui-search .mui-icon-clear {
+			    top: 6px;
+			    right: 8px;
+			}
+			.mui-search .mui-icon.mui-icon-speech{
+				top: 3px;
+			    right: 8px;
+			}
+			.mui-icon-search:before {
+				content: '';
+			}
+			.mui-search:before{
+				content: '';
+			}
+			#logo_box {
+				width: 40px;
+				height: 30px;
+				padding-left: 20px;
+				text-align: center;
+				position: absolute;
+				top: 60px;
+				z-index: 999;
+			}
+			#logo_box img{
+			    width: 20px;
+			}
+			#mescrollWrapper {
+				position: fixed;
+				top: 120px;
+				bottom: 0;
+				width: 100%;
+				height: auto;
+			}
+			.nodate {
+			    width: 150px;
+			    height: 220px;
+			    margin: auto;
+			    text-align: center;
+			}
+			.nodate .nodate_img {
+			    display: block;
+			    width: 150px;
+			    height: 180px;
+			    background: url(../../../../01_common/images/nodata_img.png) no-repeat;
+			    margin: 10px 0;
+			}
+			.mediaObjectImg {
+			    max-width: 35px !important;
+			    width: 35px !important;
+			    height: 35px !important;
+			}
+			.data_num {
+				widht: 100%;
+				padding: 10px 15px 0 15px;
+				font-size: 0.8em;
+			}
+			.data_num font{
+				color: #ffa816;
+			}
+			.data_num_left{
+				float: left;
+			}
+			.data_num_right{
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">我的待办</h1>
+		</header>
+		<div class="mui-content">
+		   	<div class="mui-input-row mui-search">
+		    	<input id="entNameCondition" type="search" class="mui-input-clear mui-input-speech" placeholder="根据公文标题查询" >
+			</div>
+			<div id="taskList">
+				<div class="data_num">
+			        <span class="data_num_left">已显示<font color="red">{{ taskListInfo.taskRecs.length }}</font>条</span><span class="data_num_right">共<font color="red">{{taskListInfo.entTotal}}</font>条</span>
+				</div><!---->
+				<div id="taskListScrollWrapper" class="mescroll" >
+			    <ul id="taskListUl" class="mui-table-view mui-table-view-chevron" style="display: none;">
+			    	<li class="mui-table-view-cell " v-if="taskListInfo.showEmptyTips=='1'">
+						<div class="mui-row ">
+					        <div class="mui-col-sm-12 mui-col-xs-12 ">
+					        	&nbsp;暂无符合条件的公文
+					        </div>
+				        </div>
+					</li>
+					
+					<li class="mui-table-view-cell mui-media show_list" v-for="taskInfo in taskListInfo.taskRecs">
+						<a class="mui-navigate-right info_box" herf="javascript:;" :id="taskInfo.processId" @tap='jump2TaskDetail(taskInfo.processId,taskInfo.assignmentId)'>
+						
+								<img v-if="taskInfo.procDefName=='局发文流程'" src="../../../images/fawen.png" class="mui-media-object mui-pull-left mediaObjectImg">
+								<img v-if="taskInfo.procDefName=='外文收文流程'" src="../../../images/shouwen.png" class="mui-media-object mui-pull-left mediaObjectImg">
+								<img v-if="taskInfo.procDefName=='其他发文表单'" src="../../../images/fawen.png" class="mui-media-object mui-pull-left mediaObjectImg">
+								<img v-if="taskInfo.procDefName=='会签流程'" src="../../../images/huiqian.png" class="mui-media-object mui-pull-left mediaObjectImg">
+								<img v-if="taskInfo.procDefName=='收文流程'" src="../../../images/shouwen.png" class="mui-media-object mui-pull-left mediaObjectImg">
+								<div class="mui-media-body" style="padding-top:0px;">
+									<span style="font-size: 30px;white-space:normal; word-break:break-all;overflow:hidden;line-height: 2rem;" v-text="taskInfo.subject"></span>
+								</div>
+								<!--时间-->
+								<div class="mui-media-body" style="margin-top: 5px;margin-left: 45px;" v-if="taskInfo.procDefName=='局发文流程'">
+									<span style="width: 100px; height: 5px; border: 1px solid red;color: red;font-size: 13px;margin-top: -13px;">发文</span><span style="color: #999;font-size: 20px;"v-text="taskInfo.createTime"></span>
+								</div>
+								<div class="mui-media-body" style="margin-top: 5px;margin-left: 45px;" v-if="taskInfo.procDefName=='外文收文流程'">
+									<span style="width: 100px; height: 5px; border: 1px solid red;color: red;font-size: 13px;margin-top: -13px;">收文</span><span style="color: #999;font-size: 20px;"v-text="taskInfo.createTime"></span>
+								</div>
+								<div class="mui-media-body" style="margin-top: 5px;margin-left: 45px;" v-if="taskInfo.procDefName=='其他发文表单'">
+									<span style="width: 100px; height: 5px; border: 1px solid red;color: red;font-size: 13px;margin-top: -13px;">发文</span><span style="color: #999;font-size: 20px;"v-text="taskInfo.createTime"></span>
+								</div>
+								<div class="mui-media-body" style="margin-top: 5px;margin-left: 45px;" v-if="taskInfo.procDefName=='会签流程'">
+									<span style="width: 100px; height: 5px; border: 1px solid red;color: red;font-size: 13px;margin-top: -13px;">会签</span><span style="color: #999;font-size: 20px;"v-text="taskInfo.createTime"></span>
+								</div>
+								<div class="mui-media-body" style="margin-top: 5px;margin-left: 45px;" v-if="taskInfo.procDefName=='收文流程'">
+									<span style="width: 100px; height: 5px; border: 1px solid red;color: red;font-size: 13px;margin-top: -13px;">收文</span><span style="color: #999;font-size: 20px;"v-text="taskInfo.createTime"></span>
+								</div>
+								<!--名称 级别  限时-->
+								<div class="mui-media-body" style="margin-top: 10px;margin-left: 45px;">
+									<td><span style="color: #999;font-size: 20px;" v-text="taskInfo.preOrganNames"></span></td>&nbsp;&nbsp;<td><span style="color: #999;font-size: 20px;">时限：无</span></td> 
+								</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var self;
+		mui.plusReady(function() {
+			mui.init();
+			self = plus.webview.currentWebview();
+			if(self.searchCondition){ 
+				document.getElementById("entNameCondition").setAttribute("placeholder",self.searchCondition);
+				document.getElementById("entNameCondition").value = self.searchCondition;
+				document.getElementById("entNameCondition").focus();
+			}
+            createValueModel();
+            regEvents();
+            initMescroll();
+       });
+       
+       function initMescroll(){
+			mescroll = new MeScroll("taskListScrollWrapper", {
+            	down: {
+            		callback: pulldownRefreshFunc,
+            		auto: false
+            	},
+				up: {
+					callback: pullupRefreshFunc, //上拉加载的回调
+					auto: true,//是否在初始化完毕之后自动执行一次上拉加载的回调
+					isBounce: true, //如果您的项目是在iOS的微信,QQ,Safari等浏览器访问的,建议配置此项为false.
+					page: {
+						num: 0,
+						size: 10,
+						time: null
+					},
+					toTop:{
+						src : "../../../../01_common/images/mescroll-totop.png",
+						html: null,
+						offset : 1000
+					},
+					noMoreSize: 1,
+					htmlNodata: '<p class="upwarp-nodata">没有更多数据了</p>'
+				}
+			});
+		}
+		var taskListVm;
+		function createValueModel(){
+	       	taskListVm = new Vue({
+	            el: '#taskList',
+	            data: {
+	            	taskListInfo:{
+						entTotal: 0,
+						start : 0,
+						showEmptyTips: "0",
+						taskRecs: []
+					}
+	            },
+	            methods:{
+	            	addTaskInfo:function(taskInfo){
+	            		this.taskListInfo.taskRecs.push(taskInfo);
+	            	},
+	            	delTaskInfo:function(startPos,delLen){
+	            		this.taskListInfo.taskRecs.splice(startPos,delLen);
+	            	},
+	            	jump2TaskDetail:function(processId,assignmentId){
+	            		// ajax请求
+	            		mui.ajax(baseServiceUrl.url , {
+						data: {
+							serviceCode : "old.edoc.queryProcessInfo",
+							assignmentId :assignmentId,
+							processId:processId
+							//deviceType:"MOBILE"
+						},
+						dataType: 'json',
+						headers : {
+							 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+						},
+						type: "post",
+						timeout: 300000, //超时时间设置为10秒；
+						success: function(datas) {
+							if(datas.errMsg){
+								plus.nativeUI.toast(datas.errMsg);
+								return;
+							}
+							if(datas.result==""){
+								return;
+							}
+							console.log("edoc.formforwardInterface:"+JSON.stringify(datas));
+						
+							var extrasJson = JSON.parse(datas.result);
+							extrasJson.assignmentId=assignmentId;
+							extrasJson.processId=processId;
+							var formId= extrasJson.formId;
+							if(formId =="NoCform"){
+								mui.toast("相关表单尚未定制，请联系系统管理员");
+								return;
+							}
+							mui.openWindow({
+								id: "12_edoc/html/edoc/tasklist/render/formrender.html",
+								url: "../render/formrender.html",
+								show: { 
+									aniShow: 'pop-in',
+									duration: 250
+								},
+								extras:extrasJson,
+								waiting: {
+									autoShow: false, //自动显示等待框，默认为true
+								}
+							});  
+						},
+						error: function(xhr, type, errorThrown) {
+							mui.toast("获取数据失败,请检查网络是否畅通");
+						}
+				});
+	            		
+	            		
+					}
+	            }
+	       });
+	       
+		}
+		function regEvents(){
+			window.addEventListener('initLoadParams',function(event){
+				taskListVm.delTaskInfo(0, taskListVm.taskListInfo.taskRecs.length);
+				taskListVm.taskListInfo.start = 0;
+				taskListVm.taskListInfo.entTotal = 0;
+				queryTaskList("1");
+			});
+		}
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefreshFunc(){
+			//console.log("下拉刷新方法触发");
+			setTimeout(function() {
+				queryTaskList("1");
+			}, 200);
+		}
+		/**
+		 * 上拉加载具体业务实现
+		 */
+		function pullupRefreshFunc() {
+			//console.log("上拉刷新方法触发");
+			setTimeout(function() {
+				queryTaskList("0");
+			}, 200);
+		}
+		
+		/**
+		 * 根据搜索条件，查询企业列表
+		 * isReset: 是否重置列表：1，重置列表；0，继续查询
+		 */
+		function queryTaskList(isReset){
+			taskListVm.taskListInfo.showEmptyTips = "0";
+			var nodataEle = document.querySelector(".upwarp-nodata");
+			if(nodataEle!=null){
+				nodataEle.style.display = "none";
+			}
+			if(isReset==undefined || isReset==null || isReset.trim()==""){
+				isReset = "1";
+			}
+			if(isReset==1){
+				taskListVm.delTaskInfo(0, taskListVm.taskListInfo.taskRecs.length);
+				taskListVm.taskListInfo.start = 0;
+				taskListVm.taskListInfo.entTotal = 0;
+				mescroll.resetUpScroll(true);
+				return;
+			} 
+			
+			var subject = document.querySelector("#entNameCondition").value;
+			var charAt=subject.charAt(subject.length-1);
+			if(charAt=="。"||charAt=="？"||charAt=="！"||charAt=="："||charAt=="，"){ 
+				console.log("11"+subject.charAt(subject.length-1));
+				subject= subject.substring(0,subject.length-1);
+				$("#entNameCondition").val(subject);
+			}
+			mui.ajax(baseServiceUrl.url , {
+					data: {
+						serviceCode : "old.edoc.queryEdocDaibanList",
+						subject:subject,
+						start:taskListVm.taskListInfo.start,
+						maxRows: '10',
+						deviceImeiCode: localStorage.getItem("imei"),
+						organId:localStorage.getItem("employeeOrganId")
+						//ProcTypeId:"GIAP,elcase,AICMER,AS,ceishi,ceshi,CFORM,DealProcess,EC,EC_01,forbidden,forbidden2,HR,JYGC,LCLXTEST,loan,RM,RM_01,RM_02,RM_03,RM_WJSB,RM_YJSH,TestRegisterProcess,GIAP_SP,SDSP,SXYPRZ"
+					},
+					dataType: 'json',
+					headers : {
+						 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					},
+					type: "post",
+					timeout: 300000, //超时时间设置为10秒；
+					success: function(datas) {
+						document.getElementById("taskListUl").style.display = "block";//一开始隐藏的目的，是为了防止模型建立前，把模型绑定的代码展示给用户
+							
+						if(datas.errMsg){
+							plus.nativeUI.toast(datas.errMsg);
+							mescroll.endErr();
+							taskListVm.delTaskInfo(0 , taskListVm.taskListInfo.taskRecs.length);
+							if(taskListVm.taskListInfo.taskRecs.length==0){
+								taskListVm.taskListInfo.showEmptyTips = "1";
+							}
+							return;
+						}
+						if(datas.result==""){
+							mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, taskListVm.taskListInfo.entTotal>taskListVm.taskListInfo.taskRecs.length, null);
+							if(taskListVm.taskListInfo.taskRecs.length==0){
+								taskListVm.taskListInfo.showEmptyTips = "1";
+							}
+							return;
+						}
+						if(datas.result=="未查询到数据"){
+							mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, taskListVm.taskListInfo.entTotal>taskListVm.taskListInfo.taskRecs.length, null);
+							if(taskListVm.taskListInfo.taskRecs.length==0){
+								taskListVm.taskListInfo.showEmptyTips = "1";
+							}
+							return;
+						}
+						//console.log(datas.result)
+						var data = JSON.parse(datas.result);
+						if(data.errMsg){
+							plus.nativeUI.toast(data.errMsg);
+							mescroll.endErr();
+							taskListVm.delTaskInfo(0 , taskListVm.taskListInfo.taskRecs.length);
+							if(taskListVm.taskListInfo.taskRecs.length==0){
+								taskListVm.taskListInfo.showEmptyTips = "1";
+							}
+							return;
+						}
+						if(data.result=="未查询到数据"){
+							mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, false, null);
+							if(taskListVm.taskListInfo.taskRecs.length==0){
+								taskListVm.taskListInfo.showEmptyTips = "1";
+							}
+							return;
+						}
+						taskListVm.taskListInfo.entTotal = data.totalCount;
+						var edocInfoList = data.result;
+						taskListVm.taskListInfo.start = edocInfoList.length;
+						//console.log("本次查询获取到的业务数据数量为"+edocInfoList.length);
+						for(var i = 0; i < edocInfoList.length; i++){	
+							taskListVm.taskListInfo.taskRecs.push({
+								organId : edocInfoList[i].ORGAN_ID,
+								createTime : edocInfoList[i].CREATE_TIME,
+								processId : edocInfoList[i].PROCESS_ID,
+								subject: edocInfoList[i].SUBJECT!=null&&edocInfoList[i].SUBJECT!=''?edocInfoList[i].SUBJECT:"未填写公文标题",
+								actDefName: edocInfoList[i].ACT_DEF_NAME,
+								//actDefUniqueId: edocInfoList[i].actDefUniqueId,
+								//actDefId: edocInfoList[i].actDefId,
+								preOrganNames: edocInfoList[i].PRE_ORGAN_NAMES,
+								assignmentId: edocInfoList[i].ASSINGMENT_ID,
+								//procDefId: edocInfoList[i].procDefId,
+								activityId: edocInfoList[i].ACTIVITY_ID,
+								preActDefNames: edocInfoList[i].PRE_ACT_DEF_NAMES,
+								//procDefUniqueId: edocInfoList[i].procDefUniqueId,
+								procDefName: edocInfoList[i].PROC_DEF_NAME,
+								procCreateTime: edocInfoList[i].PROC_CREATE_TIME,
+								//taskState: edocInfoList[i].taskState,
+								procType: edocInfoList[i].PROCESS_TYPE,
+								//organName: edocInfoList[i].organName,
+							});
+						} 
+						if(data.result=="未查询到对应的待办公文数据！"){
+							taskListVm.taskListInfo.taskRecs.length=0;
+							mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, taskListVm.taskListInfo.entTotal>taskListVm.taskListInfo.taskRecs.length, null);
+						}else{
+							if(taskListVm.taskListInfo.taskRecs.length<taskListVm.taskListInfo.entTotal){
+							mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, taskListVm.taskListInfo.entTotal>taskListVm.taskListInfo.taskRecs.length, null);	
+							}else{
+								taskListVm.taskListInfo.taskRecs.length=taskListVm.taskListInfo.entTotal;
+								mescroll.endSuccess(taskListVm.taskListInfo.taskRecs.length, taskListVm.taskListInfo.entTotal>taskListVm.taskListInfo.taskRecs.length, null);	
+							}
+							
+						}
+						
+						
+						if(taskListVm.taskListInfo.taskRecs.length==0){
+							taskListVm.taskListInfo.showEmptyTips = "1";
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast("获取数据失败,请检查网络是否畅通");
+						mescroll.endErr();
+						if(taskListVm.taskListInfo.taskRecs.length==0){
+							taskListVm.taskListInfo.showEmptyTips = "1";
+						}
+					}
+				});
+		}
+		
+		/**
+		 * 查询列表
+		 * */
+		document.getElementById("entNameCondition").addEventListener("keydown", function(event) {
+			if(event.keyCode == 13) {
+				var param = document.getElementById("entNameCondition").value.trim();
+				if(param == "") {
+					plus.nativeUI.toast('请输入内容后再搜索');
+				}
+				document.activeElement.blur();
+				newSearch = true;
+				queryTaskList('1');
+			}
+		});
+		
+			$('#entNameCondition').bind('input propertychange', function() {searchProductClassbyName();}); 
+			 function searchProductClassbyName(){
+				queryTaskList("1");
+			 }
+	</script>
+</html>

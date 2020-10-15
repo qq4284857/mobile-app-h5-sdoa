@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../00_mui/css/mescroll.min.css" rel="stylesheet" />
+		<link href="../../../01_common/css/load.css" rel="stylesheet" />
+		<link href="../../../01_common/css/common.css" rel="stylesheet" />
+		<script src="../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../00_mui/js/mescroll.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../01_common/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../01_common/js/serviceUrl.js"></script>
+		<style type="text/css">
+			html,
+			body,
+			.mui-content {
+				min-height: 100%;
+				background-color: #FFFFFF;
+			}
+			 .mui-table-view-cell>a:not(.mui-btn){
+			 	margin: 0 0;
+			 	padding-left: 5px;
+			 }
+			 p{
+			 	font-size: 16px;
+			 }
+			 
+		}*/
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="headerArea">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">使用说明</h1>
+		</header>
+		<div class="mui-content">
+			 
+			<div class="mescroll" id="lawListScrollWrapper">
+				<ul class="mui-table-view mui-table-view-chevron" id="entList">
+					<div id="lawListDiv">
+						<!--<li class="mui-table-view-cell mui-media show_list">
+							<a class="mui-navigate-right info_box" herf="javascript:;">
+								<div id="12" class="mui-media-body sh_info">
+									<p class="en_name mui-ellipsis"><span class="c-black-title">济南食药监管APP下载说明</span></p>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media show_list">
+							<a class="mui-navigate-right info_box" herf="javascript:;">
+								<div id="12" class="mui-media-body sh_info">
+									<p class="en_name mui-ellipsis"><span class="c-black-title">济南食药监管APP安装说明</span></p>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media show_list">
+							<a class="mui-navigate-right info_box" herf="javascript:;">
+								<div id="12" class="mui-media-body sh_info">
+									<p class="en_name mui-ellipsis"><span class="c-black-title">济南食药监管APP登录账号说明</span></p>
+								</div>
+							</a>
+						</li>-->
+					</div>
+				</ul>
+			</div>
+		</div>
+		 
+		 
+		<script type="text/javascript">
+			/**
+			 * 重写返回逻辑
+			 */
+			/*var oldBack_ = mui.back;
+			var isBackBusy = "0";
+			mui.back = function(){
+				if(typeof mui.getPreviewImage==="function"){
+					var previewImageApi = mui.getPreviewImage();
+	            	if(previewImageApi!=undefined && previewImageApi!=null && previewImageApi.isShown()){
+	            		previewImageApi.close();
+	            		return;
+	            	}
+				}
+				if(isBackBusy=="1"){
+					return;
+				}
+				isBackBusy = "1";
+				mui.confirm("确定要返回吗？","提示",["取消","确定"],function(e){
+					if(e.index==0){
+						isBackBusy = "0";
+						return;
+					}
+					plus.webview.getLaunchWebview().close("none");
+					setTimeout(function(){
+						plus.runtime.quit();
+					},500);
+				},"div");
+			}*/
+
+			mui.plusReady(function() {
+				mui.init();
+				regEvents();
+				queryLawList();
+			});
+			 
+			/**
+			 * 页面事件注册
+			 */
+			function regEvents() {
+				/**
+				* 查看法律法规详情
+				* */
+				mui("#lawListDiv").on("tap", ".show_list", function() {
+					var clickLawId = this.querySelector(".sh_info").id;
+					mui.openWindow({
+						id: "introduction_detail.html",
+						url: "introduction_detail.html",
+						extras: {
+							articleId: clickLawId,
+						},
+						show: {
+							aniShow: 'pop-in'
+						},
+						waiting: {
+							autoShow: true, //自动显示等待框，默认为true
+						}
+					});
+				});
+			}
+			/**
+			 * 查询法律法规列表
+			 * */
+			function queryLawList() {
+				//baseServiceUrl.url
+				
+				plus.navigator.setCookie(baseServiceConfig.baseUrl,"sso_token="+localStorage.getItem("sso_token"));
+				mui.ajax(baseServiceUrl.url, {
+					data: {
+						serviceCode: "cms.queryPublishList",
+						isColumnName : "1",
+						columnName : "移动APP帮助说明",
+						start :  0,
+						limit: 50,
+					},
+					dataType: 'json',
+					type: "post",
+					timeout: 300000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					},
+					success: function(resultData) {
+						console.log("resultData="+JSON.stringify(resultData));
+						//判断接口调用结果
+						if("true" == resultData.status) {
+							//获取返回结果
+							var allResult = JSON.parse(resultData.result);
+							//获取返回内容
+							var allLaw = allResult.result;
+							if(allLaw =="未查询到数据"){
+								mui.toast("未查询到数据");
+								return;
+							}
+							var html = new StringBuffer();
+							var show = document.getElementById("lawListDiv");
+
+							for(var i = 0; i < allLaw.length; i++) {
+								html.append(
+									'<li class="mui-table-view-cell mui-media show_list">' +
+									'<a class="mui-navigate-right info_box" herf="javascript:;">' +
+									'<div id="' + allLaw[i].articleId + '" class="mui-media-body sh_info">' +
+									'<p class="en_name mui-ellipsis"><span class="c-black-title">' + allLaw[i].articleTitle + '</span></p>' +
+									'</div>' +
+									'</a>' +
+									'</li>'
+								);
+							}
+							
+							show.innerHTML = html.toString();
+						} else {
+							console.log("返回JSON信息错误");
+						}
+						
+					},
+
+					error: function(xhr, type, errorThrown) {
+						console.log(xhr);
+						console.log(type);
+						console.log(errorThrown);
+						mui.toast("获取数据失败,请检查网络是否畅通");
+
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

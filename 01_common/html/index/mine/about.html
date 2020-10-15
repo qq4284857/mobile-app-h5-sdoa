@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<link rel="stylesheet" href="../../../css/common.css" />
+		<style>
+			body,.mui-content {
+				background-color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="headerArea" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">关于</h1>
+		</header>
+		<div class="mui-content">
+			<div class="card-wrap" style="margin-top: 0;">
+				<div class="mui-card" id="versionInfoArea">
+					<div class="mui-card-header">版本详情</div>
+					<div class="mui-card-content">
+						<div id="versionDetail" style="padding-left: 15px;min-height: 50px;">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+	<script>
+		mui.plusReady(function(){
+			mui.init();
+			showVersionDetail();
+		});
+		
+		/**
+		 * 页面数据初始化
+		 */
+		function initData(){
+			showAboutDetail()
+		}
+		
+		/**
+		 * 查看版本详细
+		 */
+		function showVersionDetail(){
+			var versionInfoShow = "";
+			var appVersionInfos = JSON.parse(localStorage.getItem("LS.APP.appVersionInfos"));
+			mui.each(appVersionInfos,function(key,item){
+				if(typeof item === "string"){
+					item = JSON.parse(item);
+				}
+				versionInfoShow = versionInfoShow + key + " ：" + item.versionCode + " # " + item.versionName + "<br>";
+			});
+			document.getElementById("versionDetail").innerHTML = versionInfoShow;
+		}
+		
+	</script>
+</html>

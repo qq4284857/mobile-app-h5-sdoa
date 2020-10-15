@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    	<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet"/>
+	    <link href="../../../../00_mui/js/mescroll.min.css" rel="stylesheet"/>
+	    <link href="../../../../01_common/css/load.css" rel="stylesheet"/>
+	    <link href="../../../../01_common/css/common.css" rel="stylesheet"/>
+	   <script src="../../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="../../../../00_mui/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="../../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="../../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	   <script src="../../../skins/js/bootstrap.min.js"></script>
+	   <script src="../../../../01_common/js/serviceUrl.js"></script>
+   		<link rel="stylesheet" type="text/css" href="../../cform/skin/css/edoc-cform.css"/>
+	   <script type="text/javascript" src="../../cform/skin/js/mcform-all.js"></script>
+		<style type="text/css">
+			.mui-control-content {
+				background-color: white;
+				min-height: 360px;
+			}
+			.mui-control-content .mui-loading {
+				margin-top: 50px;
+			}
+			li {list-style-type:none;}
+			.btn {
+				color: #FFFFFF;
+				background-color: #2c83ea;
+				font-size: 1.5rem;
+				border: 0;
+				margin-bottom: -10px;
+			}
+			 a:hover {text-decoration: none;}
+		</style>
+	</head>
+		 
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">选择办理人员</h1>
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			    <a class="mui-control-item mui-active" href="#item1">预置人员</a>
+			   <!-- <a class="mui-control-item" href="#item2">部门人员</a> -->
+			</div>
+				<div class="mui-slider-group">
+					<div id="item1" class="mui-slider-item mui-control-content mui-active">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div id="actorsList" class="mui-scroll">
+								<div class="mui-input-row mui-checkbox" v-for="organRecoed in organInfo.organRec" >
+								 <form> 
+								 	<input id="checkbox" name="checkbox"  type="checkbox" >
+									<label>{{organRecoed.organName}}</label>
+								   
+								  <span style="display:none" >{{organRecoed.organId}}</span> 
+								</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- <div id="item2" class="mui-slider-item mui-control-content ">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div id="memberList" class="mui-scroll">
+								<div class="mui-input-row mui-checkbox"  v-for="memberRecoed in memberInfo.memberRec">
+								 	<input id="checkbox" name="checkbox"  type="checkbox" >
+								   <label>{{memberRecoed.organName}}</label>
+								   <span style="display:none"  >{{memberRecoed.organId}}</span>
+								</div>
+							</div>
+						</div>
+					</div> -->
+				</div>
+			<!--<div class="mui-card" style="height: 130px;">
+				<label for="">已选人员</label>
+				<ul>
+					<div id="yxry"></div>
+					<input type="hidden" id="yzryid" name="field＿name" value=''> 
+				</ul>
+			</div>-->
+		</div>
+				<div class="money">
+					<button type="button" class="mui-btn mui-btn-block btn" id="sure">确认</button>
+				</div>
+	</body>
+	<script type="text/javascript">
+/*		function xuan1(){
+		
+			var content = document.getElementById("yxry");
+			var form=document.forms[0].elements;
+			  content.innerHTML=null;
+			var name ;
+				 $("input[name='checkbox']:checked").next().each(function(){
+				  name= $(this).html();
+				 });
+				for(var i=0;i<form.length;i++){
+				  if(form[i].checked){
+				content.innerHTML+=form[i].next().html();
+				} 
+			}
+				
+				  
+		};*/
+		mui.plusReady(function() { 
+			var self = plus.webview.currentWebview(); //获取当前窗体对象 
+			//alert(self.edocBaseId); //接收A页面传入的id参数值 
+		});
+		$("#checkbox").click(function (){
+			var a = document.getElementsByName("checkbox");
+			for(var i=0;i<a.length;i++){
+				if(a[i].checked){
+				var tddata=a[i].parentNode.parentNode;
+				 $(tddata).find("label").each(function(){
+				 	 alert(this.innerHTML);
+				 });
+				}
+			}
+			}); 
+		mui('.mui-scroll-wrapper').scroll(); 
+		var serialNo = "";
+		var internalId = "";
+		var formId = "";//
+		var actDefUniqueId = "";//
+		var formDataId = "";//8a34a4396203280b01620339cb6a0395
+        var procDefUniqueId = "";//
+		var formType= "";//
+ 		var taskType= "";//
+		var actDefId= "";//
+  		var assignmentId= "";//
+  		var submitType="send";//提交类型
+		//请求表单内容(html)的url
+		var htmlUrl = "";
+		var taskType="2";
+		var processId="";
+		var _areaselect_data="";
+/**
+		 * 页面数据模型构建
+		 */
+		var organVm;
+		var memberVM
+		function createValueModel(){
+	       organVm = new Vue({
+	            el: '#actorsList',
+	            data: {
+	            	organInfo:{
+	            		organRec:[]
+					}
+	            }
+	       	});
+	       	 memberVm = new Vue({
+	            el: '#memberList',
+	            data: {
+	            	memberInfo:{
+	            		memberRec:[]
+					}
+	            }
+	       	});
+       	}
+		
+		//渲染表单（包括表单数据、数据绑定、表单域权限控制）
+		var formRenderUrl="";
+		mui.plusReady(function() {
+			mui.init({
+			  gestureConfig:{
+			   tap: true, //默认为true
+			   doubletap: true, //默认为false
+			   longtap: true, //默认为false
+			   swipe: true, //默认为true
+			   drag: true, //默认为true
+			   hold:false,//默认为false，不监听
+			   release:false//默认为false，不监听
+			  }
+			});	
+			createValueModel();
+			
+			var self = plus.webview.currentWebview();
+        	internalId = self.internalId;
+        	procDefUniqueId = self.procDefUniqueId;
+        	formType= self.formType;
+        	formId= self.formId;
+        	taskType= self.taskType;
+        	actDefUniqueId= self.actDefUniqueId;
+        	actDefId= self.actDefId;
+        	formDataId= self.formDataId;
+        	assignmentId= self.assignmentId;
+        	//submitType = self.submitType;
+        	processId = self.processId;
+			initFormData();
+		});
+			
+		/**
+		 * 页面事件注册
+		 */
+		function initFormData(){
+			//调用接口获取 相关参数
+			renderOrgan();
+		//	departMember(); 
+		}
+		
+		
+				
+	//下一环节办理人
+	function renderOrgan(){
+		mui.ajax(baseServiceUrl.url,{
+			data: {
+						serviceCode : "old.edoc.queryEdocNextActors",
+						assignmentId :assignmentId,
+						actDefUniqueId:actDefUniqueId
+					},
+					dataType: 'json',
+					headers : {
+						 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					},
+					type: "post",
+					timeout: 300000, //超时时间设置为10秒；
+					success: function(datas) {
+						if(datas.errMsg){
+							plus.nativeUI.toast(datas.errMsg);
+							return;
+						}
+						if(datas.result==""){
+							return;
+						}
+						
+						var data = JSON.parse(datas.result);
+						if(data.errMsg){
+							plus.nativeUI.toast(data.errMsg);
+							return;
+						}
+						
+							var organList = data.result;
+						for(var i = 0; i < organList.length; i++){	
+								organVm.organInfo.organRec.push({
+								organId :organList[i].organId,
+								organName : organList[i].organName,
+								organCode : organList[i].organCode
+								
+							});
+						} 
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast("获取数据失败,请检查网络是否畅通");
+					}
+				});
+			}
+			//部门人员
+			function departMember(){
+					mui.ajax(baseServiceUrl.url,{
+					data: {
+						serviceCode : "edoc.queryDepartMember"
+						
+					},
+					dataType: 'json',
+					headers : {
+						 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					},
+					type: "post",
+					timeout: 300000, //超时时间设置为10秒；
+					success: function(datas) {
+						if(datas.errMsg){
+							plus.nativeUI.toast(datas.errMsg);
+							return;
+						}
+						if(datas.result==""){
+							return;
+						}
+						
+						var data = JSON.parse(datas.result);
+						if(data.errMsg){
+							plus.nativeUI.toast(data.errMsg);
+							return;
+						}
+						
+							var member = data.result;
+						for(var i = 0; i < member.length; i++){	
+								memberVm.memberInfo.memberRec.push({
+								organId :member[i].organId,
+								organName : member[i].organName,
+								organType : member[i].organType,
+								organCode : member[i].organCode
+								
+							});
+						} 
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast("获取数据失败,请检查网络是否畅通");
+					}
+				}); 
+			};
+			//确认	
+	document.getElementById('sure').addEventListener("tap", function() {
+		 var self = plus.webview.currentWebview(); //获取当前窗体对象 
+	     var name = [];
+	     var id = [];
+	     $('input[type="checkbox"]:checked').each(function(i, item){
+      		 id.push($(item).parent().find('span').html());       
+		});
+	     $('input[type="checkbox"]:checked').each(function(i, item){
+      		 name.push($(item).parent().find('label').html());       
+		});
+		var param = { 
+			selectedName:name, 
+			selectedId:id,
+			//processId:self.processId ,
+			//edocBaseId:self.edocBaseId ,
+			assignmentId:self.assignmentId ,
+			//submitType:self.submitType,
+			actDefUniqueId:self.actDefUniqueId 
+		};	 
+            var view=plus.webview.getWebviewById("12_edoc/html/edoc/tasklist/render/formrender.html");//注意  HBuilder是上个页面的ID你自己要替换掉   
+               
+            mui.fire(view,'doit',{
+                selectedName:name,
+				selectedId:id		
+            }); 
+           // alert(param.edocBaseId);
+            mui.back()   
+               
+         }); 
+		/*var param = { 
+			selectedName:name, 
+			selectedId:id,
+			processId:self.processId ,
+			edocBaseId:self.edocBaseId ,
+			assignmentId:self.assignmentId ,
+			submitType:self.submitType,
+			actDefUniqueId:self.actDefUniqueId 
+		};	 
+		mui.openWindow({
+			show: {
+				aniShow: 'pop-in',
+				duration: 250
+			},
+			extras:param,
+					
+			waiting: {
+				autoShow: false, //自动显示等待框，默认为true
+			}
+
+	});*/
+           	/*document.getElementById('sure').addEventListener("tap", function() {
+					var organName = $("#yxry").text();
+					var organId = $("#yzryid").html();
+					alert(organId);
+					
+					mui.openWindow({
+						id: "12_edoc/html/edoc/tasklist/render/formrender.html",
+						url: "formrender.html",
+						show: {
+							aniShow: 'pop-in',
+							duration: 250
+						},
+						extras:organName,
+								
+						waiting: {
+							autoShow: false, //自动显示等待框，默认为true
+						}
+					});
+		});	*/		
+	</script>
+	 
+</html>

@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet"/>
+		<link href="../../../../01_common/css/loadding.css" rel="stylesheet" />
+		<style>
+			.fixedButton{
+				position: absolute;
+				bottom: 0;
+			}
+			.spinner> div {
+				background-color: #5BC0DE;
+			}
+			.mui-card-content{
+				min-height: 50px;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+		</style>
+	</head>
+	<body class="mui-hidden">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="pageTitle" class="mui-title">会议签到</h1>
+		</header>
+		<div class="mui-content">
+			<div id="barcodeContentParentDiv" class="mui-hidden" style="padding-bottom:50px;">
+				<p style="text-align:center;font-size:0.8em;margin-top:80px;">已识别到二维码内容</p>
+				<div id="barcodeContentDiv" style="text-align:center;word-wrap:break-word;padding:5px 20px;"></div>
+				<div style="text-align:center;padding:20px 20px;color:blue;">该二维码非会议签到二维码，请重新扫描。</div>
+				<button id="reScanBtn" type="button" class="mui-btn mui-btn-blue mui-btn-block fixedButton">重新扫描</button>
+			</div>
+			<div id="loadingParentDiv" class="mui-hidden">
+				<div id="loading" class="spinner" style="margin-top:0;top:200px;z-index:9999;">
+					<div class="rect1"></div>
+					<div class="rect2"></div>
+					<div class="rect3"></div>
+					<div class="rect4"></div>
+					<div class="rect5"></div>
+				</div>
+				<div style="margin-top:220px;padding-left:10px;color:#5BC0DE;text-align:center;">正在签到，请稍后...</div>
+			</div>
+			<div id="checkinResultParentDiv" class="mui-hidden" style="padding-bottom:50px;">
+				<div class="mui-card">
+					<div class="mui-card-content">
+						<div id="signMsgDiv" style="font-size:1.2em;padding-top:10px;"></div>
+					</div>
+				</div>
+				<div id="meetInfoDiv" class="mui-card mui-hidden">
+					<div id="meetNameDiv" class="mui-card-header"></div>
+					<div class="mui-card-content">
+						<div id="meetStartTimeDiv" style="padding-top:10px;"></div>
+						<div id="meetEndTimeDiv" style="padding-top:10px;"></div>
+						<div id="firstSignTimeDiv" style="padding-top:10px;"></div>
+						<div id="meetDetailBtn" style="text-align:right;padding: 10px 0;color:#007AFF;">会议详情</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../../../00_mui/js/vue.min.js"></script>
+	<script src="../../../../00_mui/js/mui.min.js"></script>
+	<script src="../../../../00_mui/js/jquery.js"></script>
+	<script src="../../../../01_common/js/common.js"></script>
+	<script src="../../../../01_common/js/serviceUrl.js" ></script>
+	<script type="text/javascript">
+		mui.plusReady(function(){
+			mui.init();
+			regEvent();
+			jump2BarcodeScan();
+			// meetingCheckin({"type":"QR","result":"INSPUR_MEETING_8aaf80ca6ecaedd8016ecaf1aff00005"});
+		});
+		
+		/**
+		 * 页面事件注册
+		 */
+		function regEvent(){
+			// 接收二维码扫描结果
+			window.addEventListener("receiveScanResult", function(event){
+				var barCodeInfoStr = event.detail.barCodeInfo;
+				if(barCodeInfoStr==null || barCodeInfoStr==undefined){
+					return;
+				}
+				var barCodeInfo = JSON.parse(barCodeInfoStr);
+				meetingCheckin(barCodeInfo);
+			});
+			// 打开二维码扫描页面
+			document.getElementById("reScanBtn").addEventListener("tap", jump2BarcodeScan);
+			// 查看会议详情
+			document.getElementById("meetDetailBtn").addEventListener("tap", jump2MeetDetailPage);
+		}
+		
+		/**
+		 * 跳转到二维码扫描页面
+		 */
+		function jump2BarcodeScan(){
+			mui.openWindow({
+				id: "01_common/html/barcode/barcode_scan.html",
+				url: "../../../../01_common/html/barcode/barcode_scan.html",
+				extras: {
+					callbackPageId: plus.webview.currentWebview().id,
+					callbackPageEvent: "receiveScanResult",
+					pageTitle: "请扫描会议签到二维码",
+					alwaysTriggerCallback: "1",
+					scanOptionStr: JSON.stringify({
+						scanTypeArr: [plus.barcode.QR]
+					})
+				},
+				show: {
+					aniShow: 'fade-in'
+				},
+				waiting: {
+					autoShow: false
+				}
+			});
+			$("#barcodeContentParentDiv").addClass("mui-hidden");
+			$("#loadingParentDiv").addClass("mui-hidden");
+			$("#checkinResultParentDiv").addClass("mui-hidden");
+			$("#meetInfoDiv").addClass("mui-hidden");
+		}
+		
+		/**
+		 * 根据二维码扫描结果，进行会议签到
+		 */
+		var meetingBaseId;
+		function meetingCheckin(barCodeInfo){
+			// console.log(JSON.stringify(barCodeInfo));
+			var barCodeContent = barCodeInfo.result;
+			if(!barCodeContent){
+				plus.webview.currentWebview().close("none");
+				return;
+			}
+			$("body").removeClass("mui-hidden");
+			if(!barCodeContent.startsWith("INSPUR_MEETING_")){
+				$("#barcodeContentDiv").text(barCodeContent);
+				$("#barcodeContentParentDiv").removeClass("mui-hidden");
+				return;
+			}
+			$("#loadingParentDiv").removeClass("mui-hidden");
+			meetingBaseId = barCodeContent.replace("INSPUR_MEETING_","");
+			// console.log(barCodeContent+"---"+meetingBaseId);
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "meeting.signMeetingInfo",
+					organId: localStorage.getItem("employeeOrganId"),
+					meetingBaseId: meetingBaseId
+				},
+				dataType: 'json',
+				headers : {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+				type: "post",
+				timeout: 30000, //超时时间设置为10秒；
+				success: function(datas) {
+					$("#loadingParentDiv").addClass("mui-hidden");
+					// console.log(JSON.stringify(datas));
+					if(datas.status!=="true"){
+						mui.toast("签到失败："+datas.errMsg);
+						return;
+					}
+					var dataResult = JSON.parse(datas.result);
+					// console.log(JSON.stringify(dataResult));
+					if(dataResult.state==="5"){
+						mui.toast("签到失败："+dataResult.errorMessage);
+						return;
+					} else if(dataResult.state==="4"){
+						$("#signMsgDiv").text(dataResult.signMessage);
+						$("#meetInfoDiv").addClass("mui-hidden");
+					} else {
+						$("#signMsgDiv").text("您已成功签到。");
+						$("#meetNameDiv").text(dataResult.meetName);
+						$("#meetStartTimeDiv").text("开始时间： "+dataResult.startTime);
+						$("#meetEndTimeDiv").text("结束时间： "+dataResult.endTime);
+						$("#firstSignTimeDiv").text("首次签到： "+dataResult.signTime);
+						$("#meetInfoDiv").removeClass("mui-hidden");
+					}
+					$("#checkinResultParentDiv").removeClass("mui-hidden");
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("签到失败,请检查网络是否畅通");
+					$("#loadingParentDiv").addClass("mui-hidden");
+				}
+			});
+		}
+		
+		/**
+		 * 跳转到会议详情页面
+		 */
+		function jump2MeetDetailPage(){
+			mui.openWindow({
+				id: "12_edoc/html/tasklist/mymeet/meet_detail.html",
+				url: "../mymeet/meet_detail.html",
+				//createNew: true,
+				extras: {
+					meetingBaseId: meetingBaseId,
+					meetingIsRead: "1",
+					meetingIsConfirm: "1"
+				},
+				show: {
+					aniShow: "pop-in",
+					duration: 250
+				},
+				waiting: {
+					autoShow: false
+				}
+			});
+		}
+		
+	</script>
+</html>

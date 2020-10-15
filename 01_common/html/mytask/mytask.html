@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../../00_mui/css/mui.min.css">
+		 <link rel="stylesheet" href="css/notice.css" />
+		<style>
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">检查任务</h1>
+		</header>
+		<div class="mui-content">
+			
+				<div class="mui-input-row mui-search mui-plus-visible">
+					<input id="search" type="search" class="mui-input-speech mui-input-clear" placeholder="请输入任务名称">
+				</div>
+			
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="img/jiancejianyan-17_.png">
+						<div class="mui-media-body">
+							 <h4 class="mui-ellipsis">"食安护佳节"专项行动</h4>
+							<p class="mui-h6 mui-ellipsis task-desc">类型：食品生产</p>
+		                    <p class="mui-h6 mui-ellipsis task-desc">状态：已签收</p>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="img/jiancejianyan-17_.png">
+						<div class="mui-media-body">
+							 <h4 class="mui-ellipsis">2018年食品生产飞行计划</h4>
+							<p class="mui-h6 mui-ellipsis task-desc">类型：食品生产</p>
+		                    <p class="mui-h6 mui-ellipsis task-desc">状态：未签收</p>
+						</div>
+					</a>
+				</li><li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="img/jiancejianyan-17_.png">
+						<div class="mui-media-body">
+							 <h4 class="mui-ellipsis">2018双随机检查计划</h4>
+							<p class="mui-h6 mui-ellipsis task-desc">类型：食品生产</p>
+		                    <p class="mui-h6 mui-ellipsis task-desc">状态：已签收</p>
+						</div>
+					</a>
+				</li><li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="img/jiancejianyan-17_.png">
+						<div class="mui-media-body">
+							 <h4 class="mui-ellipsis">2018食品生产安全专项检查</h4>
+							<p class="mui-h6 mui-ellipsis task-desc">类型：食品生产</p>
+		                    <p class="mui-h6 mui-ellipsis task-desc">状态：未签收</p>
+						</div>
+					</a>
+				</li><li class="mui-table-view-cell mui-media">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" src="img/jiancejianyan-17_.png">
+						<div class="mui-media-body">
+							 <h4 class=" mui-ellipsis">2018餐饮检查计划</h4>
+							<p class="mui-h6 mui-ellipsis task-desc">类型：食品生产</p>
+		                    <p class="mui-h6 mui-ellipsis task-desc">状态：未签收</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+
+		    </div>
+	</body>
+	<script src="../../../00_mui/js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		mui(".mui-table-view").on("tap",".mui-table-view-cell",function(e){
+//			console.log("eeee"+this.index);
+			
+			mui.openWindow({
+					id: "mytask_detail.html",
+					url: "mytask_detail.html",
+					show: {
+						aniShow: 'pop-in',
+						duration: 250
+					},
+					waiting: {
+						autoShow: false, //自动显示等待框，默认为true
+					}
+			});
+			
+		})
+		
+	</script>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+			.mui-card{
+				margin: 0;	
+				box-shadow: 0 0;
+				margin-bottom: 1rem;
+			}
+			.ent-head-name{
+				color: #000000;
+				font-size: 16px;
+				font-weight: normal;
+			}
+			.ent-head-status{
+				font-size: 12px;
+				font-weight: normal;
+				background-color: #ff5d62;
+				border-radius: 3px;
+				color: #FFFFFF;
+				margin-left: 1rem;
+				padding:0.1rem 0.6rem;
+			}
+			.mui-card-header:after{
+				height: 0;
+			}
+			.mui-card-content-inner{
+				padding: 8px 15px;
+			}
+			.ent-content-img{
+				width: 20%;
+			}
+			.ent-content-lines{
+				display: inline-block;
+				width: 78%;
+				padding-left: 1rem;
+			}
+			.ent-content-lines>p{
+				margin-bottom: 5px;
+			}
+			.ent-content-input{
+				color: #000000;
+			}
+			.ent-footer{
+				position: relative;
+				width: 100%;
+			}
+			.mui-btn-primary{
+				position: absolute;
+				right: 15px;
+				background-color: #6aa6fc;
+				border: 0;
+				font-weight: normal ;
+				padding: 5px 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div class="mui-card">
+					<div class="mui-card-header">
+						<a class="mui-navigate-right">
+							<span class="ent-head-name">济南裕腾制药有限公司</span>
+							<span class="ent-head-status">变更</span>
+						</a>
+					</div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							<img class="ent-content-img" src="../images/icon2.png" />
+							<div class="ent-content-lines">
+								<p>注册法人：<span class="ent-content-input">张磊</span></p>
+								<p>许可证号：<span class="ent-content-input">3784000948727832</span></p>
+								<p>许可证类型：<span class="ent-content-input">药品生产许可证</span></p>
+							</div>
+							 
+						</div>
+					</div>
+					<div class="mui-card-footer ent-footer">
+						<div class="mui-btn mui-btn-primary ">发起检查</div>
+					</div>
+				</div>
+			<div class="mui-card">
+					<div class="mui-card-header">
+						<a class="mui-navigate-right">
+							<span class="ent-head-name">济南裕腾制药有限公司</span>
+							<span class="ent-head-status">变更</span>
+						</a>
+					</div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							<img class="ent-content-img" src="../images/icon2.png" />
+							<div class="ent-content-lines">
+								<p>注册法人：<span class="ent-content-input">张磊</span></p>
+								<p>许可证号：<span class="ent-content-input">3784000948727832</span></p>
+								<p>许可证类型：<span class="ent-content-input">药品生产许可证</span></p>
+							</div>
+							 
+						</div>
+					</div>
+					<div class="mui-card-footer ent-footer">
+						<div class="mui-btn mui-btn-primary ">发起检查</div>
+					</div>
+				</div>
+				 
+			
+				 
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+//				keyEventBind: {
+//					backbutton: false //关闭back按键监听
+//				}
+			});
+		</script>
+	</body>
+
+</html>

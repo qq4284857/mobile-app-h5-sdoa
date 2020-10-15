@@ -1,0 +1,136 @@
+/*----------------公共css样式--------------*/
+#headerArea a, #headerArea h1,.mui-bar a, .mui-bar h1 {
+    color: #fff;
+}
+#headerArea,.mui-bar{
+    background: #2c83ea;
+}
+.mui-bar .mui-title{
+	font-size: 1.2em;
+}
+.mui-card-header{
+	font-size: 1.2em;
+}
+.mui-icon-back:before, .mui-icon-left-nav:before{
+	color: #fff;
+}
+/***底部操作按钮***/
+footer.mui-bar-tab{
+	height: 44px;
+}
+.bottom-check-button{
+	margin: 0px;
+	height: 44px;
+	line-height: 44px;
+	padding: 0 !important;
+	border-radius: 0;
+	border:0;
+	top:0 !important;
+	font-size: 1em !important;
+	text-align: center;
+}
+/***检查步骤样式***/
+	.step_box{
+		position: fixed;
+		top: 44px;
+		right:0px;
+		left: 0px;
+		z-index: 10;
+		width: 100%;
+		height: 70px;
+		background: #fff;
+	}
+	.step_box p{
+		font-size: 10px;
+	}
+	.step_bz{
+		width: 20%;
+		height: 100%;
+		float: left;
+		text-align: center;
+		position: relative;
+	}
+	.step_bz:after{
+		content: "";
+	    display: block;
+	    position: absolute;
+	    top: 25px;
+	    right: -15px;
+	    width: 80%;
+	    height: 2px;
+	    background: #e0edfc;
+	    z-index: 1;
+	}
+	.step_bz:last-child:after{
+		display: none;
+	}
+	.stpe_xh{
+		width: 40px;
+		height: 40px;
+		background: #dddddd;
+		display: inline-block;
+		float: left;
+		border-radius: 50%;
+		border:2px solid transparent;
+		margin: 5px 0 0 15px;
+		position: relative;
+		z-index: 9;
+	}
+	.stpe_pass .stpe_xh {
+		background:#6ca8f0;
+	    border-color: #c4dcf9;
+	}
+	.stpe_pass p{
+		color: #333;
+	}
+	.stpe_xh span{
+		color: #fff;
+		text-align: center;
+		width: 100%;
+		font-size: 1.4em;
+		line-height: 40px;
+	}
+	.stpe_xh .mui-icon{
+		font-size: 2em;
+	}
+	.step_bz p{
+		width:45px ;
+		margin-left: 12px;
+		margin-top: 0px;
+	    font-size: 0.6em;
+	    margin-bottom: 0;
+	}
+	/*slide后面第一个卡片位置*/
+	.card-wrap{
+		margin-top: 75px;
+		margin-bottom: 49px;
+	}
+	/*检查流程底部按钮*/
+	footer{
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: #fff;
+		z-index:200;
+	}
+	.fixedButton{
+		margin: 0;
+		padding: 0;
+		border-radius:0 ;
+		height: 44px;
+		line-height: 44px;
+	}
+	.fixedButton button{
+		margin-bottom: 0px;
+	}
+	.mui-card{
+		margin: 5px 0px;
+	}
+	.mui-card-content{
+		padding: 5px;
+	}
+/**取消点击背景**/	
+.mui-table-view-cell.mui-active{
+    background-color: transparent;
+}

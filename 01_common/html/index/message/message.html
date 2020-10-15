@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+			 .mui-bar{
+			 	background-color: #3C77E6;
+			 }
+			 .mui-bar .mui-title{
+			 	right: 100px;
+			 	left: 100px;
+			 }
+			 .mui-icon-back:before, .mui-icon-left-nav:before{
+			 	color: #FFFFFF;
+			 }
+			 .mui-bar>img{
+			 	width: 1.5rem;
+			 	margin-left: 0.5rem;
+			 	padding-top: 14px;
+			 }
+			 .mui-bar>h1{
+			 	width: 30%;
+			 	font-size: 18px;
+			 	 color: #FFFFFF;
+			 }
+			 .mui-bar>span{
+			 	font-size: 13px;
+			 	 color: #FFFFFF;
+			 	 margin-top: 12px;
+			 }
+			 
+			 
+			 .mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;*/
+				margin: 0;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			.mui-segmented-control.mui-scroll-wrapper .mui-control-item{
+				padding: 0 30px;
+			}
+			.mui-slider-indicator.mui-segmented-control{
+				background-color: #FFFFFF;
+			}
+			#sliderProgressBar{
+				/*transform:translate3d(125px, 0px, 0px) translateZ(0px);*/
+				
+			}
+			.mui-slider-group{
+				line-height: 0px;
+				height: 0px;
+			}
+			.mui-segmented-control .mui-control-item{
+				line-height: 48px;
+				position: relative;
+			}
+			.tab-badge{
+				position: absolute;
+				top: 3px;
+				right: 20px;
+			}
+			.progressesbar{
+				width: 100%;
+				height: 2px;
+				position: relative;
+			}
+			.progressesbar-item0{
+				position: absolute;
+				left: 0;
+				width: 33.3%;
+				height: 2px;
+			}
+			.progressesbar-item1{
+				position: absolute;
+				left: 33.3%;
+				width: 33.3%;
+				height: 2px;
+			}
+			.progressesbar-item2{
+				position: absolute;
+				left: 66.6%;
+				width: 33.3%;
+				height: 2px;
+			}
+			.progressesbar-item-active{
+				background-color: #3C77E6;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav">
+		    <!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+		    <img src="../images/contact.png" />
+		    <h1 class="mui-title">沟通</h1>
+		    <span class="mui-pull-right">发起群聊</span>
+		</header>
+		<div class="mui-content">
+			<div id="slider1" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<a class="mui-control-item" href="#item1mobile" data-wid="subpage_system.html">
+							系统消息
+							<font class="mui-badge mui-badge-danger tab-badge">5</font>
+						</a>
+						<a class="mui-control-item" href="#item2mobile" data-wid="subpage_private.html">
+							群聊消息
+							<font class="mui-badge mui-badge-danger tab-badge">12</font>
+						</a>
+						<a class="mui-control-item" href="#item3mobile" data-wid="subpage_group.html">
+							私聊消息
+							<font class="mui-badge mui-badge-danger tab-badge">34</font>
+						</a>
+					 
+				</div>
+				<div class="progressesbar">
+					<div id="progressbar0" class="progressesbar-item0 progressesbar-item-active"></div>
+					<div id="progressbar1" class="progressesbar-item1 "></div>
+					<div id="progressbar2" class="progressesbar-item2"></div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		 
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script type="text/javascript" src="../../../../00_mui/js/webviewGroup.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+			});
+			(function($) {
+				$('.mui-scroll-wrapper').scroll({
+					indicators: true //是否显示滚动条
+				});
+			})(mui);
+			
+			 mui.plusReady(function() {
+
+				var _self = plus.webview.currentWebview();
+				var group = new webviewGroup(_self.id, {
+					items: [{
+						id: "subpage_system.html",
+						url: "subpage_system.html",
+						extras: {},
+						styles:{
+							top : "94px",
+							height :(window.screen.height - 134)+"px"
+						}
+					}, {
+						id: "subpage_private.html",
+						url: "subpage_private.html",
+						extras: {},
+						styles:{
+							top : "94px",
+							height :(window.screen.height - 134)+"px"
+						}
+					}, {
+						id: "subpage_group.html",
+						url: "subpage_group.html",
+						extras: {},
+						styles:{
+							top : "94px",
+							height :(window.screen.height - 134)+"px"
+						}
+					}],
+					onChange: function(obj) {
+						var c = document.querySelector(".mui-control-item.mui-active");
+						if(c) {
+							c.classList.remove("mui-active");
+						}
+						var d = document.querySelector(".progressesbar-item-active");
+						if(d) {
+							d.classList.remove("progressesbar-item-active");
+						}
+						var targetslider = document.getElementById(("progressbar"+parseInt(obj.index)));
+						targetslider.classList.add("progressesbar-item-active");
+						
+						var target = document.querySelector(".mui-slider-indicator .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")");
+						target.classList.add("mui-active");
+						if(target.scrollIntoView) {
+							target.scrollIntoView();
+						}
+					}
+				});
+				mui(".mui-slider-indicator").on("tap", ".mui-control-item", function(e) {
+					var wid = this.getAttribute("data-wid");
+					group.switchTab(wid);
+				});
+				
+				setTimeout(function() {
+					plus.nativeUI.closeWaiting();
+				}, 1000);
+ 
+			});
+		</script>
+	</body>
+
+</html>

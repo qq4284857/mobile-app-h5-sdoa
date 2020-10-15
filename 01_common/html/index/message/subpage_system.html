@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<link rel="stylesheet" href="../../../../00_mui/css/icons-extra.css" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+				margin: 0;
+				padding: 0;
+			}
+		 .new-notice{
+		 	width: 100%;
+		 	height: 3rem;
+		 	background-color: #FFFFFF;
+		 	line-height: 3rem;
+		 	margin-bottom: 10px;
+		 }
+		 .mui-icon-extra-new{
+		 	color: #FF8E74;
+		 	margin-left: 8px;
+		 	margin-right: 8px;
+		 }
+		 h4{
+		 	font-size: 16px;
+		 	line-height: 1.6rem;
+		 	font-weight: normal;
+		 }
+		 .news-time{
+		 	margin-right: 12px;
+		 }
+		 .mui-table-view-chevron .mui-table-view-cell{
+		 	padding-right: 15px;
+		 }
+		 .news-big-img{
+		 	width: 100%;
+		 	
+		 }
+		 .mui-table-cell{
+		 	display: inline-block;
+		 }
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div class="new-notice">
+					<span class="mui-icon-extra mui-icon-extra-new "></span>
+					新版本更新通知：消息列表改版
+					
+				</div>
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
+		            	<h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+					</li>
+					<li class="mui-table-view-cell">
+							<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
+							<img class="news-big-img" src="../images/news-bg.png" />
+		            		<h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+					</li>
+					<li class="mui-table-view-cell">
+						<div class="mui-table">
+		            		<div class="mui-table-cell mui-col-xs-8">
+			                    <h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化信息化推进办公室张彦合</h4>
+			                   <h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+			                </div>
+			                <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+			                    <img src="../images/news-bg2.png" />
+			                </div>
+		                </div>
+					</li>
+				 	<li class="mui-table-view-cell">
+						<div class="mui-table">
+		            		<div class="mui-table-cell mui-col-xs-8">
+			                    <h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化信息化推进办公室张彦合</h4>
+			                   <h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+			                </div>
+			                <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+			                    <img src="../images/news-bg2.png" />
+			                </div>
+		                </div>
+					</li>
+					<li class="mui-table-view-cell">
+						<div class="mui-table">
+		            		<div class="mui-table-cell mui-col-xs-8">
+			                    <h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化信息化推进办公室张彦合</h4>
+			                   <h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+			                </div>
+			                <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+			                    <img src="../images/news-bg2.png" />
+			                </div>
+		                </div>
+					</li>
+					<li class="mui-table-view-cell">
+						<div class="mui-table">
+		            		<div class="mui-table-cell mui-col-xs-8">
+			                    <h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化信息化推进办公室张彦合</h4>
+			                   <h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+			                </div>
+			                <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+			                    <img src="../images/news-bg2.png" />
+			                </div>
+		                </div>
+					</li>
+					<li class="mui-table-view-cell">
+						<div class="mui-table">
+		            		<div class="mui-table-cell mui-col-xs-8">
+			                    <h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化信息化推进办公室张彦合</h4>
+			                   <h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>
+			                </div>
+			                <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+			                    <img src="../images/news-bg2.png" />
+			                </div>
+		                </div>
+					</li> 
+				 
+ 
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+				drag:false,
+				pullRefresh: {
+					container: '#pullrefresh',
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					for(var i = cells.length, len = i + 10; i < len; i++) {
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell';
+						li.innerHTML = '<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化' + (i + 1) + '</h4><h5><span class="news-time">省食药监局</span><span>2018-97-67</span></h5>'
+						table.appendChild(li);
+					}
+				}, 1000);
+			}
+		</script>
+	</body>
+
+</html>

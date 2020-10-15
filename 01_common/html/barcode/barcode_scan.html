@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<meta name="HandheldFriendly" content="true"/>
+		<meta name="MobileOptimized" content="320"/>
+		<title></title>
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet"/>
+		<style>
+			html, body {
+				height:100%;
+				width: 100%;
+			}
+			#selectPicBtn {
+				padding-top: 14px;
+			}
+			#scanArea {
+				position: fixed;
+			}
+		</style>
+	</head>
+	<script>
+		// 监听DOMContentLoaded事件
+		document.addEventListener("DOMContentLoaded", function(){
+			regEvent();
+			plusReadyFunc();
+		}, false);
+	</script>
+	<body style="background-color: #000000;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a id="selectPicBtn" class="mui-pull-right mui-hidden">相册</a>
+			<h1 id="pageTitle" class="mui-title"></h1>
+		</header>
+		<footer>
+			<div class="mui-row">
+				<div class="mui-col-sm-6 mui-col-xs-6">
+					<button id="lightBtn" type="button" class="mui-btn mui-btn-yellow mui-btn-block fixedButton">开启/关闭灯光</button>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6">
+					<button id="undoBtn" type="button" class="mui-btn mui-btn-blue mui-btn-block fixedButton">返回</button>
+				</div>
+			</div>
+		</footer>
+		<div class="mui-content">
+			<div id="scanArea">
+				
+			</div>
+		</div>
+	</body>
+	<script src="../../../00_mui/js/mui.min.js"></script>
+	<script>
+		var scan = null; //条码扫描对象
+		var scanOption = null; //条码扫描配置
+		var lightStatus = "off"; //灯光状态：on开，off关
+		
+		/**
+		 * 重写返回逻辑
+		 */
+		var _oldBack = mui.back;
+		mui.back = function(barCodeInfo){
+			if(scan!=null){
+				scan.close();
+			}
+			var selfWebview = plus.webview.currentWebview();
+			var callbackPageId = selfWebview.callbackPageId;
+			var callbackPageEvent = selfWebview.callbackPageEvent;
+			if(callbackPageId && callbackPageEvent){
+				var callbackPageWebview = plus.webview.getWebviewById(callbackPageId);
+				if(callbackPageWebview){
+					if(barCodeInfo || selfWebview.alwaysTriggerCallback==="1"){
+						mui.fire(callbackPageWebview,callbackPageEvent,{barCodeInfo: JSON.stringify(barCodeInfo?barCodeInfo:{})});
+					}
+				}
+			}
+			_oldBack();
+		}
+		
+		/**
+		 * 页面事件注册
+		 */
+		function regEvent(){
+			//开启、关闭灯光
+			document.getElementById("lightBtn").addEventListener("tap",function(){
+				if(scan==null){
+					return;
+				}
+				lightStatus = !lightStatus;
+				scan.setFlash(lightStatus);
+			});
+			//返回
+			document.getElementById("undoBtn").addEventListener("tap",function(){
+				mui.back();
+			});
+			//从相册选择
+			document.getElementById("selectPicBtn").addEventListener("tap",function(){
+				selectBarcodeFromPic();
+			});
+		}
+		
+		/**
+		 * plus基座加载完成，开始调用页面方法
+		 */
+		function plusReadyFunc(){
+			document.activeElement.blur();
+			mui.plusReady(function(){
+				mui.init();
+				initScanAreaPos();
+				initScanOption();
+				setTimeout(function(){
+					initScanObj();
+				},500);
+			});
+		}
+		
+		/**
+		 * 初始化扫描区域位置
+		 */
+		function initScanAreaPos(){
+			var sh = plus.navigator.getStatusbarHeight();//系统状态栏高度
+			var h = plus.screen.resolutionHeight;//设备屏幕高度分辨率
+			var w = plus.screen.resolutionWidth;//设备屏幕宽度分辨率
+			var scanAreaEle = document.getElementById("scanArea");
+			scanAreaEle.style.top = 44 + "px";
+			scanAreaEle.style.bottom = "44px";
+			scanAreaEle.style.height = h - sh - 44 -44  + "px";
+			scanAreaEle.style.width = w + "px";
+		}
+		
+		/**
+		 * 初始化条码扫描配置
+		 * 可以自定义一些配置，否则使用默认配置
+		 */
+		function initScanOption(){
+			var self = plus.webview.currentWebview();
+			document.getElementById("pageTitle").innerText = self.pageTitle?self.pageTitle:"二维码/条码";
+			//默认配置
+			scanOption = {
+				scanTypeArr: [plus.barcode.QR, plus.barcode.EAN8, plus.barcode.EAN13], //要识别的条码类型过滤器，为条码类型常量数组
+				frameColor: "#00FF00", //扫描框颜色
+				scanbarColor: "#00FF00", //扫描条颜色
+				background: "#000000", //条码识别控件背景颜色
+				conserve: false, //是否保存成功扫描到的条码数据时的截图
+				filename: "_doc/barcode/" //保存成功扫描到的条码数据时的图片路径，当conserve为true时生效
+			}
+			//自定义配置
+			var myScanOptionStr = self.scanOptionStr;
+			if(myScanOptionStr==null && myScanOptionStr==undefined){
+				return;
+			}
+			var myScanOption = JSON.parse(myScanOptionStr);
+			mui.extend(true,scanOption,myScanOption);
+		}
+		
+		/**
+		 * 初始化条码扫描对象
+		 */
+		function initScanObj(){
+			scan = new plus.barcode.Barcode("scanArea", scanOption.scanTypeArr, {
+				frameColor: scanOption.frameColor,
+				scanbarColor: scanOption.scanbarColor,
+				background: scanOption.background
+			});
+			scan.onmarked = onmarked;
+			//scan.onerror = onerror;
+			scan.start({
+				conserve: scanOption.conserve,
+				filename: scanOption.filename
+			});
+		}
+		
+		/**
+		 * 条码扫描成功回调函数
+		 * type：识别到的条码类型，Number类型的值，与Barcode对象定义的条码类型常量一致。
+		 * result：识别到的条码数据，字符串采用UTF8编码格式。
+		 * file：识别到的条码图片文件路径，为png格式文件，如果设置为不保存图片，则返回undefined。
+		 */
+		function onmarked(type, result, file){
+			switch(type){
+		    	case plus.barcode.QR:
+		    	type = "QR";
+		    	break;
+		    	case plus.barcode.EAN13:
+		    	type = "EAN13";
+		    	break;
+		    	case plus.barcode.EAN8:
+		    	type = "EAN8";
+		    	break;
+		    	default:
+		    	type = "其它"+type;
+		    	break;
+		    }
+			//result = result.replace(/\n/g, "");
+			var barCodeInfo = {
+				type: type,
+				result: result,
+				file: file
+			}
+			mui.back(barCodeInfo);
+		}
+		
+		/**
+		 * 条码扫描失败回调函数
+		 */
+		function onerror(error){
+			//alert(error.code+"---"+error.message);
+		}
+		
+		/**
+		 * 从相册中选择二维码
+		 */
+		function selectBarcodeFromPic(){
+			if(scan!=null){
+				scan.cancel();
+			}
+			plus.gallery.pick(function(path){
+			    plus.barcode.scan(path,onmarked,function(error){
+					plus.nativeUI.alert("无法识别此图片");
+					if(scan!=null){
+						scan.start({
+							conserve: scanOption.conserve,
+							filename: scanOption.filename
+						});
+					}
+				});
+		    }, function(err){
+		    	//console.log('Failed: '+err.message);
+		    	if(scan!=null){
+					scan.start({
+						conserve: scanOption.conserve,
+						filename: scanOption.filename
+					});
+				}
+		    });
+		}
+	</script>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+			.mui-card{
+				margin: 0 0;
+				box-shadow: none;
+			}
+			.mui-table-view-cell.mui-collapse .mui-collapse-content{
+				padding: 0 0;
+			}
+			.mui-table-view-cell.mui-collapse .mui-table-view{
+				margin: 0;
+			}
+			.mui-table-view-cell.mui-collapse .mui-table-view .mui-table-view-cell{
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+			.mui-table-view-cell:after{
+				left: 0;
+				height: 2px;
+			}
+			.mui-table-view:before{
+				top: 0;
+				
+			}
+			.mui-table-view-cell.mui-collapse .mui-table-view .mui-table-view-cell:last-child:after, .mui-table-view-cell.mui-collapse .mui-table-view:after, .mui-table-view-cell.mui-collapse .mui-table-view:before{
+				height: 1px;
+			}
+			.mui-table-view-cell.mui-collapse .mui-table-view .mui-table-view-cell:after{
+				right: 10px;
+				left: 10px;
+			}
+			.task-tablecell-img{
+				width: 18px;
+				background-repeat: no-repeat;
+				position: relative;
+				margin-right: 5px;
+				float: left;
+			}
+			.task-tablecell-num{
+				margin-left: 5px;
+				color: #FFAF10;
+			}
+			.mui-card .mui-table-view:after, .mui-card .mui-table-view:before, .mui-card>.mui-table-view>.mui-table-view-cell:last-child:after, .mui-card>.mui-table-view>.mui-table-view-cell:last-child:before{
+				height: 1px;
+			}
+			 .mui-table-view-cell.mui-collapse.mui-active>.mui-navigate-right:after, .mui-table-view-cell.mui-collapse.mui-active>.mui-push-right:after{
+			 	color: #78bef8;
+			 }
+			.mui-table-view-cell.mui-active{
+				background-color: #FFFFFF;
+			}
+ 			.task-tablecell-title{
+ 				display: inline-block;
+ 				width: 50%;
+ 				font-size: 12px;
+ 			}
+ 			.task-tablecell-time{
+ 				display: inline-block;
+ 				width: 35%;
+ 				font-size: 12px;
+ 				color: #BBBBBB;
+ 			}
+ 			.mui-btn-blue, .mui-btn-primary, input[type=submit]{
+ 				color: #78bef8;
+ 				background: #f5fbff;
+ 				border: 1px solid #78bef8;
+ 				border-radius:3rem;
+ 				font-size: 12px;
+ 				padding:3px 10px;
+ 				line-height: 1;
+ 				font-weight: normal;
+ 			}
+		</style>
+	</head>
+
+	<body>
+		 <div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse mui-active">
+						<a class="mui-navigate-right">
+							<img class="task-tablecell-img" src="../images/task-oa.png" />
+							<span>监督检查 </span>
+							<span class="task-tablecell-num">(3)</span>
+						</a>
+						<div class="mui-collapse-content">
+							 	<ul class="mui-table-view">
+									 <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+							         <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+								</ul>
+						</div>
+					</li>
+					 <li class="mui-table-view-cell mui-collapse">
+						<a class="mui-navigate-right">
+							<img class="task-tablecell-img" src="../images/task-check.png" />
+							<span>行政办公 </span>
+							<span class="task-tablecell-num">(3)</span>
+						</a>
+						<div class="mui-collapse-content">
+							 	<ul class="mui-table-view">
+									 <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+							         <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+								</ul>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse">
+						<a class="mui-navigate-right">
+							<img class="task-tablecell-img" src="../images/task-admission.png" />
+							<span>行政许可 </span>
+							<span class="task-tablecell-num">(3)</span>
+						</a>
+						<div class="mui-collapse-content">
+							 	<ul class="mui-table-view">
+									 <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+							         <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+								</ul>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse">
+						<a class="mui-navigate-right">
+							<img class="task-tablecell-img" src="../images/task-admission.png" />
+							<span>代办案件 </span>
+							<span class="task-tablecell-num">(3)</span>
+						</a>
+						<div class="mui-collapse-content">
+							 	<ul class="mui-table-view">
+									 <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+							         <li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li><li class="mui-table-view-cell">
+									 	<span class="task-tablecell-title">药品经营许可证变更审核</span>
+									 	<span class="task-tablecell-time">2018-02-09到达</span>
+									 	<div class="mui-btn mui-btn-primary">办理</div>
+									 </li>
+								</ul>
+						</div>
+					</li>
+				</ul>	
+					
+		</div>		
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+				keyEventBind: {
+					backbutton: false //关闭back按键监听
+				}
+			});
+		</script>
+	</body>
+
+</html>

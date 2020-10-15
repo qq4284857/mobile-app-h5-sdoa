@@ -1,0 +1,190 @@
+			.ui-page-login,body {
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				padding: 0px;
+			}
+			body{
+				background: url("../images/login_bg.png")no-repeat;
+				background-size: cover;
+			    background-attachment: fixed;
+			    overflow: hidden;
+			}
+			.mui-content{height: 100%;background: transparent;}
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 0px;
+			}
+			
+			.mui-input-group label {
+				width: 15%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 65%;
+				color: #FFFFFF;
+				font-size: 0.9rem;
+				margin-right: 13%;
+			}
+			.mui-input-row .mui-input-clear~.mui-icon-clear{
+				top: 20px;
+				right: 32px;
+			}
+			.mui-input-row label~input::-webkit-input-placeholder{
+				color: #F2F1FD;
+				font-size: 0.9rem;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			 
+			.login-btn{
+				margin-top:2rem;
+				width: 100%;
+				text-align: center;
+			}
+			.mui-btn {
+				/*padding: 10px;*/
+				background-color: #8684E9;
+				border-radius: 3rem;
+				border: 0;
+				width: 80%;
+				margin-left: 10%;
+				color: #FFFFFF;
+			}
+		 .mui-btn-block{
+		 	padding: 12px 0;
+		 }
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			#password {
+				padding-right: 60px;
+			}
+			.pass_img {
+				width: 1.8rem;
+				margin-top: 15px;
+				position: absolute;
+			    right: 10px;
+			    top: 0px;
+			}
+			.login_logo {
+			    width: 100%;
+			    text-align: center;
+			    margin-top: 3rem;
+			    margin-bottom: 0.2rem;
+			}
+			.login_logo img {
+			    width: 7.0rem;
+			    /*height: 8.0rem;*/
+			}
+			.mui-bar-nav{
+				background: transparent;
+				box-shadow:none
+			}
+			.versionCls{
+				text-align: right;
+				font-size: 0.8em;
+				color: #fff;
+				position:fixed;
+				top:10px;
+				right: 10px;
+			}
+			.top_title{
+			    color: #FFFFFF;
+			    margin-top: 1.5rem;
+			    margin-bottom: 0.5rem;
+			}
+			.app_name{
+				font-size: 1.5em;
+			    color: #FFFFFF;
+			    line-height: 1.5rem;
+			    /*margin: 0.1em 0;*/
+			}
+			.mui-input-row label img {
+			    width: 1rem;
+			}
+			.mui-input-group,.mui-table-view{
+			    background-color: transparent;
+			}
+			.mui-input-group:before,.mui-table-view:before,.mui-input-group:after,.mui-table-view:after{
+				display:none;
+				background-color:transparent
+			}
+			.mui-table-view-chevron .mui-table-view-cell{
+			    font-size: 0.8em;
+			}
+			.mui-card{
+				    margin: 3rem 10px 10px 10px;
+				    background-color: transparent;
+				    box-shadow: 0 0;
+			}
+			.mui-input-group .mui-input-row:after{
+				/*width: 80%;*/
+				left: 0;
+			}
+			.mui-card .mui-input-group .mui-input-row:last-child:after, .mui-card .mui-input-group .mui-input-row:last-child:before, .mui-card .mui-input-group:after, .mui-card .mui-input-group:before{
+				height: 1px;
+				/*width: 80%;*/
+			}
+			.mui-input-group .mui-input-row{
+				height: 50px;
+				padding-top: 10px;
+				width: 80%;
+				margin-left: 10%;
+			}
+.login-options{
+	margin-top: 1rem;
+	width: 80%;
+	margin-left: 10%;
+}
+.login-options-remenber{
+	display: inline-block;
+	color: #FEFFFE;
+	font-size: 13px;
+	
+}
+.login-options-auto{
+	display: inline-block;
+	float: right;
+	color: #FEFFFE;
+	font-size: 13px;
+}  
+ input[type="checkbox"] + label::before {
+    content: "\a0";  /*不换行空格*/
+    display: inline-block;
+    vertical-align: .2em;
+    width: .8em;
+    height: .8em;
+    margin-right: 0.5em;
+    border-radius: .2em;
+    background-color: transparent;
+    border: 1px solid #FFFFFF;
+    text-indent: .15em;
+    line-height: .65;  /*行高不加单位，子元素将继承数字乘以自身字体尺寸而非父元素行高*/
+}
+input[type="checkbox"]:checked + label::before {
+    content: "\2713";
+   background-color: transparent;
+   border: 1px solid #FFFFFF;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}

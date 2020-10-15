@@ -1,0 +1,44 @@
+html,
+			body,
+			.mui-content {
+				min-height: 100%;
+				background-color: #FFFFFF;
+			}
+			
+			.content_date {
+				width: 100%;
+				height: 1.5rem;
+				padding: 0 10px;
+			}
+			
+			.content_date div:first-child {
+				width: 50%;
+			}
+			
+			.content_date div:last-child {
+				width: 50%;
+			}
+			
+			.content_date div {
+				color: #adadad;
+				font-size: 0.75rem;
+				float: left;
+				text-align: center;
+				height: 2.0rem;
+				line-height: 2.0rem;
+			}
+			
+			.title-notiec {
+				text-align: center;
+			}
+			
+			.news_content {
+				padding-left: 10px;
+				padding-right: 10px;
+				font-size: 14px;
+			}
+			
+			.title-notiec {
+				padding-left: 10px;
+				padding-right: 10px;
+			}

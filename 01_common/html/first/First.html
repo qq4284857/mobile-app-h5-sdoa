@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link rel="stylesheet" href="../../../00_mui/css/mui.min.css" />
+</head>
+<body>
+	<script type="text/javascript" src="../../../00_mui/js/mui.min.js" ></script>
+	<script type="text/javascript" src="../../js/common.js" ></script>
+	<script type="text/javascript" src="../../js/serviceUrl.js" ></script>
+	<script type="text/javascript" src="../../js/Atom.js" ></script>
+	<script type="text/javascript" src="../../js/app.data.init.js" ></script>
+	
+	<script type="text/javascript">
+		mui.plusReady(function() {
+			mui.init();
+			requestPermissions4App();//安卓6.0（打包的targetSdkVersion>=23），需要动态申请权限
+			initAppBasicInfo();//初始化app基本信息，该方法中不允许出现网络请求。
+			nextOpen();//需要在版本号初始化成功后才能执行
+			regEvent();//需要在版本号初始化成功后才能执行
+		});
+		
+		/**
+		 * 安卓6.0（打包的targetSdkVersion>=23），需要动态申请权限
+		 */
+		function requestPermissions4App(){
+			if(baseConfig.mobileServerConfig.isUseMiniUpdateMode=="1"){ //开发模式下，不需要申请权限。另外，Hbuilder也没有自定义插件，所以以下代码不要在开发模式下执行。
+				plus.Atom.requestPermissions4App();
+			}
+		}
+		
+		/**
+		 * 初始化app基本信息
+		 * 该方法中不允许出现网络请求。
+		 */
+		function initAppBasicInfo(){
+			/*
+			 * 初始化设备标识，android系统为设备的imei码，ios系统为设备的uuid。
+			 */
+			var imei = mui.os.android ? plus.device.imei : plus.device.uuid;
+			localStorage.setItem("imei",imei.split(",")[0]);
+			
+			/*
+			 * app初始化状态参数初始化。
+			 * checkVersion：	-2:发现新版本需要更新，-1:正在进行初始化，0:初始化成功（失败次数为0），其他数值：初始化失败次数。
+			 * cacheData：		-1:正在进行初始化，0:初始化成功（失败次数为0），其他数值：初始化失败次数。
+			 * customData：		-1:正在进行初始化，0:初始化成功（失败次数为0），其他数值：初始化失败次数。
+			 */
+			localStorage.setItem("LS.APP.dataInitStatus", JSON.stringify({
+				checkVersion: -1,
+				cacheData: -1,
+				customData: -1
+			}));
+			
+			/*
+			 * 初始化APP版本信息
+			 */
+			var appVersionInfos = localStorage.getItem("LS.APP.appVersionInfos");
+			if(!appVersionInfos){
+				appVersionInfos = "{}";//{APP:{versionCode:84,versionName:"1.0.0"},CHECK:{versionCode:104,versionName:"1.3.2"},...}
+			}
+			var versionInfo = {"versionCode":0,"versionName":"0.0.0"};
+			if(baseConfig.mobileServerConfig.isUseMiniUpdateMode=="1"){ //开发模式下，不需要自动更新。另外，Hbuilder也没有自定义插件，所以以下代码不要在开发模式下执行。
+				var retVersionInfoStr = plus.Atom.getManifestVersionInfo();//获取manifest.json文件中配置的版本号code和name
+				var retVersionInfo = JSON.parse(retVersionInfoStr);
+				if(retVersionInfo.status!="true"){
+					appVersionInfos = "{}";
+					mui.toast("获取manifest.json中配置的版本信息出错："+retVersionInfo.errMsg);
+				}else{
+					var appVersionInfos_APP_Str = JSON.parse(appVersionInfos).APP;
+					if(appVersionInfos_APP_Str){
+						var appVersionInfos_APP = JSON.parse(appVersionInfos_APP_Str);
+						versionInfo.versionCode = appVersionInfos_APP.versionCode;
+						versionInfo.versionName = appVersionInfos_APP.versionName;
+					}
+					var zipTempDirStatus = plus.Atom.isFileExists(["apps/"+plus.runtime.appid+"/www/.zipTemp/"]);//查看是否存在.zipTemp目录，这是判断是否更新过h5资源的依据。
+					if(zipTempDirStatus!==""){ //目录存在，说明曾经更新过h5资源，且未重装过apk
+						if(retVersionInfo.versionCode>versionInfo.versionCode){//安装apk或者更新过manifest.json文件后，第一次打开app
+							versionInfo.versionCode = retVersionInfo.versionCode;
+							versionInfo.versionName = retVersionInfo.versionName;
+							if(baseConfig.mobileServerConfig.guidePageInfo.showAfterUpdate=="1"){
+								localStorage.setItem("LS.APP.showGuide", "1");//apk更新后，重新显示导航欢迎页
+							}
+						}
+					}else{ //目录不存在，说明还未更新过h5资源，或重新安装过apk（安装apk会导致已经更新的h5资源丢失，需要重新更新）
+						appVersionInfos = "{}";//重置各小应用的版本号，以便重新更新h5资源
+						versionInfo.versionCode = retVersionInfo.versionCode;
+						versionInfo.versionName = retVersionInfo.versionName;
+					}
+				}
+			}
+			appVersionInfos = JSON.parse(appVersionInfos);
+			appVersionInfos.APP = JSON.stringify(versionInfo);
+			localStorage.setItem("LS.APP.appVersionInfos",JSON.stringify(appVersionInfos));
+		}
+		
+		/**
+		 * 事件注册
+		 */
+		function regEvent(){
+			//用于触发app内容初始化
+			window.addEventListener("initAppData",function(event){
+				if(isCheckversionBusy=="1" || isInitAppCacheDataBusy=="1" || isInitAppCustomDataBusy=="1"){
+					return;
+				}
+				var reInitCheckVersion = event.detail?event.detail.reInitCheckVersion:"1";
+				if(reInitCheckVersion!="0"){
+					checkversion();
+				}
+				var reInitAppCacheData = event.detail?event.detail.reInitAppCacheData:"1";
+				if(reInitAppCacheData!="0"){
+					initAppCacheData();
+				}
+				var reInitAppCustomData = event.detail?event.detail.reInitAppCustomData:"1";
+				if(reInitAppCustomData!="0"){
+					initAppCustomData();
+				}
+			});
+			
+			//如果存在网络，则自动触发初始化事件
+			var networkStatus = getCurNetwork();
+			if(networkStatus!="未知" && networkStatus!="未连接网络"){
+				mui.trigger(window,"initAppData");
+			}
+		}
+		
+		/**
+		 * 打开引导页或登录页
+		 */
+		function nextOpen() {
+			var showGuide = localStorage.getItem("LS.APP.showGuide");
+			if(showGuide!="0" && baseConfig.mobileServerConfig.guidePageInfo.isShow=="1"){
+				mui.openWindow({
+					id: " 01_common/html/guide/guide.html",
+					url: "../guide/guide.html",
+					show: {
+						aniShow: 'pop-in',
+						duration: 250
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}else{
+				/**
+				 * 获取登录页和登录后首页的配置。
+				 * 由于LS.APP.appCustomDataList的获取是异步方法，因此，这些配置很可能会在下一次启动app才会生效。
+				 * 如果想立即生效，就要吧相关初始化方法改成同步的，但如此做后，如果接口网络不通，会导致app长期卡在first.html这个空白页上，用户体验极差。
+				 * 综合考虑，才如此设计，下一次启动生效（前提：本次启动期间已经成功初始化LS.APP.appCustomDataList的内容）。
+				 */
+				var loginPageId = baseConfig.mobileServerConfig.defaultLoginPageInfo.loginPageId;
+				var loginPageUrl = baseConfig.mobileServerConfig.defaultLoginPageInfo.loginPageUrl;
+				var loginPageParam = baseConfig.mobileServerConfig.defaultLoginPageInfo.loginPageParam;
+				if(baseConfig.mobileServerConfig.isUseCustomLoginAndIndex=="1"){
+					var appCustomDataList = JSON.parse(localStorage.getItem("LS.APP.appCustomDataList"));
+					if(appCustomDataList){
+						for(var i=0;i<appCustomDataList.length;i++){
+							var miniAppInfo = appCustomDataList[i];
+							if(miniAppInfo.APP_CODE!="APP"){
+								continue;
+							}
+							var APP_PAGE_ID = miniAppInfo.APP_PAGE_ID;
+							var APP_PAGE_URL = miniAppInfo.APP_PAGE_URL;
+							if(APP_PAGE_ID && APP_PAGE_URL){
+								loginPageId = APP_PAGE_ID;
+								loginPageUrl = APP_PAGE_URL;
+							}
+							var APP_PAGE_PARAMJSON = miniAppInfo.APP_PAGE_PARAMJSON;
+							if(APP_PAGE_PARAMJSON){
+								try{
+									loginPageParam = JSON.parse(APP_PAGE_PARAMJSON);
+								}catch(e){
+									mui.toast("窗口参数配置有误，json格式不正确！");
+									loginPageParam = {};
+								}
+							}
+							break;
+						}
+					}
+				}
+				mui.openWindow({
+					id: loginPageId,
+					url: loginPageUrl,
+					show: {
+						aniShow: 'pop-in',
+						duration: 250
+					},
+					waiting: {
+						autoShow: false
+					},
+					extras: loginPageParam
+				});
+			}
+		}
+	</script>
+</body>
+</html>

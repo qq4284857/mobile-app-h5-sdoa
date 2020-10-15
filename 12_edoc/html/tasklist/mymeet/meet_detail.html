@@ -1,0 +1,602 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../render/bootstrap/bootstrap.min.css" rel="stylesheet" />
+		<link href="../../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../../01_common/css/common.css" rel="stylesheet"/>
+		<style>
+			.mui-card-content{
+				min-height: 50px;
+			}
+			.mui-input-row {
+				height: 100% !important;
+			}
+			.mui-input-group .mui-input-row:after {
+				left: 10px;
+			}
+			.mui-input-row label {
+				padding-left: 10px;
+				font-weight: normal;
+				margin-bottom: 0;
+				padding: 13px 11px 13px 10px;
+			}
+			.rightCls {
+			    float: right;
+			    width: 65%;
+			    line-height: 21px;
+			    margin-bottom: 0;
+			    padding: 10px 15px;
+			    padding-left: 0;
+			    font-size: 17px;
+			}
+			.table th, .table td{
+				text-align: center;
+				vertical-align: middle !important;
+				word-wrap: break-word;
+				word-break: break-all;
+			}
+			#meetFeedbackPopover {
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				height: 60%;
+				width: 100%;
+				min-height: 260px;
+			}
+			.popover-close-btn {
+				position: fixed;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				height: 44px;
+			}
+			input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { /* WebKit browsers */ 
+				color: #757575; 
+			}
+			select {
+				color: #757575;
+			}
+			select.highlightCls {
+				color: #000 ;
+			}
+			.mui-checkbox.mui-left, .mui-radio.mui-left {
+				float:left;
+				clear:none;
+				width: 80px;
+			}
+			.mui-checkbox.mui-left input[type=checkbox], .mui-radio.mui-left input[type=radio] {
+			    left: 0;
+				margin-top: 2px !important;
+			}
+			.mui-checkbox.mui-left label, .mui-radio.mui-left label {
+			    padding-left: 38px;
+				font-size: 17px;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="pageTitle" class="mui-title">会议详情</h1>
+		</header>
+		<footer>
+			<button id="feedbackBtn" type="button" class="mui-btn mui-btn-blue mui-btn-block mui-hidden fixedButton">参会反馈</button>
+		</footer>
+		<div class="mui-content">
+			<div id="meetInfoArea" class="card-wrap" style="margin-top:0;">
+				<div class="mui-card">
+					<!-- <div class="mui-card-header">基本信息</div> -->
+					<div class="mui-card-content">
+						<form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>会议名称</label>
+								<span class="rightCls" v-text="meetBaseInfo.meetName"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>开始时间</label>
+								<span class="rightCls" v-text="meetBaseInfo.startTime"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>结束时间</label>
+								<span class="rightCls" v-text="meetBaseInfo.endTime"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>召集人</label>
+								<span class="rightCls" v-text="meetBaseInfo.callOrganName"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>召集单位</label>
+								<span class="rightCls" v-text="meetBaseInfo.callUnitName"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>会议室</label>
+								<span class="rightCls" v-text="meetBaseInfo.roomName"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>会议室地址</label>
+								<span class="rightCls" v-text="meetBaseInfo.meetAddr"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>会议简介</label>
+								<span class="rightCls" v-text="meetBaseInfo.summary"></span>
+							</div>
+							<div class="mui-input-row">
+								<label>备注</label>
+								<span class="rightCls" v-text="meetBaseInfo.remark"></span>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="mui-card">
+					<!-- <div class="mui-card-header">会议材料</div> -->
+					<div class="mui-card-content">
+						<table class="table" style="font-size:14px;margin-top:10px;">
+							<thead>
+								<tr>
+									<th style="text-align:left;">会议材料</th>
+									<th style="width:110px;">大小/类型</th>
+									<th style="width:90px;">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-if="meetCommonAttachArr.length<1">
+									<td style="text-align:left;padding-top:10px;">无</td>
+								</tr>
+								<tr v-else v-for="(attachInfo,index) in meetCommonAttachArr">
+									<td style="text-align:left;" v-text="attachInfo.fileName"></td>
+									<td>
+										<span class="mui-badge mui-badge-purple" v-text="renderFileSize(attachInfo.fileSize,1)"></span>
+										<span class="mui-badge mui-badge-purple" v-text="attachInfo.fileType"></span>
+									</td>
+									<td>
+										<button type="button" @tap="commonAttachDetail(index);">查看</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="mui-card">
+					<!-- <div class="mui-card-header">关联公文</div> -->
+					<div class="mui-card-content">
+						<table class="table" style="font-size:14px;margin-top:10px;">
+							<thead>
+								<tr>
+									<th style="text-align:left;">关联公文</th>
+									<th style="width:110px;">大小/类型</th>
+									<th style="width:90px;">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-if="meetOaAttachArr.length<1">
+									<td style="text-align:left;padding-top:10px;">无</td>
+								</tr>
+								<tr v-else v-for="(attachInfo,index) in meetOaAttachArr">
+									<td style="text-align:left;" v-text="attachInfo.fileName"></td>
+									<td>
+										<span class="mui-badge mui-badge-purple" v-text="attachInfo.fileSize"></span>
+										<span class="mui-badge mui-badge-purple" v-text="attachInfo.fileType"></span>
+									</td>
+									<td>
+										<button type="button" @tap="oaAttachDetail(index);">查看</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="mui-card">
+					<!-- <div class="mui-card-header">会议纪要</div> -->
+					<div class="mui-card-content">
+						<table class="table" style="font-size:14px;margin-top:10px;">
+							<thead>
+								<tr>
+									<th style="text-align:left;">会议纪要</th>
+									<th style="width:110px;">大小/类型</th>
+									<th style="width:90px;">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-if="meetRecordAttachArr.length<1">
+									<td style="text-align:left;padding-top:10px;">无</td>
+								</tr>
+								<tr v-else v-for="(attachInfo,index) in meetRecordAttachArr">
+									<td style="text-align:left;" v-text="attachInfo.fileName"></td>
+									<td>
+										<span class="mui-badge mui-badge-purple" v-text="attachInfo.fileSize"></span>
+										<span class="mui-badge mui-badge-purple" v-text="attachInfo.fileType"></span>
+									</td>
+									<td>
+										<button type="button" @tap="recordAttachDetail(index);">查看</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="meetFeedbackPopover" class="mui-popover">
+			<div class="mui-card" style="height:100%;">
+				<div class="mui-card-header">参会反馈</div>
+				<div class="mui-card-content">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>是否参会</label>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>是</label>
+								<input type="radio" name="isAttend" value="1" v-model="feedbackInfo.isAttend" />
+							</div>
+							<div class="mui-input-row mui-radio mui-left">
+								<label>否</label>
+								<input type="radio" name="isAttend" value="0" v-model="feedbackInfo.isAttend"/>
+							</div>
+						</div>
+						<div class="mui-input-row" v-show="feedbackInfo.isAttend==='1'">
+							<label>联系电话</label>
+							<input type="text" class="mui-input-clear" placeholder="请填写联系电话" v-model="feedbackInfo.contact">
+						</div>
+						<div class="mui-input-row" v-show="feedbackInfo.isAttend==='0'">
+							<label>不参会原因</label>
+							<textarea placeholder="请填写不参会原因" v-model="feedbackInfo.leaveReason"></textarea>
+						</div>
+						<div class="mui-input-row mui-hidden"></div>
+					</form>
+				</div>
+			</div>
+			<button @tap="meetFeedback();" type="button" class="mui-btn mui-btn-blue popover-close-btn">提交</button>
+		</div>
+	</body>
+	<script src="../../../../00_mui/js/vue.min.js"></script>
+	<script src="../../../../00_mui/js/mui.min.js"></script>
+	<script src="../../../../00_mui/js/jquery.js"></script>
+	<script src="../../../../01_common/js/common.js"></script>
+	<script src="../../../../01_common/js/serviceUrl.js" ></script>
+	<script src="../render/edoc/attachPreviewOrDownload.js" ></script>
+	<script type="text/javascript">
+		var self;
+		mui.plusReady(function(){
+			mui.init();
+			self = plus.webview.currentWebview();
+			createValueModel();
+			regEvent();
+			loadMeetBaseInfo();
+			loadMeetCommonAttach();
+			loadMeetOaAttach();
+		});
+		
+		/**
+		 * 页面模型创建
+		 */
+		var meetInfoVm;
+		var meetFeedbackVm;
+		function createValueModel(){
+			meetInfoVm = new Vue({
+				el: "#meetInfoArea",
+				data: {
+					meetBaseInfo: {},
+					meetCommonAttachArr: [],
+					meetOaAttachArr: [],
+					meetRecordAttachArr: []
+				},
+				methods: {
+					commonAttachDetail: function(idx){
+						var attachInfo = meetInfoVm.meetCommonAttachArr[idx];
+						// console.log(JSON.stringify(attachInfo));
+						pageUrlPrefix = "../../../../";
+						downloadOrPreviewAttach(attachInfo, "1");
+					},
+					oaAttachDetail: function(idx){
+						var attachInfo = meetInfoVm.meetOaAttachArr[idx];
+						// console.log(JSON.stringify(attachInfo));
+						pageUrlPrefix = "../../../../";
+						downloadOrPreviewAttach(attachInfo, "1");
+					},
+					recordAttachDetail: function(idx){
+						var attachInfo = meetInfoVm.meetRecordAttachArr[idx];
+						// console.log(JSON.stringify(attachInfo));
+						pageUrlPrefix = "../../../../";
+						downloadOrPreviewAttach(attachInfo, "1");
+					}
+				}
+			});
+			meetFeedbackVm = new Vue({
+				el: "#meetFeedbackPopover",
+				data: {
+					feedbackInfo: {
+						isAttend: "1",
+						contact: "",
+						leaveReason: ""
+					}
+				},
+				watch:{
+					"feedbackInfo.isAttend": {
+						handler(newValue,oldValue) {
+							// console.log(newValue + "---" + oldValue);
+							if(newValue==="1"){
+								meetFeedbackVm.feedbackInfo.leaveReason = "";
+							} else if(newValue==="0"){
+								meetFeedbackVm.feedbackInfo.contact = "";
+							}
+						}
+					}
+				}
+			});
+		}
+		
+		/**
+         * 页面事件注册
+         */
+        function regEvent(){
+        	// 参会反馈按钮
+			document.getElementById("feedbackBtn").addEventListener("tap",function(){
+				if(meetInfoVm.meetBaseInfo.endTime<=getDateStr()){
+					mui.alert("会议已结束，不能再进行反馈。","提示",null,null,"div");
+					$("#feedbackBtn").addClass("mui-hidden");
+					return;
+				}
+				$("#meetFeedbackPopover").css("bottom",0-$("body").scrollTop());
+				mui("#meetFeedbackPopover").popover("toggle");
+			});
+        }
+        
+		/**
+		 * 加载会议基本信息
+		 */
+		function loadMeetBaseInfo(){
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "meeting.viewMeetingInfo",
+					meetingBaseId: self.meetingBaseId
+				},
+				dataType: "json",
+				headers : {
+					 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+				},
+				type: "post",
+				timeout: 30000, //超时时间设置为10秒；
+				success: function(datas) {
+					// console.log(JSON.stringify(datas));
+					if(datas.status!=="true"){
+						mui.toast("加载会议基本信息失败");
+						return;
+					}
+					var dataResult = JSON.parse(datas.result);
+					// console.log(JSON.stringify(dataResult));
+					if(dataResult.state!=="true"){
+						mui.toast("加载会议基本信息失败");
+						return;
+					}
+					meetInfoVm.meetBaseInfo = dataResult.result;
+					// 将会议状态改为已阅
+					if(self.meetingIsRead!=="1"){
+						changeMeetReadStatus();
+					}
+					if(self.meetingIsConfirm!=="1" && meetInfoVm.meetBaseInfo.endTime>getDateStr()){
+						$("#feedbackBtn").removeClass("mui-hidden");
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("加载会议基本信息失败,请检查网络是否畅通");
+				}
+			});
+		}
+		
+		/**
+		 * 将会议状态改为已阅
+		 */
+		function changeMeetReadStatus(){
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "meeting.readMeetingInfo",
+					meetingBaseId: self.meetingBaseId
+				},
+				dataType: "json",
+				headers : {
+					 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+				},
+				type: "post",
+				timeout: 30000, //超时时间设置为10秒；
+				success: function(datas) {
+					// console.log(JSON.stringify(datas));
+					if(datas.status!=="true"){
+						mui.toast("更新会议已阅状态失败");
+						return;
+					}
+					var dataResult = JSON.parse(datas.result);
+					// console.log(JSON.stringify(dataResult));
+					if(dataResult.state!=="true"){
+						mui.toast("更新会议已阅状态失败");
+						return;
+					}
+					var meetListWebview = plus.webview.getWebviewById("12_edoc/html/tasklist/mymeet/mymeet_list.html");
+					if(meetListWebview!=null){
+						mui.fire(meetListWebview,"refreshSearchList");
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.toast("更新会议已阅状态失败,请检查网络是否畅通");
+				}
+			});
+		}
+		
+		/**
+		 * 加载会议材料附件
+		 */
+		function loadMeetCommonAttach(){
+			mui.ajax(baseServiceUrl.url, {
+				data:{
+					serviceCode: "mobileServer.getDownloadUrlsFromCfile",
+					uid: localStorage.getItem("userId"),//【必填】上传用户userId
+					biz: "meetingBiz",//【必填】应用标识，如check，一级目录
+					bizClass: "meetingBizClass",//【必填】模块标识，二级目录
+					bizKey: self.meetingBaseId,//【必填】业务主键，三级目录
+					variablePara: ""//【非必填】可变路径/可变变量，四级目录
+				},
+			    dataType: "json",
+			    type: "post",
+			    headers : {
+					"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+				},
+			   	async: true,
+			    success: function(data) {
+			      	// console.log(JSON.stringify(data));
+			    	if(data.status!=="true") {
+			    		mui.toast("获取会议材料列表失败。");
+			    		return;
+			        }
+			    	var dataResult = JSON.parse(data.result);
+					//console.log(JSON.stringify(dataResult));
+					if(dataResult.status!=="true"){
+						mui.toast("获取会议材料列表失败。");
+						return;
+					}
+					meetInfoVm.meetCommonAttachArr = [];
+			    	var attachInfoList = dataResult.result;
+			    	for(var i=0;i<attachInfoList.length;i++){
+			    		var attachInfo = attachInfoList[i];
+			    		var downloadurl = attachInfo.downloadurl;//直接从cfileSer下载的url，不含【http://127.0.0.1:80/cfileSer/】前缀，用于app能直接访问cfileSer的情形。
+			    		attachInfo.downloadurl = baseServiceUrl.cfileSerUrl + "/" + downloadurl;
+			    		var downloadFromMsUrl = attachInfo.downloadFromMsUrl;//从mobileServer下载的url，不含【http://127.0.0.1:80/mobileServer/】前缀，可用于app能不能直接访问cfileSer的情形（由mobileServer中转）。
+			    		attachInfo.downloadFromMsUrl = baseServiceConfig.baseUrl + baseServiceConfig.context + "/" + downloadFromMsUrl;
+			    		var deleteUrl = attachInfo.deleteUrl;//直接从cfileSer删除附件的url，不含【http://127.0.0.1:80/cfileSer/】前缀，用于app能直接访问cfileSer的情形。
+			    		attachInfo.deleteUrl = baseServiceUrl.cfileSerUrl + "/" + deleteUrl;
+			    		// console.log(JSON.stringify(attachInfo));
+						meetInfoVm.meetCommonAttachArr.push(attachInfo);
+			    	}
+			    },
+			    error: function(xhr, type, errorThrown) {
+			    	mui.toast("获取会议材料列表失败，请检查网络是否畅通。");
+			    }
+			});
+		}
+		
+		/**
+		 * 加载关联公文附件
+		 */
+		function loadMeetOaAttach(){
+			mui.ajax(baseServiceUrl.url, {
+				data:{
+					serviceCode: "meeting.queryOaInfo",
+					meetingBaseId: self.meetingBaseId
+				},
+			    dataType: "json",
+			    type: "post",
+			    headers : {
+					"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+				},
+			   	async: true,
+			    success: function(data) {
+			      	// console.log(JSON.stringify(data));
+			    	if(data.status!=="true") {
+			    		mui.toast("获取关联公文列表失败。");
+			    		return;
+			        }
+			    	var dataResult = JSON.parse(data.result);
+					// console.log(JSON.stringify(dataResult));
+					if(dataResult.state!=="true"){
+						mui.toast("获取关联公文列表失败。");
+						return;
+					}
+					meetInfoVm.meetOaAttachArr = [];
+					meetInfoVm.meetRecordAttachArr = [];
+			    	var attachInfoList = dataResult.result;
+			    	for(var i=0;i<attachInfoList.length;i++){
+						var attachInfo = {};
+			    		attachInfo.fileId = attachInfoList[i].fileId;//网盘附件的uuid
+			    		attachInfo.fileName = attachInfoList[i].enclosureName;//文件名，不含扩展名
+			    		attachInfo.fileType = "doc";//文件扩展名，不含【.】
+			    		attachInfo.fullFileName = attachInfo.fileName + "." + attachInfo.fileType;//文件名（含扩展名）
+			    		attachInfo.fileSize = "未知";//附件大小，单位byte
+			    		attachInfo.uploadUser = attachInfoList[i].uploader;//上传人名称
+			    		attachInfo.uploadTime = attachInfoList[i].uploadTime;//上传时间，yyyy-MM-dd HH:mm:ss
+			    		attachInfo.downloadFromMsUrl = baseServiceUrl.fileDownloadUrl + "?docId="+attachInfo.fileId+"&docName="+encodeURI(encodeURI(attachInfo.fullFileName));
+						// console.log(JSON.stringify(attachInfo));
+						if(attachInfoList[i].enclosureType=="MEET_OA"){ // 关联公文
+							meetInfoVm.meetOaAttachArr.push(attachInfo);
+						} else if(attachInfoList[i].enclosureType=="MEETING_RECORD"){ // 会议纪要
+							meetInfoVm.meetRecordAttachArr.push(attachInfo);
+						}
+			    	}
+			    },
+			    error: function(xhr, type, errorThrown) {
+			    	mui.toast("获取关联公文列表失败，请检查网络是否畅通。");
+			    }
+			});
+		}
+		
+		/**
+		 * 参会反馈
+		 */
+		function meetFeedback(){
+			if(meetFeedbackVm.feedbackInfo.isAttend==="0"){
+				meetFeedbackVm.feedbackInfo.leaveReason = meetFeedbackVm.feedbackInfo.leaveReason.trim();
+				if(!meetFeedbackVm.feedbackInfo.leaveReason){
+					mui.toast("请填写不参会原因");
+					return;
+				}
+			} else if(meetFeedbackVm.feedbackInfo.isAttend==="1"){
+				meetFeedbackVm.feedbackInfo.contact = meetFeedbackVm.feedbackInfo.contact.trim();
+				if(!meetFeedbackVm.feedbackInfo.contact){
+					mui.toast("请填写联系电话");
+					return;
+				} else if(!baseRegularExpression.MOBILE.test(meetFeedbackVm.feedbackInfo.contact)){
+					mui.toast("联系电话填写错误，请检查");
+					return;
+				}
+			}
+			plus.nativeUI.showWaiting("正在提交反馈信息...");
+			mui.ajax(baseServiceUrl.url, {
+				data: {
+					serviceCode: "meeting.isAttendMeeting",
+					meetingBaseId: self.meetingBaseId,
+					organId: localStorage.getItem("employeeOrganId"),
+					isAttend: meetFeedbackVm.feedbackInfo.isAttend,
+					contact: meetFeedbackVm.feedbackInfo.contact,
+					leaveReason: meetFeedbackVm.feedbackInfo.leaveReason
+				},
+				dataType: "json",
+				headers : {
+					 "Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
+				},
+				type: "post",
+				timeout: 30000, //超时时间设置为10秒；
+				success: function(datas) {
+					// console.log(JSON.stringify(datas));
+					if(datas.status!=="true"){
+						plus.nativeUI.closeWaiting();
+						mui.toast("参会反馈信息提交失败");
+						return;
+					}
+					var dataResult = JSON.parse(datas.result);
+					// console.log(JSON.stringify(dataResult));
+					if(dataResult.state!=="true"){
+						plus.nativeUI.closeWaiting();
+						mui.toast("参会反馈信息提交失败");
+						return;
+					}
+					$("#feedbackBtn").addClass("mui-hidden");
+					mui("#meetFeedbackPopover").popover("hide");
+					plus.nativeUI.closeWaiting();
+					var meetListWebview = plus.webview.getWebviewById("12_edoc/html/tasklist/mymeet/mymeet_list.html");
+					if(meetListWebview!=null){
+						mui.fire(meetListWebview,"refreshSearchList");
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					plus.nativeUI.closeWaiting();
+					mui.toast("参会反馈信息提交失败,请检查网络是否畅通");
+				}
+			});
+		}
+		
+		
+		
+	</script>
+</html>

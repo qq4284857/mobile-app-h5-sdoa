@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.tab-span-home.dodo-active{
+				background-image: url("images/home_icon_.png");
+			}
+			.tab-span-home{
+				background-image: url("images/home_icon.png");
+			}
+			.tab-span-message.dodo-active{
+				background-image: url("images/message_icon_.png");
+			}
+			.tab-span-message{
+				background-image: url("images/message_icon.png");
+			}
+			.tab-span-discovery.dodo-active{
+				background-image: url("images/discovery_icon_.png");
+			}
+			.tab-span-discovery{
+				background-image: url("images/discovery_icon.png");
+			}
+			.tab-span-mine.dodo-active{
+				background-image: url("images/mine_icon_.png");
+			}
+			.tab-span-mine{
+				background-image: url("images/mine_icon.png");
+			}
+			.mui-bar-tab .mui-tab-item .mui-icon{
+				top: 5px;
+				width: 22px;
+				height: 22px;
+				background-repeat: no-repeat;
+				background-size: 100% 100%;
+			}
+			.mui-icon .mui-badge{
+				margin-left: -5px;
+				line-height: 0.8rem;
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="mui-bar mui-bar-tab">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="home/home.html">
+				<span class="mui-icon tab-span-home dodo-active"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<!-- <a class="mui-tab-item" href="message/message.html">
+				<span class="mui-icon tab-span-message">
+				</span>
+				<span class="mui-tab-label">消息</span>
+			</a> -->
+			<!-- <a class="mui-tab-item" href="discovery/discovery.html">
+				<span class="mui-icon tab-span-discovery"></span>
+				<span class="mui-tab-label">发现</span>
+			</a> -->
+			<a class="mui-tab-item" href="mine/mine.html">
+				<span class="mui-icon tab-span-mine"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+		<script src="../../../00_mui/js/mui.min.js"></script>
+		<script src="../../js/serviceUrl.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="js/index_common.js"></script>
+		<script src="../../js/Atom.js" ></script>
+		<script>
+			mui.plusReady(function() {
+				mui.init();
+				initTabPage();
+			});
+			
+			/**
+			 * 选项卡初始化
+			 */
+			var subpagesId = [
+				'01_common/html/index/home/home.html',
+				// '01_common/html/message/message.html',
+				// '01_common/html/discovery/discovery.html',
+				'01_common/html/mine/mine.html'
+			];
+			var subpagesPath = [
+				'home/home.html',
+				//'',
+				// 'discovery/discovery.html',
+				'mine/mine.html'
+			];
+			var subpage_style = {
+				top: '0px',
+				bottom: '51px'
+			};
+			var activeTabId = subpagesId[0];
+			var aniShow = {};
+			function initTabPage(){
+				var self = plus.webview.currentWebview();
+				for (var i = 0; i < subpagesPath.length; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpagesPath[i], subpagesId[i], subpage_style);
+					if (i > 0) {
+						sub.hide();
+					}else{
+						temp[subpagesId[i]] = "true";
+						mui.extend(aniShow,temp);
+					}
+					self.append(sub);
+				}
+				
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTabPath = this.getAttribute('href');
+					var targetTabId = subpagesId[subpagesPath.indexOf(targetTabPath)];
+					if (targetTabId == activeTabId) {
+						return;
+					}
+					//显示目标选项卡
+					if(mui.os.ios || aniShow[targetTabId]){//若为iOS平台或非首次显示，则直接显示
+						plus.webview.show(targetTabId);
+					}else{//否则，使用fade-in动画，且保存变量
+						var temp = {};
+						temp[targetTabId] = "true";
+						mui.extend(aniShow,temp);
+						plus.webview.show(targetTabId,"fade-in",300);
+					}
+					//所有tab图标置灰
+					var cs = this.parentElement.children;
+					for(var i = 0; i < cs.length; i++){
+						cs[i].firstElementChild.classList.remove('dodo-active'); 
+					}
+					//点中的图标，显示高亮
+					this.firstElementChild.classList.add('dodo-active');
+					//隐藏当前;
+					plus.webview.hide(activeTabId);
+					//更改当前活跃的选项卡
+					activeTabId = targetTabId;
+				});
+			}
+		</script>
+	</body>
+
+</html>

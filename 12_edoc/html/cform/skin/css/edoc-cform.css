@@ -1,0 +1,173 @@
+@CHARSET "UTF-8";
+html{
+	width: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+form{
+	text-align: center;
+	overflow: auto;
+   padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: #fff;
+}
+fieldset{
+	margin: 0;
+	padding: 0;
+}
+.cfBody{
+	font-size: 12px;
+	font-family: "宋体", sans-serif;
+}
+/*表单标题*/
+.cfTitle {
+	font-family: 宋体;
+	font-size: 20px;
+	text-align: center;
+}
+
+/*标签*/
+.cfLabel {
+	/* display:inline-block;
+	border: none;
+	color: #333;
+	line-height: 1.6em;
+	padding: 0.25em 0px 0px 0px;
+	text-align: left;
+	width: 35%;
+	vertical-align: middle;  */
+	border: none;
+    color: #333;
+    display: block;
+    line-height: 1.6em;
+    padding: 0.25em  0px 0px 0px;
+    text-align: left;
+	float:left;
+	vertical-align: middle;
+}
+/*长标签，段落中*/
+.cfLongLabel {
+	display:inline;
+	border: none;
+	color: #333;
+	line-height: 1.6em;
+	padding: 0.25em 0px 0px 0px;
+	text-align: left;
+	vertical-align: middle; 
+	width: 15%;
+	
+}
+
+/*单行文本框*/
+li div{
+	width: 85%;
+	float:left;
+}
+.cfText {
+	height: 1.8em;
+	border: 1px;
+	border-style: none none solid none;
+	border-color: #CCC;
+	cursor: default;
+	color: #747474;
+	margin-right: 0.5em;
+	padding: .5em;
+	width: 90%;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*段落文本框*/
+.cfLongText {
+	height: 1.8em;
+	border: 1px;
+	border-style: none none solid none;
+	border-color: #CCC;
+	cursor: default;
+	color: #747474;
+	width: 8em;
+	margin-right: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*日期时间框*/
+.cfDateTime {
+	background-image: url(../images/widget/datetime.png);
+	background-position: 98% 50%;
+	background-repeat: no-repeat;
+	height: 2em;
+	border: 1px;
+	border-style: none none solid none;
+	border-color: #CCC;
+	cursor: pointer;
+	color: #747474;
+	width: 60%;
+	margin-right: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+/*日期框*/
+.cfDate {
+	background-image: url(../images/widget/datetime.png);
+	background-position: 98% 50%;
+	background-repeat: no-repeat;
+	height: 2em;
+	border: 1px;
+	border-style: none none solid none;
+	border-color: #CCC;
+	cursor: pointer;
+	color: #747474;
+	width: 60%;
+	margin-right: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.radioContainer{
+	width: 60%;
+	margin-right: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}
+li{
+	/*height:2em;*/
+	min-height: 1.8em;
+	margin-top: 0.25em;
+    text-align: left;
+    list-style:none;  
+}
+li:after {
+   	visibility: hidden;  
+	display: block;  
+	font-size: 0;  
+	content: ".";  
+	clear: both;  
+	height: 0;  
+}
+.cfTextArea {
+	width: 96%;
+	height: 5em;
+	border: 1px;
+	border-style: double solid solid solid;
+	border-color: #CCC;
+	color: #747474;
+}
+
+/*下拉框*/
+.cfSelectOne {
+	display: inline-block;
+	height: 2.6em;
+	border: 1px solid #CCC;
+	background: white;
+	line-height: 2em;
+	width: 60%;
+	margin-right: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}
+font.readOnlyFieldVal {
+    padding: 20px 20px 20px 20px;
+	display: none;
+}

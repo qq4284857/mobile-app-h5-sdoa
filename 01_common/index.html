@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>用于集成到原生app中跳转页面</title>
+	<link href="../00_mui/css/mui.min.css" rel="stylesheet" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+<script src="../00_mui/js/mui.min.js"></script>
+<script src="js/serviceUrl.js"></script>
+<script>
+	mui.plusReady(function(){
+		var runtimeArgs = plus.runtime.arguments;
+		//alert(runtimeArgs);
+		if(runtimeArgs==null || runtimeArgs==undefined || runtimeArgs==""){
+			mui.alert("缺少启动参数","提示",function(){},"div");
+			return;
+		}
+		var aj = JSON.parse(runtimeArgs);
+		localStorage.setItem("sso_token", aj["sso_token"]);
+		localStorage.setItem("userId", aj["userId"]);
+		localStorage.setItem("username", aj["username"]);
+		localStorage.setItem("corpOrganId", aj["corpOrganId"]);
+		localStorage.setItem("corporationOrganName", aj["corporationOrganName"]);
+		localStorage.setItem("departmentOrganName", aj["departmentOrganName"]);
+		localStorage.setItem("departmentOrganId", aj["departmentOrganId"]);
+		localStorage.setItem("employeeOrganId", aj["employeeOrganId"]);
+		localStorage.setItem("sessionId", aj["sessionId"]);
+		//设置登录cookie
+		plus.navigator.setCookie(baseServiceConfig.baseUrl, "sso_token="+localStorage.getItem("sso_token"));
+
+		var htmlPageId = aj["htmlPageId"];
+		var webViewId = "02_check/html/entinfo/entSearchList.html";
+		var webViewUrl = "../02_check/html/entinfo/entSearchList.html";
+		
+		if(htmlPageId=="02_check/html/entinfo/entSearchList.html"){ //日常监管企业列表
+			webViewId = htmlPageId;
+			webViewUrl = "../02_check/html/entinfo/entSearchList.html";
+		}else if(htmlPageId=="02_check/html/dailyCheck_index.html"){ //日常监管九宫格
+			webViewId = htmlPageId;
+			webViewUrl = "../02_check/html/dailyCheck_index.html";
+		}else if(htmlPageId=="02_check/html/entinfo/myEntCollectionList.html"){ //日常监管企业收藏列表（本地缓存版）
+			webViewId = htmlPageId;
+			webViewUrl = "../02_check/html/entinfo/myEntCollectionList.html";
+		}else if(htmlPageId=="02_check/html/entinfo/myCollectionList.html"){ //日常监管企业收藏列表（监管数据库版）
+			webViewId = htmlPageId;
+			webViewUrl = "../02_check/html/entinfo/myCollectionList.html";
+		}else if(htmlPageId=="04_giap/html/inspect/task/taskList.html"){ //现场核查（列表）
+			webViewId = htmlPageId;
+			webViewUrl = "../04_giap/html/inspect/task/taskList.html";
+		}else if(htmlPageId=="04_giap/html/inspect/task/taskChose.html"){ //现场核查（选择页）
+			webViewId = htmlPageId;
+			webViewUrl = "../04_giap/html/inspect/task/taskChose.html";
+		}else if(htmlPageId=="05_sample/html/sample_index.html"){ //检验检测
+			webViewId = htmlPageId;
+			webViewUrl = "../05_sample/html/sample_index.html";
+		}else if(htmlPageId=="06_el/html/el_index.html"){ //稽查执法
+			webViewId = htmlPageId;
+			webViewUrl = "../06_el/html/el_index.html";
+		}else if(htmlPageId=="07_law/law_list.html"){ //法律法规
+			webViewId = htmlPageId;
+			webViewUrl = "../07_law/law_list.html";
+		}else if(htmlPageId=="09_mcloud_JN/company_search.html"){ //食药云搜（济南）
+			webViewId = htmlPageId;
+			webViewUrl = "../09_mcloud_JN/company_search.html";
+		}else if(htmlPageId=="09_mcloud_JN/gis_map.html"){ //电子地图（济南）
+			webViewId = htmlPageId;
+			webViewUrl = "../09_mcloud_JN/gis_map.html";
+		}else if(htmlPageId=="01_common/html/introduction/introduction_list.html"){ //使用说明
+			webViewId = htmlPageId;
+			webViewUrl = "../01_common/html/introduction/introduction_list.html";
+		}else if(htmlPageId=="12_edoc_CQ/html/edoc/tasklist/index/index_cq.html"){ //行政办公（重庆）
+			webViewId = htmlPageId;
+			webViewUrl = "../12_edoc_CQ/html/edoc/tasklist/index/index_cq.html";
+		}else if(htmlPageId=="55_complain/html/complain/myComplainList.html"){ //投诉咨询（荣成）
+			webViewId = htmlPageId;
+			webViewUrl = "../55_complain/html/complain/myComplainList.html";
+		}else if(htmlPageId=="13_drm/html/drm/data_check.html"){ //数据校核
+			webViewId = htmlPageId;
+			webViewUrl = "../13_drm/html/drm/data_check.html";
+		}else{
+			mui.alert("暂不支持的应用入口","提示",function(){},"div");
+			return;
+		}
+		var jumpInterval = setInterval(function(){
+			var webView = plus.webview.getWebviewById(webViewId);
+			if(webView==null){
+				mui.openWindow({
+					id: webViewId,
+					url: webViewUrl,
+					show: {
+						aniShow: 'pop-in',
+						duration: 250
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}else{
+				clearInterval(jumpInterval);
+			}
+		},500);
+	});
+</script>
+</body>
+</html>

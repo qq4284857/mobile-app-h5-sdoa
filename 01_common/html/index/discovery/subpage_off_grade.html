@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<style>
+			html,
+			body {
+				background-color: #FFFFFF;
+				margin: 0;
+				padding: 0;
+			}
+		 	.off-head-img{
+				width: 44px;
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+			.mui-card-header{
+				font-size: 16px;
+				font-weight: bold;
+				height: 44px;
+				color: #333;
+			}
+			.mui-card-footer:before, .mui-card-header:after{
+				height: 0;
+			}
+			.mui-card-content-inner{
+				padding: 0;
+			}
+			.mui-table-view-cell:after{
+				right:15px ;
+			}
+			.mui-table-view-cell{
+				position: relative;
+			}
+			.off-content-key{
+				position: relative;
+				/*left: 15px;*/
+				font-size: 12px;
+				font-weight: normal;
+				color: #666;
+			}
+			.off-content-value{
+				position: absolute;
+				right: 15px;
+				font-size: 12px;
+				font-weight: normal;
+			}
+			 .font-off{
+			 	color: #f69992;
+			 }
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div class="mui-card">
+					<img class="off-head-img" src="../images/off-grade-food.png"/>
+					<div class="mui-card-header">
+						老四川180g灯影牛肉
+					</div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							 <ul class="mui-table-view">
+								 <li class="mui-table-view-cell">
+								 	<span class="off-content-key">生产企业</span>
+								 	<span class="off-content-value">济南市老四川食品厂</span>
+								 </li>
+								  <li class="mui-table-view-cell">
+								 	<span class="off-content-key">被抽检单位</span>
+								 	<span class="off-content-value">济南市历下区大润发超市</span>
+								 </li>
+								  <li class="mui-table-view-cell">
+								 	<span class="off-content-key">分类</span>
+								 	<span class="off-content-value">方便食品</span>
+								 </li>
+								   <li class="mui-table-view-cell">
+								 	<span class="off-content-key">抽检状态</span>
+								 	<span class="off-content-value"><font class="font-off">不合格</font></span>
+								 </li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="mui-card">
+					<img class="off-head-img" src="../images/off-grade-drug.png"/>
+					<div class="mui-card-header">
+						复方感冒颗粒
+					</div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							 <ul class="mui-table-view">
+								 <li class="mui-table-view-cell">
+								 	<span class="off-content-key">生产企业</span>
+								 	<span class="off-content-value">济南市齐鲁制药厂</span>
+								 </li>
+								  <li class="mui-table-view-cell">
+								 	<span class="off-content-key">被抽检单位</span>
+								 	<span class="off-content-value">济南市历下区漱玉平民</span>
+								 </li>
+								  <li class="mui-table-view-cell">
+								 	<span class="off-content-key">分类</span>
+								 	<span class="off-content-value">非处方药品</span>
+								 </li>
+								   <li class="mui-table-view-cell">
+								 	<span class="off-content-key">抽检状态</span>
+								 	<span class="off-content-value"><font class="font-off">不合格</font></span>
+								 </li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+//				keyEventBind: {
+//					backbutton: false //关闭back按键监听
+//				}
+			});
+		</script>
+	</body>
+
+</html>

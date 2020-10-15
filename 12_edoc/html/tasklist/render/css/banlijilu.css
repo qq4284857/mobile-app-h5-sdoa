@@ -1,0 +1,74 @@
+.hovertree-tracklist ul li {
+list-style: none;
+
+}
+body li{
+	 list-style-type:none;  
+}
+.hovertree-trackrcol {
+/*max-width: 900px;*/
+height: 118px;
+}
+#item3-1{
+	border-bottom: 1px solid #eee;
+	padding-bottom: 10px;
+}
+.hovertree-tracklist {
+/*margin: 20px;
+padding-left: 5px;*/
+position: relative;
+}
+
+.hovertree-tracklist li {
+position: relative;
+padding: 0 0 0 20px;
+line-height: 28px;
+border-left: 2px solid #d9d9d9;
+color: #999;
+margin-left: -20px;
+margin-top: -10px;
+}
+
+
+.hovertree-tracklist li .node-icon {
+position: absolute;
+left: -6px;
+top: 50%;
+width: 11px;
+height: 11px;
+background: url(../../../../../skins/images/order-icons.png) -21px -72px no-repeat;
+}
+
+.hovertree-tracklist li .dealOpinion {
+	color: black;
+	font-size: 15px;
+margin-right: 20px;
+position: relative;
+top: 4px;
+display: inline-block;
+vertical-align: middle;
+}
+
+.hovertree-tracklist li .dealAct {
+/*max-width: 600px;*/
+font-size: 12px;
+position: relative;
+top: 4px;
+vertical-align: middle;
+}
+.hovertree-tracklist li .dealTime {
+/*max-width: 600px;*/
+font-size: 12px;
+position: relative;
+top: 4px;
+vertical-align: middle;
+}
+.hovertree-tracklist li .dealPer {
+/*max-width: 600px;*/
+font-size: 12px;
+position: relative;
+top: 4px;
+vertical-align: middle;
+}
+.hovertreeinfo{margin-top:10px;}
+.hovertreeinfo a{color:blue;}

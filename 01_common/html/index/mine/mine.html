@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../../../00_mui/css/mui.min.css" />
+		<link rel="stylesheet" href="../../../css/common.css" />
+		<style>
+			html,body {
+				background-color: #f2f2f2;
+			}
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+			.mui-pages {
+				top: 46px;
+				height: auto;
+			}
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+			.mui-navbar {
+				position: fixed;
+				right: 0;
+				left: 0;
+				z-index: 10;
+				height: 44px;
+				background-color: #f7f7f8;
+			}
+
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+			.mui-navbar .mui-btn-nav {
+				color: #fff;
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+			.mui-navbar .mui-bar .mui-title {
+				display: inline-block;
+				width: auto;
+			}
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+			.mui-page {
+				display: none;
+			}
+			.mui-pages .mui-page {
+				display: block;
+			}
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+			.mui-table-view {
+				margin-top: 20px;
+			}
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+				margin-top: 0.8rem;
+			}
+			.mui-table-view-divider {
+				background-color: #efeff4;
+				font-size: 14px;
+			}
+			.mui-table-view-divider:before,
+			.mui-table-view-divider:after {
+				height: 0;
+			}
+			.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+			
+			
+			.setting-bg{
+			 	width: 100%;
+			 	height: 12rem;
+			 	background-color: #FFFFFF;
+			 	background-image: url(../images/setting-bg.png);
+			 	background-repeat: no-repeat;
+			 	background-size: 100% 60%;
+			 	text-align: center;
+			 	margin-bottom: 1rem;
+			}
+			.mui-title-main{
+			 	position: relative;
+			 	margin: 0;
+			 	color: #FFFFFF;
+			}
+			.setting-bg>img{
+			 	width: 3.5rem;
+			 	margin-top: 0.5rem;
+			}
+			h4{
+			 	font-weight: normal;
+			 	color: #000000;
+			 	margin-top: 10px;
+			 	margin-bottom: 8px;
+			}
+			.mui-table-view-cell{
+			 	height: 4rem;
+			}
+			.mui-table-view-cell a{
+			 	height: 4rem;
+			}
+			.mui-table-view-cell .cellPrefixImg{
+			 	width: 1.5rem;
+			 	display: inline-block;
+			 	margin-top: 0.5rem;
+			}
+			.mui-table-view-cell:after{
+			 	left: 0;
+			}
+			.mui-table-view:after{
+			 	height: 0;
+			}
+			.mui-table-view:before{
+				height: 0;
+			}
+			.setting-content-key{
+			 	margin-left: 1rem;
+			 	position: absolute;
+			 	top: 0;
+			 	line-height: 4rem;
+			 	font-size: 16px;
+			}
+			.setting-content-key-noImg{
+			 	position: absolute;
+			 	top: 0;
+			 	line-height: 4rem;
+			 	font-size: 16px;
+			}
+			.setting-content-version{
+				line-height: 4rem;
+			 	position: absolute;
+			 	font-size: 16px;
+			 	right: 35px;
+			 	color: #999;
+			 	top: 1px;
+			}
+			
+			#userLogo1 {
+				width: 68px;
+				height: 68px;
+				border-radius: 99px;
+			}
+			.head-img {
+				line-height: 40px;
+				width: 40px;
+				height: 40px;
+			}
+		</style>
+	</head>
+	<body class="mui-fullscreen">
+		<!--页面主结构开始-->
+		<div id="app" class="mui-views">
+			<div class="mui-view">
+				<div class="mui-navbar">
+				</div>
+				<div class="mui-pages">
+				</div>
+			</div>
+		</div>
+		<!--页面主结构结束-->
+		
+		<!--页面主内容区结束-->
+		<div id="setting" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav mui-hidden">
+				
+			</div>
+			<div class="mui-page-content" style="top:-46px;z-index: 99;">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="setting-bg">
+							<h1 class="mui-title mui-title-main">设置</h1>
+							<img id="userLogo1" src="../images/avatar.png" />
+							<h4>您好，<span id="userName"></span></h4>
+							<h5>账号：<span id="userId"></span></h5>
+						</div>
+						
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a href="#account" class="mui-navigate-right">
+									<img class="cellPrefixImg" src="../images/security.png" />
+									<span class="setting-content-key">账号与安全</span>
+								</a>
+							</li>
+						</ul>
+						
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-hidden">
+								<a href="#notifications" class="mui-navigate-right">
+									<img class="cellPrefixImg" src="../images/message.png" />
+									<span class="setting-content-key">新消息通知</span>
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#general" class="mui-navigate-right">
+									<img class="cellPrefixImg" src="../images/common.png" />
+									<span class="setting-content-key">通用</span>
+								</a>
+							</li>
+						</ul>
+						
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a href="#about" class="mui-navigate-right">
+									<img class="cellPrefixImg" src="../images/about.png" />
+									<span class="setting-content-key">关于</span>
+									<span id="appVersionName" class="setting-content-version"></span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--账号信息-->
+		<div id="account" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">账号与安全</h1>
+			</div>
+			<div class="mui-page-content" id="userInfoExtends">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li id="head" class="mui-table-view-cell">
+								<a class="">
+									<span class="setting-content-key-noImg">头像</span>
+									<div class="mui-pull-right head">
+										<img id="userLogo2" class="head-img mui-action-preview" src="../images/avatar.png"/>
+									</div>
+								</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a>
+									<span class="setting-content-key-noImg">帐号</span>
+									<span class="mui-pull-right" id="userId2"></span>
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>
+									<span class="setting-content-key-noImg">名称</span>
+									<span class="mui-pull-right" id="userName2"></span>
+								</a>
+							</li>
+							<!-- <li class="mui-table-view-cell">
+								<a>
+									<span class="setting-content-key-noImg">部门</span>
+									<span class="mui-pull-right" id="departmentOrganName2"></span>
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>
+									<span class="setting-content-key-noImg">单位</span>
+									<span class="mui-pull-right" id="corporationOrganName2"></span>
+								</a>
+							</li> -->
+						</ul>
+						<ul class="mui-table-view">
+							<li id="logoutBtn" class="mui-table-view-cell">
+								<a style="color: red;text-align: center;font-size: 1.2rem;padding-top: 20px;">
+									注销登录
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--新消息通知-->
+		<div id="notifications" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">新消息通知</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<span class="setting-content-key-noImg">接收新消息通知</span>
+								<div class="mui-switch mui-active mui-switch-mini">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="setting-content-key-noImg">声音</span>
+								<div class="mui-switch mui-active mui-switch-mini">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="setting-content-key-noImg">震动</span>
+								<div class="mui-switch mui-active mui-switch-mini">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+						</ul>
+						<div class="mui-content-padded">
+							<p>当APP在运行时，你可以设置是否需要声音或者震动</p>
+						</div>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<span class="setting-content-key-noImg">通知显示消息详情</span>
+								<div class="mui-switch mui-active mui-switch-mini">
+									<div class="mui-switch-handle"></div>
+								</div>
+							</li>
+						</ul>
+						<div class="mui-content-padded">
+							<p>若关闭，当收到新消息时，通知提示将不显示发信人和内容摘要</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--通用-->
+		<div id="general" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">通用</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li id="clearDownloads" class="mui-table-view-cell">
+								<a class="mui-navigate-right">
+									<span class="setting-content-key-noImg">清除缓存</span>
+								</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li id="checkUpdate" class="mui-table-view-cell">
+								<a class="mui-navigate-right">
+									<span class="setting-content-key-noImg">检查更新</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--关于-->
+		<div id="about" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">关于</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div style="font-size: 1.5rem;padding: 20px 0;text-align: center;" id="app_name"></div>
+						<div class="card-wrap" style="margin-top: 0;">
+							<div class="mui-card" id="versionInfoArea">
+								<div class="mui-card-header">版本详情</div>
+								<div class="mui-card-content">
+									<div id="versionDetail" style="padding-top:15px;padding-left: 15px;min-height: 50px;">
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../../00_mui/js/mui.min.js" ></script>
+	<script src="../../../../00_mui/js/mui.view.js"></script>
+	<script src="../../../js/common.js"></script>
+	<script>
+		mui.plusReady(function(){
+			mui.init();
+			initView();
+			defaultImg();
+			initData();
+			regEvent();
+		});
+		
+		/**
+		 * 初始化单页view
+		 */
+		function initView(){
+			var viewApi = mui('#app').view({
+				defaultPage: '#setting'
+			});
+			
+			//处理view的后退与webview后退
+			var oldBack = mui.back;
+			mui.back = function() {
+				if (viewApi.canBack()) { //如果view可以后退，则执行view的后退
+					viewApi.back();
+				} else { //执行webview后退
+					oldBack();
+				}
+			};
+			
+			var view = viewApi.view;
+			//监听页面切换事件方案1,通过view元素监听所有页面切换事件，目前提供pageBeforeShow|pageShow|pageBeforeBack|pageBack四种事件(before事件为动画开始前触发)
+			//第一个参数为事件名称，第二个参数为事件回调，其中e.detail.page为当前页面的html对象
+			view.addEventListener('pageBeforeShow', function(e) {
+				//console.log(e.detail.page.id + ' beforeShow');
+			});
+			view.addEventListener('pageShow', function(e) {
+				//console.log(e.detail.page.id + ' show');
+			});
+			view.addEventListener('pageBeforeBack', function(e) {
+				//console.log(e.detail.page.id + ' beforeBack');
+			});
+			view.addEventListener('pageBack', function(e) {
+				//console.log(e.detail.page.id + ' back');
+			});
+		}
+		
+		/**
+		 * 加载用户头像
+		 */
+		function defaultImg() {
+			if(mui.os.plus){
+				plus.io.resolveLocalFileSystemURL("_doc/"+localStorage.getItem("userId")+"-head.jpg", function(entry) {
+					var s = entry.fullPath + "?version=" + new Date().getTime();;
+					document.getElementById("userLogo1").src = s;
+					document.getElementById("userLogo2").src = s;
+				}, function(e) {
+					document.getElementById("userLogo1").src = '../images/avatar.png';
+					document.getElementById("userLogo2").src = '../images/avatar.png';
+				})
+			}else{
+				document.getElementById("userLogo1").src = '../images/avatar.png';
+				document.getElementById("userLogo2").src = '../images/avatar.png';
+			}
+		}
+		
+		/**
+		 * 页面数据初始化
+		 */
+		function initData(){
+			//用户信息
+			document.getElementById("userName").innerText = localStorage.getItem("username");
+			document.getElementById("userId").innerText = localStorage.getItem("userId");
+			document.getElementById("userName2").innerText = localStorage.getItem("username");
+			document.getElementById("userId2").innerText = localStorage.getItem("userId");
+			// document.getElementById("departmentOrganName2").innerText = localStorage.getItem("departmentOrganName");
+			// document.getElementById("corporationOrganName2").innerText = localStorage.getItem("corporationOrganName");
+			
+			//app名称
+			document.getElementById("app_name").innerText = baseConfig.app_name;
+			
+			//版本信息
+			var versionInfoShow = "";
+			var appVersionInfos = JSON.parse(localStorage.getItem("LS.APP.appVersionInfos"));
+			mui.each(appVersionInfos,function(key,item){
+				if(typeof item === "string"){
+					item = JSON.parse(item);
+				}
+				versionInfoShow = versionInfoShow + key + " ：" + item.versionCode + " # " + item.versionName + "<br>";
+			});
+			document.getElementById("appVersionName").innerText = JSON.parse(appVersionInfos.APP).versionName;
+			document.getElementById("versionDetail").innerHTML = versionInfoShow;
+		}
+		
+		/**
+		 * 页面事件注册
+		 */
+		function regEvent(){
+			//初始化单页的区域滚动
+			mui('.mui-scroll-wrapper').scroll();
+			//更换头像
+			document.getElementById("head").addEventListener("tap",function(e){
+				changeMyHeadImg();
+			});
+			//清除缓存
+			document.getElementById("clearDownloads").addEventListener("tap",function(e){
+				clearDownloads();
+			});
+			//检查更新
+			document.getElementById("checkUpdate").addEventListener("tap",function(e){
+				checkUpdate();
+			});
+			//注销登录
+			document.getElementById("logoutBtn").addEventListener("tap",function(e){
+				logout2Login();
+			});
+		}
+		
+		
+		/**
+		 * 清除缓存
+		 */
+		function clearDownloads(){
+			plus.io.resolveLocalFileSystemURL("_downloads/", function(entry) {
+				entry.removeRecursively(function(entry) {
+					mui.toast("缓存清理成功！");
+				}, function(e) {
+					mui.toast("缓存清理失败，请稍候重试！");
+					//console.log(e.message);
+				});
+			}, function(e) {
+				mui.toast("缓存清理失败，请稍候重试！");
+				//console.log("Resolve file URL failed: " + e.message);
+			});
+		}
+		
+		
+		/**
+		 * 检查更新
+		 */
+		function checkUpdate(){
+			mui.toast("当前版本为最新版本");
+		}
+		
+		
+		/**
+		 * 注销当前登录用户，跳转到登录页
+		 */
+		function logout2Login(){
+			var btnArray = ['确定','返回'];  
+			mui.confirm('确认现在要注销当前用户吗?', '注销提示', btnArray, function(e) { 
+                if (e.index == 0) {
+                	var indexPage = plus.webview.getWebviewById();
+			
+					var loginPageId = baseConfig.mobileServerConfig.defaultLoginPageInfo.loginPageId;
+					if(baseConfig.mobileServerConfig.isUseCustomLoginAndIndex=="1"){
+						var appCustomDataList = JSON.parse(localStorage.getItem("LS.APP.appCustomDataList"));
+						if(appCustomDataList){
+							for(var i=0;i<appCustomDataList.length;i++){
+								var miniAppInfo = appCustomDataList[i];
+								if(miniAppInfo.APP_CODE!="APP"){
+									continue;
+								}
+								var APP_PAGE_ID = miniAppInfo.APP_PAGE_ID;
+								var APP_PAGE_URL = miniAppInfo.APP_PAGE_URL;
+								if(APP_PAGE_ID && APP_PAGE_URL){
+									loginPageId = APP_PAGE_ID;
+								}
+								break;
+							}
+						}
+					}
+					
+					var indexPageId = baseConfig.mobileServerConfig.defaultIndexPageInfo.indexPageId;
+					var loginPageWebview = plus.webview.getWebviewById(loginPageId);
+					if(loginPageWebview){
+						var indexPageIdParam = loginPageWebview.indexPageId;
+						var indexPageUrlParam = loginPageWebview.indexPageUrl;
+						if(indexPageIdParam && indexPageUrlParam){
+							indexPageId = indexPageIdParam;
+						}
+					}
+					
+					var indexPageWebview = plus.webview.getWebviewById(indexPageId);
+                 	mui.fire(indexPageWebview,"logout2Login");
+                }
+           	});
+		}
+		
+		
+		/**
+		 * 更换头像
+		 */
+		function changeMyHeadImg(){
+			if(mui.os.plus){
+				var a = [{
+					title: "拍照"
+				}, {
+					title: "从手机相册选择"
+				}];
+				plus.nativeUI.actionSheet({
+					title: "修改头像",
+					cancel: "取消",
+					buttons: a
+				}, function(b) {
+					switch (b.index) {
+						case 0:
+							break;
+						case 1:
+							getImage();
+							break;
+						case 2:
+							galleryImg();
+							break;
+						default:
+							break
+					}
+				})	
+			}
+		}
+		
+		/**
+		 * 拍照修改头像
+		 */
+		function getImage() {
+			var c = plus.camera.getCamera();
+			c.captureImage(function(e) {
+				plus.io.resolveLocalFileSystemURL(e, function(entry) {
+					var s = entry.toLocalURL() + "?version=" + new Date().getTime();
+					document.getElementById("userLogo1").src = s;
+					document.getElementById("userLogo2").src = s;
+				}, function(e) {
+					//console.log("读取拍照文件错误：" + e.message);
+				});
+			}, function(s) {
+				//console.log("error" + s);
+			}, {
+				filename: "_doc/"+localStorage.getItem("userId")+"-head.jpg"
+			});
+		}
+		
+		/**
+		 * 相册修改头像
+		 */
+		function galleryImg() {
+			plus.gallery.pick(function(a) {
+				plus.io.resolveLocalFileSystemURL(a, function(entry) {
+					plus.io.resolveLocalFileSystemURL("_doc/", function(root) {
+						root.getFile(localStorage.getItem("userId")+"-head.jpg", {}, function(file) {
+							//文件已存在
+							file.remove(function() {
+								//console.log("file remove success");
+								entry.copyTo(root, localStorage.getItem("userId")+"-head.jpg", function(e) {
+										var e = e.fullPath + "?version=" + new Date().getTime();
+										document.getElementById("userLogo1").src = e;
+										document.getElementById("userLogo2").src = e;
+									},
+									function(e) {
+										//console.log('copy image fail:' + e.message);
+									});
+							}, function() {
+								//console.log("delete image fail:" + e.message);
+							});
+						}, function() {
+							//文件不存在
+							entry.copyTo(root, localStorage.getItem("userId")+"-head.jpg", function(e) {
+								var path = e.fullPath + "?version=" + new Date().getTime();
+								document.getElementById("head-img").src = path;
+								document.getElementById("head-img1").src = path;
+							},
+							function(e) {
+								//console.log('copy image fail:' + e.message);
+							});
+						});
+					}, function(e) {
+						//console.log("get _www folder fail");
+					});
+				}, function(e) {
+					//console.log("读取拍照文件错误：" + e.message);
+				});
+			}, function(a) {}, {
+				filter: "image"
+			});
+		}
+		
+	</script>
+</html>

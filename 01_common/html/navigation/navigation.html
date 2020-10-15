@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="../../../00_mui/css/mui.min.css" />
+		<link href="../../../01_common/css/common.css" rel="stylesheet"/>
+		<style>
+			.nav-btn{
+				margin-top: 15px;
+			}
+			.mui-card-header>img:first-child{
+				width: 24px;
+				height: 24px;
+			}
+			.mui-card-header.mui-card-media .mui-media-body{
+				font-size: 17px;
+				line-height: normal;
+				margin-left:30px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left mui_a"></a>
+			<h1 class="mui-title" id="vw_title">路线导航</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card">
+				<div class="mui-card-header mui-card-media">
+					<img src="../../images/localtion-red@2x.png" />
+					<div class="mui-media-body">
+						目的地
+					</div>
+				</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						目的地位置: <span id="destination_name"></span>
+					</div>
+					<div class="mui-card-content-inner">
+						<div>
+							目的地经度： <span id="destination_latitude"></span>
+						</div>
+						<div>
+							目的地纬度： <span id="destination_longitude"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--<div class="mui-card">
+				<div class="mui-card-header">当前位置</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						当前所在位置: 外信息或支持的操作（比如点赞、评论等）
+					</div>
+					<div class="mui-card-content-inner">
+						<div>
+							当前位置经度： 36.66820391394759
+						</div>
+						<div>
+							当前位置纬度： 117.13358699999993
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<button type="button" id="picture-btn" class="mui-btn mui-btn-blue mui-btn-block nav-btn">开始导航</button>
+		</div>
+		
+		 
+		<script type="text/javascript" src="../../../00_mui/js/mui.min.js" ></script>
+		<script type="text/javascript" src="../../../00_mui/js/jquery.js" ></script>
+		<script type="text/javascript" src="../../js/common.js" ></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function(){
+				
+				//接收 目的地名称、经度、纬度和坐标系（"baidu"，"AMap"，"system",默认百度）
+				var self_vw = plus.webview.currentWebview();
+				var destination_name = self_vw.destination_name;
+				var destination_latitude = self_vw.destination_latitude;
+				var destination_longitude = self_vw.destination_longitude;
+				var poi_mode = self_vw.poi_mode;
+				if(poi_mode=="" || poi_mode==undefined || poi_mode==null){
+					poi_mode="baidu";
+				}
+ 
+				//获取，设置目的地经纬度
+//				newLng=117.10388899999992  
+// 				newLat=36.663091913613364 
+				destination_name = "山东省济南市历下区经十路11777号";
+				destination_latitude = "36.663091913613364";
+				destination_longitude = "117.10388899999992"; 
+ 				$("#destination_name").text(destination_name);
+ 				$("#destination_latitude").text(destination_latitude);
+ 				$("#destination_longitude").text(destination_longitude);
+				
+				//获取 当前设备已安装的导航APP，百度，高德
+				
+				//调用原生插件功能
+				
+				//调用功能njs开发
+				
+				document.getElementById("picture-btn").addEventListener('tap',function () {
+					//判断是否ios，如果是不支持
+					if(mui.os.android){
+						var btnArray = [{title:"百度地图"},{title:"高德地图"}];
+						plus.nativeUI.actionSheet( {
+							title:"选择导航方式",
+							cancel:"取消",
+							buttons:btnArray
+						}, function(e){
+							var index = e.index;
+							var text = "你刚点击了\"";
+							switch (index){
+								case 0:
+									text += "取消";
+									break;
+								case 1:
+									text += "百度地图";
+									nav_baidu();
+									break;
+								case 2:
+									text += "高德地图";
+									nav_AMap();
+									break;
+							}
+							console.log("text="+text);
+						} );
+					}else{
+						plus.nativeUI.alert("暂不支持IOS设备");
+					}
+					
+					
+				});
+			});
+			
+			function nav_baidu() {
+				var packageName = 'com.baidu.BaiduMap';
+				if(isInstallByread(packageName)){
+					plus.Atom.navByBaidu(["1111","1111","1111","1111"], function(res) {
+//						alert("res==="+(res));
+					});
+				}else{
+					plus.nativeUI.confirm("检测到您的手机未安装百度地图，是否下载安装？", function(e) {
+						if(e.index == 0) {
+							//Android直接下载
+							//ios打开App Store
+							if(mui.os.android) {
+								var download_url="https://newclient.map.baidu.com/client/mapappdownload?app=map&qudao=1009176a";
+								plus.runtime.openURL(download_url);
+							}else{
+//								var download_url="itunes.apple.com/cn/app/id363501921?mt=8";
+//								plus.runtime.openURL("itms-apps://" + download_url);
+							}
+						}
+					}, baseConfig.alerttitle);
+				}
+			}
+			function nav_AMap() {
+				var packageName = 'com.autonavi.minimap';
+				if(isInstallByread(packageName)){
+					plus.Atom.navByAMap(["2222","2222","2222","2222"], function(res) {
+//						alert("res==="+(res));
+					});
+				}else{
+					plus.nativeUI.confirm("检测到您的手机未安装高德地图，是否下载安装？", function(e) {
+						if(e.index == 0) {
+							//Android直接下载
+							//ios打开App Store
+							if(mui.os.android) {
+								var download_url="http://mapdownload.autonavi.com/apps/apps/dicPackage/8.60.1.2013/C3060/Amap_V8.60.1.2013_android_C3060_(Build1807201613).apk";
+								plus.runtime.openURL(download_url);
+							}else{
+//								var download_url="itunes.apple.com/cn/app/id363501921?mt=8";
+//								plus.runtime.openURL("itms-apps://" + download_url);
+							}
+						}
+					}, baseConfig.alerttitle);
+					
+				}
+			}
+			
+			function isInstallByread(packageName){
+//				var packageName = 'io.dcloud.HBuilder'
+				var main = plus.android.runtimeMainActivity();
+				var packageManager = main.getPackageManager();
+				var PackageManager = plus.android.importClass(packageManager)
+				var packageInfo = packageManager.getPackageInfo(packageName,PackageManager.GET_ACTIVITIES);
+//				if(packageInfo ){
+//				    console.log('已安装' + packageName + '');
+//				}
+				return packageInfo;
+			}
+			
+		</script>
+	</body>
+
+</html>

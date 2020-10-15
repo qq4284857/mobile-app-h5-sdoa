@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Law Detail</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../../01_common/css/common.css" rel="stylesheet" />
+		<script src="../../../00_mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../00_mui/js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../00_mui/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../01_common/js/serviceUrl.js"></script>
+		<script src="../../../01_common/js/common.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<style>
+.mui-bar{
+	padding-right: 5px;
+}		
+.mui-bar .mui-title{
+	right: 100px;
+	left: 100px;
+}
+.mui-bar-nav.mui-bar .mui-icon{
+	margin: 0;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.mui-icon-search:before{
+	color: #FFFFFF;
+}
+.mui-icon-download:before{
+	color: #FFFFFF;
+}
+.htmlcontent-title{
+	padding-bottom: 13px;
+}
+
+.content_date {
+	width: 100%;
+	height: 1.5rem;
+	padding: 0 10px;
+}
+
+.content_date div {
+	color: #adadad;
+	font-size: 0.75rem;
+	float: left;
+	text-align: center;
+	height: 2.0rem;
+	line-height: 2.0rem;
+}
+
+.content_date div:first-child {
+	width: 50%;
+}
+
+.content_date div:last-child {
+	width: 50%;
+}
+
+.highlight {
+				background: red;
+				font-weight: bold;
+				color: white;
+			}
+	</style>
+
+	<body>
+		<!--头部状态栏开始-->
+		<header id="headerArea" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">使用说明</h1>
+			
+			 <span id="search-icon" class="mui-icon mui-icon-search mui-pull-right"></span> 
+			  <span id="downlaod-icon" class="mui-icon mui-icon-download mui-pull-right"></span> 
+		</header>
+		<!--头部状态栏结束-->
+		<!--主页面开始-->
+		<!--主页面结束-->
+		<div class="mui-content">
+			<div id="lawList" class=" font-black">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell gcloud-table-view-cell msg-out">
+						<h3 id="htmlcontent-title" class="htmlcontent-title"></h3>
+						<!--<div class="content_date">
+							<div id="news_editor" class="mui-ellipsis"> </div>
+							<div id="news_time" class="mui-ellipsis"> </div>
+						</div>-->
+						<div id="lawDiv">
+	
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../../00_mui/js/jquery.js" ></script>
+		<script type="text/javascript">
+		
+			var articleId = "";
+			mui.plusReady(function() {
+				mui.init({
+
+				});
+				articleId = plus.webview.currentWebview().articleId;
+//				console.log("articleId="+articleId);
+				searchIcDetail();
+			});
+
+			function searchIcDetail() {
+				mui.ajax(baseServiceUrl.url, {
+
+					data: {
+						serviceCode: "CMS.queryArticleById",
+						articleId: articleId
+					},
+					dataType: 'json',
+					type: "post",
+					timeout: 300000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					},
+					success: function(entData) {
+//						console.log(JSON.stringify(entData));
+						if("true" == entData.status) {
+							//获取返回结果
+							var allResult = entData.result.result;
+							var lawContent = allResult.contentHtml;
+//							console.log(lawContent.substr(33000));
+							var subStr=new RegExp('/'+baseServiceConfig.cfileSerContext,'ig');//创建正则表达式对象,不区分大小写,全局查找 
+						  	var result=lawContent.replace(subStr,baseServiceConfig.baseUrl+baseServiceConfig.cfileSerContext);//把'cfileSer'替换为完整路径
+//						  	console.log(result.substr(33000));  
+							
+							//调整标题大小
+//							lawContent = lawContent.replace(/29px/g,"20px");
+							//调整正文大小
+//							lawContent = lawContent.replace(/21px/g,"16px");
+							var show = document.getElementById("lawDiv");
+							show.innerHTML = result;
+							
+							document.getElementById("htmlcontent-title").innerHTML = allResult.title;
+//							document.getElementById("news_editor").innerHTML = allResult.modifier;
+//							document.getElementById("news_time").innerHTML = allResult.source;
+						} else { 
+							console.log("返回JSON信息错误");
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(xhr);
+						console.log(type);
+						console.log(errorThrown);
+						mui.toast("获取详情失败,请检查网络是否畅通");
+					}
+				});
+			}
+			
+			document.getElementById("downlaod-icon").addEventListener("tap",function(){
+				
+				plus.navigator.setCookie(baseServiceUrl.cmsUrl,"sso_token="+localStorage.getItem("sso_token"));
+				plus.nativeUI.showWaiting("文件下载中",{back:"none"});
+				var downloadUrl = baseServiceUrl.cmsUrl+"command/cms/article/download?articleId="+articleId;
+					var dtask = plus.downloader.createDownload(downloadUrl, {
+						method: "POST",
+						filename: "_downloads/1.docx"
+					}, function(d, status) {
+						// 下载完成
+						if(status == 200) {
+	//						nwaiting.close();
+							mui.toast("文件下载成功");
+							plus.nativeUI.closeWaiting();
+							setTimeout(function(){
+								plus.runtime.openFile(d.filename, {}, function(e) {
+									plus.nativeUI.alert("无法打开此文件：" + e.message);
+								});
+							},200);
+							
+						} else {
+							plus.nativeUI.closeWaiting();
+							mui.toast("文件下载失败");
+						}
+					});
+				dtask.start();
+					
+			});
+			
+			document.getElementById("search-icon").addEventListener("tap",function(e){
+				e.detail.gesture.preventDefault(); //修复iOS 8.x平台存在的bug，使用plus.nativeUI.prompt会造成输入法闪一下又没了
+				var btnArray = ['取消', '确定'];
+				mui.prompt('请输入关键字：', '', baseConfig.alerttitle, btnArray, function(e) {
+					if (e.index == 1) {
+//						console.log(e.value);
+						highlight(e.value);
+						
+					}
+				})
+				
+			});
+			
+			
+			
+		function encode(s) {
+				return s.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/([\\\.\*\[\]\(\)\$\^])/g, "\\$1");
+			}
+
+			function decode(s) {
+				return s.replace(/\\([\\\.\*\[\]\(\)\$\^])/g, "$1").replace(/>/g, ">").replace(/</g, "<").replace(/&/g, "&");
+			}
+
+			function highlight(s) {
+				if(s.length == 0) {
+					alert('请输入你要搜索的内容！');
+					return false;
+				}
+				s = encode(s);
+				var obj = document.getElementById("lawDiv");
+				var t = obj.innerHTML.replace(/<a\s+class=.?highlight.?\s+id=.?highlighttext.?>([^<>]*)<\/a>/gi, "$1");
+				obj.innerHTML = t;
+				var cnt = loopSearch(s, obj);
+				t = obj.innerHTML;
+				var r = /{searchHL}(({(?!\/searchHL})|[^{])*){\/searchHL}/g;
+				t = t.replace(r, "<a class='highlight' id='highlighttext'>$1</a>");
+				obj.innerHTML = t;
+//				window.location.href = '#highlighttext';
+//				document.getElementById("highlighttext").scrollIntoView();
+				
+			  	$("html, body").animate({
+			      scrollTop: ($("#highlighttext").offset().top - 44 ) + "px"
+			    }, {
+			      duration: 500,
+			      easing: "swing"
+			    });
+			    return false;
+
+			}
+
+			function loopSearch(s, obj) {
+				var cnt = 0;
+				if(obj.nodeType == 3) {
+					cnt = replace(s, obj);
+					return cnt;
+				}
+				for(var i = 0, c; c = obj.childNodes[i]; i++) {
+					if(!c.className || c.className != "highlight")
+						cnt += loopSearch(s, c);
+				}
+				return cnt;
+			}
+
+			function replace(s, dest) {
+				var r = new RegExp(s, "g");
+				var tm = null;
+				var t = dest.nodeValue;
+				var cnt = 0;
+				if(tm = t.match(r)) {
+					cnt = tm.length;
+					t = t.replace(r, "{searchHL}" + decode(s) + "{/searchHL}")
+					dest.nodeValue = t;
+				}
+				return cnt;
+			}	
+			
+			
+			
+		</script>
+	</body>
+
+</html>

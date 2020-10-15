@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>文件上传demo</title>
+    <link href="../../../../00_mui/css/mui.min.css" rel="stylesheet"/>
+    <link href="../../../css/common.css" rel="stylesheet"/>
+	<link href="../../../../00_mui/css/preview.css" rel="stylesheet"/>
+	<style>
+		.imageAttachCls, #captimg {
+			width: 60px;
+			height: 60px;
+			border: 1px solid rgb(200,199,204) !important;
+		}
+	</style>
+</head>
+<body>
+	<header id="headerArea" class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">附件上传下载删除</h1>
+	</header>
+	<div class="mui-content">
+		<div class="card-wrap" style="margin-top: 0;">
+			<div class="mui-card" id="uploadArea">
+				<div class="mui-card-header">附件上传区域（长按删除）</div>
+				<div class="mui-card-content">
+					<div id="imageDiv" class="mui-row">
+						<div class="mui-col-sm-3 mui-col-xs-3" style="display: none;" v-show="imgAttachList.length>0" v-for="(attachPath,index) in imgAttachList">
+				        	<img class='imageAttachCls' :src="attachPath" data-preview-src='' data-preview-group='1' @longtap="removeImgAttach(index);" />
+				        </div>
+						<div class="mui-col-sm-3 mui-col-xs-3">
+				        	<img id="captimg" src="../../../images/capcher.png" />
+				        </div>
+			        </div>
+				</div>
+				<div class="mui-card-content mui-hidden"><!-- 这里是上传非图片格式的附件扩展，后续考虑添加 -->
+					<input id="selectFileInput" type="file" value="" class="mui-hidden"/>
+					<div id="otherAttachDiv" class="mui-row">
+				        
+			        </div>
+				</div>
+				<div class="mui-card-content">
+					<p>上传方式一：<br>读取文件的base64数据，作为request参数传输。</p>
+					<button id="uploadBtn1" type="button" class="mui-btn mui-btn-blue" style="width:100%;margin-bottom:10px;">方式一上传</button>
+				</div>
+				<div class="mui-card-content">
+					<p>上传方式二：<br>将文件放到form表单中，作为文件流传输。</p>
+					<button id="uploadBtn2" type="button" class="mui-btn mui-btn-blue" style="width:100%;margin-bottom:10px;">方式二上传</button>
+				</div>
+			</div>
+			<div class="mui-card" id="downloadArea">
+				<div class="mui-card-header">附件下载区域（单击下载，长按删除）</div>
+				<div class="mui-card-content" v-if="imgAttachList.length==0&&allAttachList.length==0">
+					<p style="margin-bottom: 25px;padding-left: 10px;">无附件信息<br></p>
+				</div>
+				<div class="mui-card-content" v-if="imgAttachList.length>0">
+					<div class="mui-row">
+						<div class="mui-col-sm-3 mui-col-xs-3" v-for="(imgAttachInfo,index) in imgAttachList" style="padding-left:10px;">
+				        	<img class='imageAttachCls' :src="imgAttachInfo.downloadFromMsUrl" data-preview-src='' data-preview-group='2' @longtap="removeImgAttach(index);"/>
+				        </div>
+			        </div>
+				</div>
+				<div class="mui-card-content" v-if="allAttachList.length>0">
+					<div class="mui-row">
+						<div class="mui-col-sm-12 mui-col-xs-12" style="font-size:0.8em;width:100%;padding:5px 0 0 10px;" v-for="(otherAttachInfo,index) in allAttachList" @tap="downloadAttach(otherAttachInfo.downloadFromMsUrl,otherAttachInfo.fullFileName);" @longtap="removeAttach(index);">
+					        <a v-text="otherAttachInfo.fullFileName"></a>
+				       		<p style="margin-bottom: 0;font-size: 0.8em;" v-text="'上传人：'+otherAttachInfo.uploadUser"></p>
+				       		<p style="margin-bottom: 0;font-size: 0.8em;" v-text="'上传时间：'+otherAttachInfo.uploadTime"></p>
+				       		<p style="margin-bottom: 0;font-size: 0.8em;" v-text="'附件大小：'+renderFileSize(otherAttachInfo.fileSize)"></p>
+						</div>
+			        </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="imagePopver" class="mui-popover mui-popover-bottom mui-popover-action">
+	    <!-- 可选择菜单 -->
+	    <ul class="mui-table-view">
+	    	<li class="mui-table-view-cell">
+	        	<a id="cameraAct">拍照</a>
+	      	</li>
+	      	<li class="mui-table-view-cell">
+	        	<a id="pictureAct">从相册选择</a>
+	      	</li>
+	      	<li class="mui-table-view-cell mui-hidden"><!-- 这里是上传非图片格式的附件扩展，后续考虑添加 -->
+	        	<a id="otherAct">选择其他文件</a>
+	      	</li>
+	    </ul>
+	    <!-- 取消菜单 -->
+	    <ul class="mui-table-view">
+	      	<li class="mui-table-view-cell">
+	        	<a id="cancleAct">取消</a>
+	      	</li>
+	    </ul>
+	</div>
+	<script src="../../../../00_mui/js/mui.min.js"></script>
+    <script src="../../../../00_mui/js/vue.min.js"></script>
+	<script src="../../../../00_mui/js/mui.zoom.js"></script>
+	<script src="../../../../00_mui/js/mui.previewimage.js"></script>
+	<script src="../../../js/common.js"></script>
+    <script src="../../../js/serviceUrl.js"></script>
+	<script type="text/javascript">
+		/**
+		 * 重写返回方法
+		 */
+		var old_back = mui.back;
+		mui.back = function(){
+			if(typeof mui.getPreviewImage==="function"){
+				var previewImageApi = mui.getPreviewImage();
+            	if(previewImageApi!=undefined && previewImageApi!=null && previewImageApi.isShown()){
+            		previewImageApi.close();
+            		return;
+            	}
+			}
+			old_back();
+		}
+		
+		
+        var mask = null;
+		mui.plusReady(function(){
+			mui.init({
+            	gestureConfig: {
+                	longtap: true, //默认为false，不监听
+                	hold: true, //默认为false，不监听
+                	release: true //默认为false，不监听
+            	}
+            });
+			mask = mui.createMask();
+			createValueModel();
+			regEvent();
+			mui.previewImage();
+		});
+		
+		/**
+		 * 创建页面模型
+		 */
+		var fileUploadVm;
+		var fileDownloadVm;
+		function createValueModel(){
+			fileUploadVm = new Vue({
+				el: '#uploadArea',
+	            data: {
+	            	uploadType: "",
+	            	uuid: GetUUID(),
+	            	imgAttachList: [], //图片附件的path集合
+	            	successImgAttachNum: 0, //上传成功的图片附件数量
+	            	failImgAttachInfoArr: [], //上传失败的图片附件集合
+					otherAttachList: [], //非图片附件信息，后续考虑添加
+					successOtherAttachNum: 0, //上传成功的非图片附件数量
+					failOhterAttachInfoArr: [] //上传失败的非图片附件集合
+				},
+	            methods:{
+					removeImgAttach: function(index){
+						if(fileUploadVm.successImgAttachNum>0 || fileUploadVm.successOtherAttachNum>0 
+							|| fileUploadVm.failImgAttachInfoArr.length>0 || fileUploadVm.failOhterAttachInfoArr.length>0){
+							mui.toast("上传操作后，不允许再修改附件信息。");
+							return;
+						}
+						if(isNaN(index) || index>=this.imgAttachList.length){
+							return;
+						}
+						plus.nativeUI.actionSheet({
+							title: "请选择您的操作",
+							cancel: "取消",
+							buttons: [{title: "删除"}]
+						},function(e) {
+							if (e.index == 1) {
+								fileUploadVm.imgAttachList.splice(index,1);
+							} 
+						});
+					}
+	            }
+			});
+			fileDownloadVm = new Vue({
+				el: '#downloadArea',
+	            data: {
+	            	imgAttachList: [],
+					allAttachList: []
+				},
+	            methods:{
+					removeImgAttach: function(index){
+						if(isNaN(index) || index>=this.imgAttachList.length){
+							return;
+						}
+						plus.nativeUI.actionSheet({
+							title: "请选择您的操作",
+							cancel: "取消",
+							buttons: [{title: "删除"}]
+						},function(e) {
+							if (e.index == 1) {
+								plus.nativeUI.showWaiting("正在删除，请稍后...",{back:"none"});
+								var delAttachInfo = fileDownloadVm.allAttachList[index];
+								var delStatus = delFileFormCfile(delAttachInfo);
+								plus.nativeUI.closeWaiting();
+								if(delStatus=="true"){
+									var delFileId = delAttachInfo.fileId;
+									//getAttachDownloadUrls();//不建议此操作，建议用下面的逻辑代替。这样会重新请求附件列表，如果是图片，还会重新下载图片加载到img标签中。
+									fileDownloadVm.imgAttachList.splice(index,1);
+									for(var ii=0;ii<fileDownloadVm.allAttachList.length;ii++){
+										var curAttachInfo = fileDownloadVm.allAttachList[ii];
+										if(curAttachInfo.fileId==delFileId){
+											fileDownloadVm.allAttachList.splice(ii,1);
+											break;
+										}
+									}
+									mui.toast("附件删除成功。");
+								}
+							} 
+						});
+					},
+					removeAttach: function(index){
+						if(isNaN(index) || index>=this.allAttachList.length){
+							return;
+						}
+						plus.nativeUI.actionSheet({
+							title: "请选择您的操作",
+							cancel: "取消",
+							buttons: [{title: "删除"}]
+						},function(e) {
+							if (e.index == 1) {
+								plus.nativeUI.showWaiting("正在删除，请稍后...",{back:"none"});
+								var delAttachInfo = fileDownloadVm.allAttachList[index];
+								var delStatus = delFileFormCfile(delAttachInfo);
+								plus.nativeUI.closeWaiting();
+								if(delStatus=="true"){
+									var delFileId = delAttachInfo.fileId;
+									//getAttachDownloadUrls();//不建议此操作，建议用下面的逻辑代替。这样会重新请求附件列表，如果是图片，还会重新下载图片加载到img标签中。
+									fileDownloadVm.allAttachList.splice(index,1);
+									for(var ii=0;ii<fileDownloadVm.imgAttachList.length;ii++){
+										var curAttachInfo = fileDownloadVm.imgAttachList[ii];
+										if(curAttachInfo.fileId==delFileId){
+											fileDownloadVm.imgAttachList.splice(ii,1);
+											break;
+										}
+									}
+									mui.toast("附件删除成功。");
+								}
+							}
+						});
+					}
+	            }
+			});
+		}
+		
+		/**
+         * 页面事件注册
+         */
+        function regEvent(){
+        	//添加附件
+			document.getElementById("captimg").addEventListener("tap",function(){
+				if(fileUploadVm.successImgAttachNum>0 || fileUploadVm.successOtherAttachNum>0 
+					|| fileUploadVm.failImgAttachInfoArr.length>0 || fileUploadVm.failOhterAttachInfoArr.length>0){
+					mui.toast("上传操作后，不允许再修改附件信息。");
+					return;
+				}
+				mui("#imagePopver").popover("toggle");
+			});
+			//拍照添加附件
+			document.getElementById("cameraAct").addEventListener("tap",function(){
+				appendByCamera();
+				mui("#imagePopver").popover("toggle");
+			});
+			//从相册选择添加附件
+			document.getElementById("pictureAct").addEventListener("tap",function(){
+				appendByGallery("1");
+				mui("#imagePopver").popover("toggle");
+			});
+			//选择其他文件添加附件
+			document.getElementById("otherAct").addEventListener("tap",function(){
+				mui.trigger(document.getElementById("selectFileInput"),"click");
+				mui("#imagePopver").popover("toggle");
+			});
+			document.getElementById("selectFileInput").addEventListener('change', function(event1) {
+		        var file = this.files[0];
+		        addOtherAttach2Page(file);
+		    }, false);
+			//取消选择附件
+			document.getElementById("cancleAct").addEventListener("tap",function(){
+				mui("#imagePopver").popover("toggle");
+			});
+			//上传方式一
+			document.getElementById("uploadBtn1").addEventListener("tap",function(){
+				uploadAttach1();
+			});
+			//上传方式二
+			document.getElementById("uploadBtn2").addEventListener("tap",function(){
+				uploadAttach2();
+			});
+			//图片预览
+        	mui.previewImage();
+        }
+        
+        /**
+		 * 拍照添加文件
+		 * 拍照所得照片，可以指定保存的路径，并且在手机相册中显示。
+		 */
+        function appendByCamera(){
+            plus.camera.getCamera().captureImage(function(e){
+	            mask.show();
+            	plus.nativeUI.showWaiting("正在添加，请稍候",{back:"none"});
+            	plus.io.resolveLocalFileSystemURL(e, function(entry) {
+	                var path = entry.toLocalURL();
+	                plus.gallery.save(path);//保存到系统相册
+	               	fileUploadVm.imgAttachList.push(path);
+	                mask.close();
+					plus.nativeUI.closeWaiting();
+                }, function(e) { 
+                    mui.toast("读取拍照文件错误：" + e.message); 
+                }); 
+            },function(){
+            	
+            },{
+            	filename: "_documents/demo/attach/"+fileUploadVm.uuid+"/"
+            });
+        }
+        /**
+         * 从相册添加文件
+         * isCopy:是否把源文件复制到指定目录中去 ，0否1是
+         */
+        function appendByGallery(isCopy){
+           	plus.gallery.pick(function(e) {
+           		mask.show();
+           		plus.nativeUI.showWaiting("正在添加，请稍候",{back:"none"});
+           		if(mui.os.android){ //安卓系统不支持option的filename配置。因此如果需要将相册图片复制到指定目录下，需要自己写逻辑；如果不需要复制，则跳过此步骤。
+					if(isCopy!="1"){
+						setTimeout(function(){
+							for(var i=0;i<e.files.length;i++){
+								fileUploadVm.imgAttachList.push(e.files[i]);
+							}
+							mask.close();
+							plus.nativeUI.closeWaiting();
+						},200);
+					}else{
+						var ii = 0;
+						var parseAttachInterval = setInterval(function(){
+							if(isIoBusy=="0" && ii<e.files.length){
+								try{
+				                	addImgAttach2Page(e.files[ii]);
+				                }catch(e){
+				                	isIoBusy = "0";
+				                }
+								ii++;
+							}
+							if(ii>=e.files.length){
+								clearInterval(parseAttachInterval);
+								setTimeout(function(){
+									mask.close();
+									plus.nativeUI.closeWaiting();
+								},200);
+							}
+						},200);
+					}
+           		}else{
+           			setTimeout(function(){
+						for(var i=0;i<e.files.length;i++){
+							fileUploadVm.imgAttachList.push(e.files[i]);
+						}
+						mask.close();
+						plus.nativeUI.closeWaiting();
+					},200);
+           		}
+            }, function(e) {
+                
+            }, {
+                filename: "_documents/demo/attach/"+fileUploadVm.uuid+"/", //仅支持iOS-4.3+系统
+				filter: "image", //图片文件（image）、视频文件（video）或所有文件（none），默认值为image。
+				system: true,
+				multiple: true, //是否支持多选图片
+				maximum: 20, //仅在支持多选时有效，取值范围为1到Infinity，默认值为Infinity，即不限制选择的图片数。andriod需要设置system为false时才能生效。
+				onmaxed: function() { //andriod需要设置system为false时才能生效。需要使用plus.nativeUI.*弹出提示框。
+					plus.nativeUI.alert('最多只能选择20张图片');
+				}
+            });
+        }
+        /**
+		 * 将相册中的照片复制到指定目录中，并渲染到页面上显示。
+		 */
+		var isIoBusy = "0";
+		function addImgAttach2Page(path){
+			isIoBusy = "1";
+			//console.log(path);
+			var fileName = path.substr(path.lastIndexOf("/")+1);
+			var rootFilePath = "_documents";//"_doc": (DOMString 类型 )应用私有文档目录（读）；"_documents": (DOMString 类型 )程序公用文档目录，如内存卡/Android/data/app包路径/documents/（读写）；"_downloads": (DOMString 类型 )程序公用下载目录（读写）
+			var copyFilePath = "demo/attach/"+fileUploadVm.uuid;
+			plus.io.resolveLocalFileSystemURL(path, function(srcEntry) { //读取本地文件
+				plus.io.resolveLocalFileSystemURL(rootFilePath,function(rootEntry){ //读取rootFilePath目录
+					rootEntry.getDirectory(copyFilePath, {create:true,exclusive:false},function(childEntry){ //在rootFilePath目录下创建或打开一个指定目录
+						//console.log('目录创建或打开成功：'+childEntry.toLocalURL());
+						plus.io.resolveLocalFileSystemURL(rootFilePath+"/"+copyFilePath+"/"+fileName,function(dstEntry){ //查看文件是否存在
+							if(dstEntry.isFile){//如果存在
+								//console.log("准备删除旧文件");
+								dstEntry.remove(function(){
+									//console.log("删除旧文件成功");
+									srcEntry.copyTo(childEntry, fileName, function(e) {//复制新文件
+										//console.log(e.fullPath);
+										fileUploadVm.imgAttachList.push("file://"+e.fullPath);//不加file://前缀也可以显示图片，这里为了与其他情况保持一致。
+										isIoBusy = "0";
+									},function(e) {
+										//console.log('复制文件失败:' + e.message);
+										isIoBusy = "0";
+									});
+								},function(){
+									//console.log("删除旧文件失败");
+									isIoBusy = "0";
+								});
+							}else{
+								//console.log("错误："+rootFilePath+"/"+copyFilePath+"/"+fileName+"要么不存在，要么存在且是个文件。")
+								isIoBusy = "0";
+							}
+						},function(e){//如果不存在此文件
+							srcEntry.copyTo(childEntry, fileName, function(e) {//复制新文件
+								//console.log(e.fullPath);
+								fileUploadVm.imgAttachList.push("file://"+e.fullPath);//不加file://前缀也可以显示图片，这里为了与其他情况保持一致。
+								isIoBusy = "0";
+							},function(e) {
+								//console.log('复制文件失败:' + e.message);
+								isIoBusy = "0";
+							});
+						});
+					},function(){
+						//console.log('目录创建或打开失败');
+						isIoBusy = "0";
+					})
+				},function(e){
+					//console.log('获取io操作对象失败');
+					isIoBusy = "0";
+				});
+			}, function(e) {
+				//console.log("读取本地文件错误：" + e.message);
+				isIoBusy = "0";
+			});
+		}
+        /**
+         * 将html的input组件选择的文件，复制到指定目录，并显示在页面上
+         * 目前除图片外，允许的扩展名为：.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar
+         */
+        function addOtherAttach2Page(file){
+        	if(!file){
+        		return;
+        	}
+        	var allowFileTypes = ".pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar";
+        	//console.log(JSON.stringify(file));
+        	var fileObj = {};
+        	var fileName = decodeURI(file.name);
+        	var fileType = fileName.lastIndexOf(".")>0?fileName.substr(fileName.lastIndexOf(".")):"";
+        	var fileSize = 0;
+        	if(fileType=="" || allowFileTypes.indexOf(fileType)==-1){
+        		mui.alert("不支持的文件类型："+fileType,"提示");
+        		return;
+        	}
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                //console.log(reader.result);//TODO:目前只能读取txt类型的文件
+                /*var readerResult = reader.result;
+                var base64 = readerResult.split(",")[1];
+        		fileSize = parseInt(base64.length - (base64.length / 8) * 2);
+        		if(fileSize/(1024*1024)>5){
+        			mui.alert("文件大小超过5M，不允许上传。","提示");
+        			return;
+        		}*/
+            }
+            reader.readAsDataURL(file);
+        }
+    	
+    	
+    	
+    	/*********************************************上传方式一 start************************************************************/
+    	/**
+         * 上传附件信息：入口
+         */
+        function uploadAttach1(){
+        	if(fileUploadVm.imgAttachList.length<1 && fileUploadVm.otherAttachList.length<1){
+        		mui.toast("没有需要上传的附件");
+        		return;
+        	}
+        	if((fileUploadVm.imgAttachList.length+fileUploadVm.otherAttachList.length) <= (fileUploadVm.successImgAttachNum+fileUploadVm.successOtherAttachNum)){
+        		mui.toast("所有附件均已上传成功，无需重复上传。");
+        		return;
+        	}
+        	if(fileUploadVm.uploadType == "方式二"){
+        		mui.toast("方式二上传失败的附件，不能通过方式一上传。");//因为方式二中的param中没有base64信息
+        		return;
+        	}
+        	fileUploadVm.uploadType = "方式一";
+        	plus.nativeUI.closeWaiting();
+        	plus.nativeUI.showWaiting("正在提交附件信息，请稍候",{back:"none"});
+        	mask.show();
+        	if(fileUploadVm.failImgAttachInfoArr.length>0 || fileUploadVm.failOhterAttachInfoArr.length>0){
+        		for(var i=0;i<fileUploadVm.failImgAttachInfoArr.length;i++){
+        			doUploadFileAjax(fileUploadVm.failImgAttachInfoArr[i],"image","0");
+        		}
+        		for(var i=0;i<fileUploadVm.failOhterAttachInfoArr.length;i++){
+        			//doUploadFileAjax(fileUploadVm.failOhterAttachInfoArr[i],"other","0");
+        		}
+        	}else{
+        		fileUploadVm.successImgAttachNum = 0;
+        		fileUploadVm.successOtherAttachNum = 0;
+        		for(var i=0;i<fileUploadVm.imgAttachList.length;i++){
+	        		compressPicture1(fileUploadVm.imgAttachList[i],"image");
+	        	}
+        	}
+        	
+        	var jumpSuccessPageInterval = setInterval(function () {
+				var totalSuccessNum = fileUploadVm.successImgAttachNum + fileUploadVm.successOtherAttachNum;
+				var totalFailNum = fileUploadVm.failImgAttachInfoArr.length + fileUploadVm.failOhterAttachInfoArr.length;
+				var totalAttachNum = fileUploadVm.imgAttachList.length + fileUploadVm.otherAttachList.length;
+				if((totalSuccessNum+totalFailNum)<totalAttachNum){//附件仍在上传中
+					return;
+				}
+				if(totalSuccessNum<totalAttachNum){ //附件上传完毕，但有上传失败的
+					clearInterval(jumpSuccessPageInterval);
+					mui.toast("【"+totalFailNum+"】个附件上传失败，请重试。");
+					plus.nativeUI.closeWaiting(); 
+					mask.close();
+					return;
+				}
+				clearInterval(jumpSuccessPageInterval);
+				mui.toast("所有附件均已上传成功");
+				plus.nativeUI.closeWaiting(); 
+				mask.close();
+				getAttachDownloadUrls();//从服务器获取下载url并展示在页面上
+			},1000);
+        }
+        /**
+         * 上传附件信息：压缩图片
+         */
+        function compressPicture1(path,type){
+        	//console.log(path);
+        	var fileName = path.substring(path.lastIndexOf("/")+1);
+			var fileType = fileName.substring(fileName.lastIndexOf("."));
+			var attachInfo = {
+				path: path,
+				fileName: fileName
+			};
+			if(type=="image"){
+				var compressName = "compress_"+GetUUID()+fileType;
+				var compressPath =  "_documents/demo/attach/"+fileUploadVm.uuid+"/"+compressName;
+				plus.zip.compressImage({
+					src: path,
+					dst: compressPath,
+					quality: 50
+				},function() {
+					//console.log(compressPath);
+					attachInfo.path = compressPath;
+					attachInfo.fileName = compressName;
+					readFileInfo2Upload1(attachInfo,type);
+				},function(error) {
+					//console.log(JSON.stringify(error));
+					mui.toast("图片压缩失败，上传原图");
+					readFileInfo2Upload1(attachInfo,type);
+				});
+			}else{
+				readFileInfo2Upload1(attachInfo,type);
+			}
+        }
+        /**
+         * 上传附件信息：读取压缩文件，拼装数据
+         */
+        function readFileInfo2Upload1(attachInfo,type){
+        	plus.io.resolveLocalFileSystemURL(attachInfo.path, function(temp_entry) {
+            	temp_entry.file(function(file) {
+                	var reader = new plus.io.FileReader();
+                	reader.onloadend = function(e) {
+						var dataURL = e.target.result;
+						var base64 = dataURL.split(",")[1];
+						var attachParam = {};
+						attachParam.base64Content = base64;//【必填】文件的base64编码
+						attachParam.fileName = attachInfo.fileName;//【必填】附件名称
+						attachParam.uid = localStorage.getItem("userId");//【必填】上传用户userId
+						attachParam.up_user = localStorage.getItem("username");//【必填】上传用户名称
+						attachParam.biz = "demo";//【必填】应用标识，如check，一级目录
+						attachParam.bizClass = "attach";//【必填】模块标识，二级目录
+						attachParam.bizKey = fileUploadVm.uuid;//【必填】业务主键，三级目录
+						attachParam.variablePara = "";//【非必填】可变路径/可变变量，四级目录
+						attachParam.isCover = "false";//【非必填】"true"/"false"，是否覆盖原有文件（true:覆盖;false:不覆盖;可不传，不传为不覆盖）
+						attachParam.isConvertPdf = "false";//【非必填】"true"/"false"，是否转换成pdf（true:转换;false:不转换;可不传，不传为不转换）
+						attachParam.isEncodeFile = "0";//【非必填】是否加密（1:是;0:否，默认为0）
+						//attachParam.fileSize = file.size;
+                  		doUploadFileAjax(attachParam,type);
+                	}
+              		reader.readAsDataURL(file);  
+              	},function(e) {
+              		
+              	});
+      		}, function(e) {
+      			
+      		});
+        }
+        /**
+         * 上传附件信息：ajax上传
+         */
+        function doUploadFileAjax(attachParam,type,isPushFailArr){
+        	var totalAttachNum = fileUploadVm.imgAttachList.length + fileUploadVm.otherAttachList.length;
+        	//console.log(JSON.stringify(attachParam));
+        	mui.ajax(baseServiceUrl.fileUploadUrl, {
+            	data:attachParam,
+                dataType: 'json', //服务器返回json格式数据  
+                type: 'post', //HTTP请求类型
+                headers : {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+               	async: true,
+				crossDomain: false,
+                success: function(data) {
+                  	//console.log(JSON.stringify(data));
+                	if(!data.status || data.status!="true") { //上传失败
+                		if(isPushFailArr!="0"){
+                			if(type=="image"){
+	                			fileUploadVm.failImgAttachInfoArr.push(attachParam);
+	                		}else{
+	                			fileUploadVm.failOhterAttachInfoArr.push(attachParam);
+	                		}
+                		}
+                		return;
+                    }
+                	if(type=="image"){
+            			fileUploadVm.successImgAttachNum = fileUploadVm.successImgAttachNum + 1;
+            		}else{
+            			fileUploadVm.successOtherAttachNum = fileUploadVm.successOtherAttachNum + 1;
+            		}
+            		var totalSuccessNum = fileUploadVm.successImgAttachNum + fileUploadVm.successOtherAttachNum;
+            		plus.nativeUI.closeWaiting(); 
+    				plus.nativeUI.showWaiting("正在提交附件信息，已完成 "+totalSuccessNum+"/"+totalAttachNum,{back:"none"});
+                },
+                error: function(xhr, type, errorThrown) {
+                	if(isPushFailArr!="0"){
+            			if(type=="image"){
+                			fileUploadVm.failImgAttachInfoArr.push(attachParam);
+                		}else{
+                			fileUploadVm.failOhterAttachInfoArr.push(attachParam);
+                		}
+            		}
+                	//console.log(xhr);
+                	//console.log(type);
+                	//console.log(errorThrown);
+                    //mui.toast("图片上传失败，请检查网络是否畅通");//也有可能是tomcat或nginx限制了大小
+                }
+       		});
+        }
+    	/*********************************************上传方式一 end************************************************************/
+    	
+    	
+    	
+    	/*********************************************上传方式二 start************************************************************/
+    	/**
+         * 上传附件信息：入口
+         */
+        function uploadAttach2(){
+        	if(fileUploadVm.imgAttachList.length<1 && fileUploadVm.otherAttachList.length<1){
+        		mui.toast("没有需要上传的附件");
+        		return;
+        	}
+        	if((fileUploadVm.imgAttachList.length+fileUploadVm.otherAttachList.length) <= (fileUploadVm.successImgAttachNum+fileUploadVm.successOtherAttachNum)){
+        		mui.toast("所有附件均已上传成功，无需重复上传。");
+        		return;
+        	}
+        	if(fileUploadVm.uploadType == "方式一"){
+        		mui.toast("方式一上传失败的附件，不能通过方式二上传。");//因为方式一中的param中没有path信息
+        		return;
+        	}
+        	fileUploadVm.uploadType = "方式二";
+        	plus.nativeUI.closeWaiting();
+        	plus.nativeUI.showWaiting("正在提交附件信息，请稍候",{back:"none"});
+        	mask.show();
+        	if(fileUploadVm.failImgAttachInfoArr.length>0 || fileUploadVm.failOhterAttachInfoArr.length>0){
+        		for(var i=0;i<fileUploadVm.failImgAttachInfoArr.length;i++){
+        			createUploadTask(fileUploadVm.failImgAttachInfoArr[i],"image","0");
+        		}
+        		for(var i=0;i<fileUploadVm.failOhterAttachInfoArr.length;i++){
+        			//createUploadTask(fileUploadVm.failOhterAttachInfoArr[i],"other","0");
+        		}
+        	}else{
+        		fileUploadVm.successImgAttachNum = 0;
+        		fileUploadVm.successOtherAttachNum = 0;
+        		for(var i=0;i<fileUploadVm.imgAttachList.length;i++){
+	        		compressPicture2(fileUploadVm.imgAttachList[i],"image");
+	        	}
+        	}
+        	
+        	var jumpSuccessPageInterval = setInterval(function () {
+				var totalSuccessNum = fileUploadVm.successImgAttachNum + fileUploadVm.successOtherAttachNum;
+				var totalFailNum = fileUploadVm.failImgAttachInfoArr.length + fileUploadVm.failOhterAttachInfoArr.length;
+				var totalAttachNum = fileUploadVm.imgAttachList.length + fileUploadVm.otherAttachList.length;
+				if((totalSuccessNum+totalFailNum)<totalAttachNum){//附件仍在上传中
+					return;
+				}
+				if(totalSuccessNum<totalAttachNum){ //附件上传完毕，但有上传失败的
+					clearInterval(jumpSuccessPageInterval);
+					mui.toast("【"+totalFailNum+"】个附件上传失败，请重试。");
+					plus.nativeUI.closeWaiting(); 
+					mask.close();
+					return;
+				}
+				clearInterval(jumpSuccessPageInterval);
+				mui.toast("所有附件均已上传成功");
+				plus.nativeUI.closeWaiting(); 
+				mask.close();
+				getAttachDownloadUrls();//从服务器获取下载url并展示在页面上
+			},1000);
+        }
+        /**
+         * 上传附件信息：压缩图片
+         */
+        function compressPicture2(path,type){
+        	//console.log(path);
+        	var fileName = path.substring(path.lastIndexOf("/")+1);
+			var fileType = fileName.substring(fileName.lastIndexOf("."));
+			var attachInfo = {
+				path: path,
+				fileName: fileName
+			};
+			if(type=="image"){
+				var compressName = "compress_"+GetUUID()+fileType;
+				var compressPath =  "_documents/demo/attach/"+fileUploadVm.uuid+"/"+compressName;
+				plus.zip.compressImage({
+					src: path,
+					dst: compressPath,
+					quality: 50
+				},function() {
+					//console.log(compressPath);
+					attachInfo.path = compressPath;
+					attachInfo.fileName = compressName;
+					readFileInfo2Upload2(attachInfo,type);
+				},function(error) {
+					//console.log(JSON.stringify(error));
+					mui.toast("图片压缩失败，上传原图");
+					readFileInfo2Upload2(attachInfo,type);
+				});
+			}else{
+				readFileInfo2Upload2(attachInfo,type);
+			}
+        }
+        /**
+         * 上传附件信息：读取压缩文件，拼装数据
+         */
+        function readFileInfo2Upload2(attachInfo,type){
+        	var attachParam = {};
+        	attachParam.path = attachInfo.path;
+			attachParam.fileName = attachInfo.fileName;//【必填】附件名称
+			attachParam.uid = localStorage.getItem("userId");//【必填】上传用户userId
+			attachParam.up_user = localStorage.getItem("username");//【必填】上传用户名称
+			attachParam.biz = "demo";//【必填】应用标识，如check，一级目录
+			attachParam.bizClass = "attach";//【必填】模块标识，二级目录
+			attachParam.bizKey = fileUploadVm.uuid;//【必填】业务主键，三级目录
+			attachParam.variablePara = "";//【非必填】可变路径/可变变量，四级目录
+			attachParam.isCover = "false";//【非必填】"true"/"false"，是否覆盖原有文件（true:覆盖;false:不覆盖;可不传，不传为不覆盖）
+			attachParam.isConvertPdf = "false";//【非必填】"true"/"false"，是否转换成pdf（true:转换;false:不转换;可不传，不传为不转换）
+			attachParam.isEncodeFile = "0";//【非必填】是否加密（1:是;0:否，默认为0）
+			createUploadTask(attachParam,type);
+        }
+        /**
+         * 上传附件信息：创建上传任务
+         */
+        function createUploadTask(attachParam,type,isPushFailArr){
+        	//console.log(JSON.stringify(attachParam));
+        	var totalAttachNum = fileUploadVm.imgAttachList.length + fileUploadVm.otherAttachList.length;
+        	var task = plus.uploader.createUpload(baseServiceUrl.fileUploadUrl,
+        		{
+					method: "POST",
+					blocksize: 0,
+					priority: 100
+				},
+				function(t, status) {
+					if(status == 200) { //上传完成
+						//console.log(status+"----"+t.responseText);
+						var retResult = {};
+						try{
+							retResult = JSON.parse(t.responseText);
+						}catch(e){
+							retResult = {};
+						}
+						if(retResult.status!="true"){ //返回错误
+							if(isPushFailArr!="0"){
+		            			if(type=="image"){
+		                			fileUploadVm.failImgAttachInfoArr.push(attachParam);
+		                		}else{
+		                			fileUploadVm.failOhterAttachInfoArr.push(attachParam);
+		                		}
+		            		}
+							return;
+						}
+						if(type=="image"){
+	            			fileUploadVm.successImgAttachNum = fileUploadVm.successImgAttachNum + 1;
+	            		}else{
+	            			fileUploadVm.successOtherAttachNum = fileUploadVm.successOtherAttachNum + 1;
+	            		}
+	            		var totalSuccessNum = fileUploadVm.successImgAttachNum + fileUploadVm.successOtherAttachNum;
+	            		plus.nativeUI.closeWaiting(); 
+	    				plus.nativeUI.showWaiting("正在提交附件信息，已完成 "+totalSuccessNum+"/"+totalAttachNum,{back:"none"});
+					} else { //上传失败
+						//console.log(status+"----"+t.responseText);
+						if(isPushFailArr!="0"){
+	            			if(type=="image"){
+	                			fileUploadVm.failImgAttachInfoArr.push(attachParam);
+	                		}else{
+	                			fileUploadVm.failOhterAttachInfoArr.push(attachParam);
+	                		}
+	            		}
+					}
+					plus.uploader.clear(4);//4:上传任务完成数据提交并断开连接，上传成功或失败都会设置为此状态。
+				}
+			);
+			var addResult = task.addFile(attachParam.path,{key: GetUUID()});
+			if(addResult){
+				task.addData("fileName", attachParam.fileName);
+				task.addData("uid", attachParam.uid);
+				task.addData("up_user", attachParam.up_user);
+				task.addData("biz", attachParam.biz);
+				task.addData("bizClass", attachParam.bizClass);
+				task.addData("bizKey", attachParam.bizKey);
+				task.addData("variablePara", attachParam.variablePara);
+				task.addData("isCover", attachParam.isCover);
+				task.addData("isConvertPdf", attachParam.isConvertPdf);
+				task.addData("isEncodeFile", attachParam.isEncodeFile);
+				task.start();
+			}else{ //添加上传文件失败
+				//console.log("添加文件到上传任务失败");
+				if(isPushFailArr!="0"){
+        			if(type=="image"){
+            			fileUploadVm.failImgAttachInfoArr.push(attachParam);
+            		}else{
+            			fileUploadVm.failOhterAttachInfoArr.push(attachParam);
+            		}
+        		}
+			}
+        }
+    	/*********************************************上传方式二 end************************************************************/
+    	
+    	
+    	
+    	/**
+    	 * 获取附件下载的url集合
+    	 */
+    	var picExtensionArr = [".BMP",".JPG",".JPEG",".PNG",".GIF"];
+    	function getAttachDownloadUrls(){
+    		plus.nativeUI.showWaiting("正在获取已上传附件列表，请稍后...",{back:"none"});
+    		mui.ajax(baseServiceUrl.url, {
+            	data:{
+            		serviceCode: "mobileServer.getDownloadUrlsFromCfile",
+            		uid: localStorage.getItem("userId"),//【必填】上传用户userId
+					biz: "demo",//【必填】应用标识，如check，一级目录
+					bizClass: "attach",//【必填】模块标识，二级目录
+					bizKey: fileUploadVm.uuid,//【必填】业务主键，三级目录
+					variablePara: ""//【非必填】可变路径/可变变量，四级目录
+            	},
+                dataType: 'json', //服务器返回json格式数据  
+                type: 'post', //HTTP请求类型
+                headers : {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+               	async: true,
+				crossDomain: false,
+                success: function(data) {
+                	plus.nativeUI.closeWaiting();
+                  	//console.log(JSON.stringify(data));
+                	if(!data.status || data.status!="true") { //上传失败
+                		mui.toast("获取附件列表失败。");
+                		return;
+                    }
+                	var dataResult = JSON.parse(data.result);
+					//console.log(JSON.stringify(dataResult));
+					if(!dataResult.status || dataResult.status!="true"){
+						mui.toast("获取附件列表失败。");
+						return;
+					}
+					fileDownloadVm.imgAttachList = [];
+					fileDownloadVm.allAttachList = [];
+                	var attachInfoList = dataResult.result;
+                	for(var i=0;i<attachInfoList.length;i++){
+                		var attachInfo = attachInfoList[i];
+                		var fileId = attachInfo.fileId;//网盘附件的uuid
+                		var docId = attachInfo.docId;//网盘附件的docId
+                		var diskId = attachInfo.diskId;//网盘附件的磁盘id标识
+                		var storeId = attachInfo.storeId;//网盘附件的存储id标识
+                		var fileName = attachInfo.fileName;//文件名，不含扩展名
+                		var fileType = attachInfo.fileType;//文件扩展名，不含【.】
+                		var fullFileName = attachInfo.fullFileName;//文件名（含扩展名）
+                		var fileSize = attachInfo.fileSize;//附件大小，单位byte
+                		var uploadUserId = attachInfo.uploadUserId;//上传人的userId
+                		var uploadUser = attachInfo.uploadUser;//上传人名称
+                		var uploadTime = attachInfo.uploadTime;//上传时间，yyyy-MM-dd HH:mm:ss
+                		var downloadurl = attachInfo.downloadurl;//直接从cfileSer下载的url，不含【http://127.0.0.1:80/cfileSer/】前缀，用于app能直接访问cfileSer的情形。
+                		attachInfo.downloadurl = baseServiceUrl.cfileSerUrl + "/" + downloadurl;
+                		var downloadFromMsUrl = attachInfo.downloadFromMsUrl;//从mobileServer下载的url，不含【http://127.0.0.1:80/mobileServer/】前缀，可用于app能不能直接访问cfileSer的情形（由mobileServer中转）。
+                		attachInfo.downloadFromMsUrl = baseServiceConfig.baseUrl + baseServiceConfig.context + "/" + downloadFromMsUrl;
+                		var deleteUrl = attachInfo.deleteUrl;//直接从cfileSer删除附件的url，不含【http://127.0.0.1:80/cfileSer/】前缀，用于app能直接访问cfileSer的情形。
+                		attachInfo.deleteUrl = baseServiceUrl.cfileSerUrl + "/" + deleteUrl;
+                		//console.log(JSON.stringify(attachInfo));
+                		if(fileType!=undefined && fileType!=null && fileType.trim()!="" && picExtensionArr.indexOf("."+fileType.toUpperCase())>-1){
+							fileDownloadVm.imgAttachList.push(attachInfo);
+						}
+						fileDownloadVm.allAttachList.push(attachInfo);
+                	}
+                },
+                error: function(xhr, type, errorThrown) {
+                	plus.nativeUI.closeWaiting();
+                	mui.toast("获取附件列表失败，请检查网络是否畅通。");
+                }
+       		});
+    	}
+    	
+    	/**
+    	 * 根据附件的下载url下载附件
+    	 * downloadUrl中不能包含中文，否则在某些机型中，请求是400 Bad Request
+    	 */
+    	function downloadAttach(downloadUrl,fileName){
+			plus.nativeUI.showWaiting("正在下载，请稍后...",{back:"none"});
+			if(fileName==undefined || fileName==null || fileName==""){
+				fileName = fileUploadVm.uuid + "附件";
+			}
+			if(fileName.indexOf(".")==-1){
+				fileName = fileName + ".txt";
+			}
+			var dtask = plus.downloader.createDownload(downloadUrl, {
+				method: "GET",
+				filename: "_downloads/demo/"+fileUploadVm.uuid+"/"+fileName,
+			}, function(d, status) {
+				plus.nativeUI.closeWaiting();
+				if(status == 200) {
+					mui.toast("附件下载成功");
+					plus.runtime.openFile(d.filename, {}, function(e) {
+						mui.alert("无法打开此文件：" + e.message);
+					});
+				} else {
+					mui.toast("附件下载失败");
+				}
+			});
+			dtask.start();
+		}
+    	
+    	/**
+    	 * 根据docId删除已经成功上传到网盘的附件
+    	 * 
+    	 * @return 
+    	 * 		true删除成功，false删除失败。
+    	 */
+    	function delFileFormCfile(delAttachInfo){
+    		var delStatus = "false";
+    		mui.ajax(baseServiceUrl.url, {
+            	data:{
+            		serviceCode: "cfileSer.delFileFromCfile",
+            		uid: localStorage.getItem("userId"),//删除用户的userId
+					uuid: delAttachInfo.fileId,//附件在cfileSer的主键uuid，不是docId
+					disk_id: delAttachInfo.diskId,//附件所在磁盘的id标识。
+					store_id: delAttachInfo.storeId,//附件存储的id标识
+					random: GetUUID() //随机数
+            	},
+                dataType: 'json', //服务器返回json格式数据  
+                type: 'post', //HTTP请求类型
+                headers : {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+				},
+               	async: false,
+				crossDomain: false,
+                success: function(data) {
+                  	//console.log(JSON.stringify(data));
+                	if(!data.status || data.status!="true") { //上传失败
+                		mui.toast("附件删除失败。");
+                    }else{
+                    	var dataResult = JSON.parse(data.result);
+						//console.log(JSON.stringify(dataResult));
+						if(!dataResult[0] || !dataResult[0].status || dataResult[0].status!="true"){
+							mui.toast("附件删除失败。");
+						}else{
+							delStatus = "true";
+						}
+                    }
+                },
+                error: function(xhr, type, errorThrown) {
+                	mui.toast("附件删除失败，请检查网络是否畅通。");
+                }
+       		});
+       		return delStatus;
+    	}
+    	
+	</script>
+</body>
+</html>

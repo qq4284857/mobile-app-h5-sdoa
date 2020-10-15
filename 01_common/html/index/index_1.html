@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/common.css" rel="stylesheet" />
+		<style>
+			.major{
+				background: url("images/bg.jpg")no-repeat;
+				background-size: cover;
+			    background-attachment: fixed;
+			}
+			.parentDiv{
+				margin:0 auto;
+				max-width: 365px;
+				margin-top: 3rem;
+			}
+        	.headerTitle{
+        		position: fixed;
+        		width: calc(100% - 55px);
+    			top: 15px;
+    			left: 55px;
+        		font-size: 1.6em; 
+        		font-family: "Microsoft YaHei";
+        		color: white;
+        		text-align: center;
+        	}
+        	.logo_box{
+        		margin-top: 20px;
+        		margin-left: 15px;
+        		width: 30px;
+	            height: 30px;
+	            z-index: 999;
+        	}
+        	.mui-slider-indicator{
+				position: initial;
+			}
+			.mui-slider-indicator .mui-indicator{
+				width: 8px;
+				height: 2px;
+				margin: 1px 2px;
+				border-radius: 0;
+			}
+			#appPortal {
+				display: none;
+			}
+			#appPortal .mui-table-view, #appPortal .mui-table-view-cell {
+				background: transparent;
+				border: none;
+			}
+			#appPortal .mui-table-view-cell {
+				border: none;
+				padding: 10px 10px;
+			}
+			.appEntrance {
+				background: #FFFFFF;
+				border-radius:8px;
+			}
+			.appLogoCls {
+				width: 60% !important;
+				height: 60% !important;
+			}
+        	
+        	/**侧边栏样式开始**/
+			#offCanvasSide{
+				background: #ddd;
+			}
+			.person_info{
+				width: 100%;
+				height: auto;
+				background: url("images/nav_head.jpg"); 
+				background-size:100% 100%;
+				padding-top: 15px;
+				padding-bottom: 10px;
+			}
+			.person_img{
+				width: 100%;
+				text-align: center;
+				
+			}
+			.person_img img{
+				width: 3em;
+			}
+			.person_xx{
+				color: #fff;
+				text-align: center;
+				font-size: 1.2em;
+			}
+			.person_task{
+				width: 90%;
+				height: 60px;
+				margin: 0 auto;
+			}
+			#offCanvasSide .task_box{
+				width: 33.3%;
+				height:auto;
+				float: left;
+				margin: 10px 0;
+			}
+			.task_num{
+				font-size: 0.8em;
+			}
+			.task_name{
+				font-size: 0.6em;
+			}
+			.mui-table-view:before{
+				display: none;
+			}
+			.nav_list li img{
+				width: 20px;
+			    display: block;
+			    float: left;
+			    margin-top: 1px;
+			}
+			.nav_list li .nav_name{
+				margin-left: 5px;
+				font-size: 0.8em;
+				float: left;
+			}
+			.nav_list li .mui-badge{
+				right:50px
+			}
+			.setting{
+				margin-top: 10px;
+			}
+			.mui-off-canvas-wrap.mui-active .mui-off-canvas-backdrop{
+				box-shadow: -1px 0 4px rgba(0,0,0,.5), 4px 0 4px rgba(0,0,0,.5);
+			}
+			/**侧边栏样式结束**/
+		</style>
+	</head>
+	<body >
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--侧滑菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-left">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="person_info">
+							<div class="person_img">
+								<img src="images/login_logo.png" />
+							</div>
+							<div class="person_xx">
+								<div class="person_name" id="currentLoginUser"></div>
+								<div class="person_task">
+									<!--<div class="task_box">
+										<div class="task_num"><span class="mui-badge mui-badge-yellow">0</span></div>
+										<div class="task_name">我的任务</div>
+									</div>
+									<div class="task_box">
+										<div class="task_num"><span class="mui-badge mui-badge-yellow">0</span></div>
+										<div class="task_name">待检查</div>
+									</div>
+									<div class="task_box">
+										<div class="task_num"><span class="mui-badge mui-badge-success">0</span></div>
+										<div class="task_name">我的检查</div>
+									</div>-->
+								</div>
+							</div>
+						</div>
+						<div class="content">
+							<ul class="mui-table-view nav_list setting" >
+								<li class="mui-table-view-cell" id="setting">
+									<a class="mui-navigate-right">
+										<img src="images/icon_setting.png" />
+										<span class="nav_name">设置</span>
+									</a>	
+								</li>
+								<li class="mui-table-view-cell" id="cleanfile">
+									<a class="mui-navigate-right">
+										<img src="images/mail-bottom4-.png" />
+										<span class="nav_name">清除缓存</span>
+									</a>	
+								</li>
+								<li class="mui-table-view-cell" id="checkupdate">
+									<a class="mui-navigate-right">
+										<img src="images/login-gouxuan-.png" />
+										<span class="nav_name">检查更新</span>
+									</a>	
+								</li>
+								<li class="mui-table-view-cell" id="logout">
+									<a class="mui-navigate-right">
+										<img src="images/icon_loginout.png" />
+										<span class="nav_name">注销</span>
+									</a>	
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<!--主界面部分-->
+			<div class="mui-inner-wrap major">
+				<header>
+					<img id="opensetting" src="images/icon_pepele.png" class="logo_box"/>
+					<h1 id="app_name" class="mui-title headerTitle"></h1>
+				</header>
+				<div class="parentDiv" id="offCanvasContentScroll">
+					<div id="appPortal" class="mui-slider no-auto-init">
+						<div class="mui-slider-group" >
+							<!--
+		                    	描述：应用默认图标备忘
+		                    					图标url						窗口id														窗口url
+		                    	日常检查：images/icon_menu1.png		02_check/html/dailyCheck_index.html					../../../02_check/html/dailyCheck_index.html
+		                    	检验检测：images/icon_menu2.png		05_sample/html/sample_index.html					../../../05_sample/html/sample_index.html
+		                    	稽查执法：images/icon_menu3.png		06_el/html/el_index.html							../../../06_el/html/el_index.html
+		                    	电子地图：images/icon_menu4.png		09_mcloud/gis_map.html								../../../09_mcloud/gis_map.html
+		                    	综合查询：images/icon_menu5.png		09_mcloud/company_search.html						../../../09_mcloud/company_search.html
+		                    	我的收藏：images/icon_menu6.png		02_check/html/entinfo/myEntCollectionList.html		../../../02_check/html/entinfo/myEntCollectionList.html
+		                    	企业补录：images/icon_menu7.png		13_drm/html/drm/base_edit.html						../../../13_drm/html/drm/base_edit.html
+		                    -->
+							<div class="mui-slider-item" v-for="(sliderItemArr,sliderItemIdx) in gridApps">
+								<ul class="mui-table-view mui-grid-view mui-grid-9">
+									<li class="mui-table-view-cell mui-media mui-col-xs-4" v-for="(appInfo,appIdx) in sliderItemArr">
+										<a href="#" class="appEntrance" @tap="jump2AppIdexPage(sliderItemIdx,appIdx);">
+											<img class="appLogoCls" :src="appInfo.APP_LOGO_URL" />
+											<div class="mui-media-body" v-text="appInfo.APP_NAME"></div>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="mui-slider-indicator" v-show="gridApps.length>1">
+							<div :class="'mui-indicator '+(sliderItemIdx==0?'mui-active':'')" v-for="(sliderItemArr,sliderItemIdx) in gridApps"></div>
+						</div>
+					</div>
+				</div>
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
+		<script src="../../../00_mui/js/mui.min.js"></script>
+		<script src="../../../00_mui/js/vue.min.js" ></script>
+		<script src="../../js/serviceUrl.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="js/index_common.js"></script>
+		<script src="../../js/Atom.js" ></script>
+		<script src="js/miniapp_update.js"></script>
+		<script>
+			var activeTabId = "";//兼容变量
+			var offCanvasWrapper = mui('#offCanvasWrapper');//侧滑容器父节点
+			var offCanvasInner = offCanvasWrapper[0].querySelector('.mui-inner-wrap');//主界面容器
+			var offCanvasSide = document.getElementById("offCanvasSide");//菜单容器
+			var moveTogether = false;//移动效果是否为整体移动
+			var classList = offCanvasWrapper[0].classList;//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			
+			
+			mui.plusReady(function(){
+				mui.init();
+				document.getElementById("app_name").innerText = baseConfig.app_name;
+				document.getElementById("currentLoginUser").innerText = localStorage.getItem("username");
+				createValueModel();
+				regEvent();
+			});
+			
+			
+			/**
+			 * 页面数据模型创建
+			 */
+			var appPortalVm;
+			function createValueModel(){
+				appPortalVm = new Vue({
+					el: "#appPortal",
+					data: {
+						gridApps: []
+					},
+					methods: {
+						jump2AppIdexPage: function(sliderItemIdx,appIdx){
+							var appInfo = appPortalVm.gridApps[sliderItemIdx][appIdx];
+							if(baseConfig.mobileServerConfig.isUseMiniUpdateMode!="1"){
+								appPortalVm.doJump2AppIdexPage(appInfo);
+								return;
+							}
+							
+							var updateMiniAppCodeList = [];
+							var MINIAPP_DEF_TYPE = appInfo.MINIAPP_DEF_TYPE;
+							var DEPENDENCE_TYPE = appInfo.DEPENDENCE_TYPE;
+							var DEPENDENCE_MINIAPP_CODES = appInfo.DEPENDENCE_MINIAPP_CODES;
+							if(DEPENDENCE_MINIAPP_CODES){
+								updateMiniAppCodeList = DEPENDENCE_MINIAPP_CODES.split(",");
+							}
+							if(DEPENDENCE_TYPE=="1"){ //部分依赖，先更新依赖的小应用，再更新自身
+								updateMiniAppCodeList.push(appInfo.APP_CODE);
+							}else if(DEPENDENCE_TYPE=="2"){ //完全依赖，只更新依赖的小应用，忽略自身的更新
+								//不做操作
+							}else if(MINIAPP_DEF_TYPE=="3"){ //第三方app的更新交由第三方app自身完成
+								//不做操作
+							}else{ //不依赖其他小应用，只更新自身
+								updateMiniAppCodeList = [appInfo.APP_CODE];
+							}
+							
+							checkMiniAppVersion(updateMiniAppCodeList,function(){
+								if(MINIAPP_DEF_TYPE=="2"){ //web网站
+									
+								}else if(MINIAPP_DEF_TYPE=="3"){ //第三方app
+									
+								}else{ //H5应用
+									var jumpInterval = setInterval(function(){
+										appPortalVm.doJump2AppIdexPage(appInfo);
+										var appWebView = plus.webview.getWebviewById(appInfo.APP_PAGE_ID);
+										if(appWebView!=null){
+											clearInterval(jumpInterval);
+										}
+									},200);
+								}
+							});
+						},
+						doJump2AppIdexPage: function(appInfo){
+							if(!appInfo || !appInfo.APP_PAGE_ID || !appInfo.APP_PAGE_URL){
+								return;
+							}
+							var appPageParamJson = {};
+							if(appInfo.APP_PAGE_PARAMJSON){
+								try{
+									appPageParamJson = JSON.parse(appInfo.APP_PAGE_PARAMJSON);
+								}catch(e){
+									mui.toast("窗口参数配置有误，json格式不正确！");
+									appPageParamJson = {};
+								}
+							}
+							if(typeof appPageParamJson != "object"){
+								appPageParamJson = {};
+							}
+							mui.openWindow({
+								id: appInfo.APP_PAGE_ID,
+								url: appInfo.APP_PAGE_URL,
+								show: {
+									aniShow: 'pop-in',
+									duration: 250
+								},
+								waiting: {
+									autoShow: false
+								},
+								extras: appPageParamJson
+							});
+						}
+					},
+					updated: function(){
+						this.$nextTick(function(){
+							if(this.gridApps.length>1){
+								mui(".mui-slider").slider();
+							}
+							document.getElementById("appPortal").style.display = "block";
+						});
+	            	}
+				});
+				initAppPortalData();
+			}
+			
+			/**
+			 * 初始化app入口门户信息
+			 */
+			function initAppPortalData(){
+				var appPortalData = {
+					gridApps: []
+				};
+				var appCustomDataListStr = localStorage.getItem("LS.APP.appCustomDataList");
+				if(appCustomDataListStr){
+					var appCustomDataList = JSON.parse(appCustomDataListStr);
+					var miniAPPHideList = [];
+					var miniAppShowGridList = [];
+					var miniAppShowMoreList = [];
+					for(var i=0;i<appCustomDataList.length;i++){
+						if(appCustomDataList[i].SHOW_TYPE=="0"){
+							miniAPPHideList.push(appCustomDataList[i]);
+						}else if(appCustomDataList[i].SHOW_TYPE=="1"){
+							miniAppShowGridList.push(appCustomDataList[i]);
+						}else if(appCustomDataList[i].SHOW_TYPE=="2"){
+							miniAppShowMoreList.push(appCustomDataList[i]);
+						}
+					}
+					for(var i=0;i<miniAppShowGridList.length;i++){
+						if(i%9==0){
+							appPortalData.gridApps.push([]);
+						}
+						appPortalData.gridApps[appPortalData.gridApps.length-1].push(miniAppShowGridList[i]);
+					}
+				}
+				appPortalVm.gridApps = appPortalData.gridApps;
+			}
+			
+			
+			/**
+			 * 页面事件注册
+			 */
+			function regEvent(){
+				//主界面和侧滑菜单界面均支持区域滚动；
+				mui('#offCanvasSideScroll').scroll();
+				mui('#offCanvasContentScroll').scroll();
+				
+				
+				//个人设置中心
+				document.getElementById('opensetting').addEventListener('tap', function() {
+					offCanvasWrapper.offCanvas('show');
+				});
+				//设置
+				document.getElementById('setting').addEventListener("tap", function() {
+					mui.openWindow({
+						id: "01_common/html/index/setting/setting.html",
+						url: "setting/setting.html",
+						show: {
+							aniShow: 'pop-in',
+							duration: 250
+						},
+						waiting: {
+							autoShow: false //自动显示等待框，默认为true
+						}
+					});
+					setTimeout(function(){
+						offCanvasWrapper.offCanvas('close');
+					},500);
+				});
+				//清除缓存
+				document.getElementById("cleanfile").addEventListener("tap", function() {
+					plus.io.resolveLocalFileSystemURL("_downloads/", function(entry) {
+						entry.removeRecursively(function(entry) {
+							mui.toast("缓存清理成功！");
+						}, function(e) {
+							mui.toast("缓存清理失败，请稍候重试！");
+							//console.log(e.message);
+						});
+					}, function(e) {
+						mui.toast("缓存清理失败，请稍候重试！");
+						//console.log("Resolve file URL failed: " + e.message);
+					});
+		
+				});
+				//检查更新
+				document.getElementById("checkupdate").addEventListener("tap", function(){
+					//h5的功能没做，暂时只提示为最新版本
+					mui.toast("当前版本为最新版本");
+				});
+				//注销
+				document.getElementById("logout").addEventListener("tap", function(){
+					var btnArray = ['确定','返回'];  
+					mui.confirm('确认现在要注销当前用户吗?', '注销提示', btnArray, function(e) { 
+	                    if (e.index == 0) {  
+	                     	logout("1");
+	                    }
+	               });
+				});
+			}
+		</script>
+	</body>
+</html>

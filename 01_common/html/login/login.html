@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../../00_mui/css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/loadding.css" rel="stylesheet" />
+		<link href="css/login.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="spinner" id="loading" style="visibility: hidden;z-index:9999">
+			<div class="rect1"></div>
+			<div class="rect2"></div>
+			<div class="rect3"></div>
+			<div class="rect4"></div>
+			<div class="rect5"></div>
+		</div>
+		<header class="mui-bar mui-bar-nav">
+		    <!--<h1 class="mui-title">标题</h1>-->
+		</header>
+		<div class="mui-content">
+			<div class="login_logo">
+				<img src="images/yonghu.png" />
+				<div id="top_title" class="top_title"></div>
+				<div id="app_name" class="app_name"></div>
+				<div class="versionCls">
+					版本：<span id="versionName"></span>
+					<!-- <input id="clientid" type="text" readonly style="background: transparent;border:none;text-align:right;font-size:1em;padding-right:0;"/> -->
+				</div>
+			</div>
+			<div class="mui-card">
+				<form id="login-form" class="mui-input-group">
+					<div class="mui-input-row">
+						<label><img src="images/userIcon.png"/></label>
+						<input id="username" type="text" class="mui-input-clear" placeholder="请输入账号">
+					</div>
+					<div class="mui-input-row">
+						<label><img src="images/lock.png"/></label>
+						<input id="password" type="password" class="mui-input-clear" placeholder="请输入密码">
+						<img src="images/login-password-invisible.png" class="pass_img" id="pass" passwordType="0" />
+					</div>
+				</form>
+				<div class="login-options">
+					<div class="login-options-remenber">
+						<input class="Checkbox" id="remberPass" type="checkbox">
+						<label for="remberPass">记住密码</label>
+					</div>
+					<div class="login-options-auto">
+						<input class="Checkbox" id="autoLogin" type="checkbox" >
+						<label for="autoLogin">自动登录</label>
+					</div>
+				</div>
+				<div class="login-btn">
+					<button id="loginBtn" class="mui-btn mui-btn-block">登录</button>
+				</div>
+			</div>
+		</div>
+		<script src="../../../00_mui/js/mui.min.js"></script>
+		<script src="../../../00_mui/js/jquery.js"></script>
+		<script src="js/md5.min.js"></script>
+		<script src="../../js/Atom.js"></script>
+		<script src="../../js/serviceUrl.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/app.data.init.js"></script>
+		<script src="../../js/GTClientId.js"></script>
+		<script src="js/login_common.js"></script>
+		<script>
+			/**
+			 * 初始化是否记住密码等配置
+			 */
+			function initRememberInfo() {
+				var usernameEle = document.getElementById("username");
+				var passwordEle = document.getElementById("password");
+				var isRememberPwdEle = document.getElementById("remberPass");
+				var isAutoLoginEle = document.getElementById("autoLogin");
+				
+				var isRememberPwd = localStorage.getItem("login.isRememberPwd");
+				if(isRememberPwd == "true") {
+					isRememberPwdEle.checked = true;
+					document.getElementById("username").value = localStorage.getItem("login.username");
+					document.getElementById("password").value = localStorage.getItem("login.password");
+				} else {
+					isRememberPwdEle.checked = false;
+					document.getElementById("username").value = "";
+					document.getElementById("password").value = "";
+				}
+				var isAutoLogin = localStorage.getItem("login.isAutoLogin");
+				if(isAutoLogin=="true"){
+					isAutoLoginEle.checked = true;
+				}else{
+					isAutoLoginEle.checked = false;
+				}
+			}
+
+			/**
+			 * 页面事件注册
+			 */
+			function regEvent() {
+				//登录
+				document.getElementById("loginBtn").addEventListener("tap", function() {
+					goLogin();
+				});
+				//用户名输入框回车事件
+				document.getElementById("username").addEventListener("keydown", function(event) {
+					if(event.keyCode == 13) {
+						$("#password").focus();
+					}
+				});
+				//密码输入框回车事件
+				document.getElementById("password").addEventListener("keydown", function(event) {
+					if(event.keyCode == 13) {
+						goLogin();
+					}
+				});
+				//密码显示与隐藏
+				document.getElementById("pass").addEventListener("tap", function() {
+					var curr_img = this.getAttribute("src");
+					if("images/login-password-visible.png" == curr_img) {
+						this.src = "images/login-password-invisible.png";
+						document.getElementById("password").type = "password";
+					} else {
+						this.src = "images/login-password-visible.png";
+						document.getElementById("password").type = "text";
+					}
+				});
+				//记住密码isRememberPwd
+				document.getElementById("remberPass").addEventListener("change", function() {
+					if(this.checked===false){
+						document.getElementById("autoLogin").checked = false;
+					}
+				});
+				//自动登录isAutoLogin
+				document.getElementById("autoLogin").addEventListener("change", function() {
+					if(this.checked===true){
+						document.getElementById("remberPass").checked = true;
+					}
+				});
+			}
+			
+			/**
+			 * 登录成功后，将是否记住密码，是否自动登录等信息放入localStorage
+			 */
+			function setIsRememberInfo(){
+				var isRememberPwdEle = document.getElementById("remberPass");
+				var isAutoLoginEle = document.getElementById("autoLogin");
+				localStorage.setItem("login.isRememberPwd", isRememberPwdEle.checked + "");
+				localStorage.setItem("login.isAutoLogin",isAutoLoginEle.checked + "");
+			}
+		</script>
+	</body>
+
+</html>
