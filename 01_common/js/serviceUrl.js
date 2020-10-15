@@ -6,7 +6,7 @@
  * **/
 var baseServiceConfig = {
 	scheme: "http",
-	host: "10.110.96.68",
+	host: "15.208.30.7",
 	port: "", // 无端口时填写""
 	context: "mobileServer",
 	scContext: "sc",
@@ -22,8 +22,8 @@ baseServiceConfig.baseUrl = baseServiceConfig.scheme+"://"+baseServiceConfig.hos
 
 var extOaServiceConfig={
 	scheme: "http",
-	host: "10.10.4.137",
-	port: "", // 无端口时填写""
+	host: "15.208.30.7",
+	port: "9080", // 无端口时填写""
 	context: "oa",
 }
 extOaServiceConfig.baseUrl = extOaServiceConfig.scheme+"://"+extOaServiceConfig.host+((extOaServiceConfig.port=="")?"":(":"+extOaServiceConfig.port))+"/";
@@ -42,6 +42,6 @@ var baseServiceUrl = {
 	cformUrl: baseServiceConfig.baseUrl + baseServiceConfig.cformContext,
 	cformClientUrl: baseServiceConfig.baseUrl + baseServiceConfig.cformClientContext,
 	//edocUrl:baseServiceConfig.baseUrl + baseServiceConfig.edocContext,
-	edocUrl:"http://10.10.4.137/oa/"
+	edocUrl:"http://15.208.30.7:9080/oa/"
 //	cmsUrl: baseServiceConfig.baseUrl + baseServiceConfig.cmsContext,
 };
